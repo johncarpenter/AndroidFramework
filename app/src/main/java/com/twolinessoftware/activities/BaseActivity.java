@@ -10,13 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
-import com.android.R;
 import com.tsengvn.typekit.TypekitContextWrapper;
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.network.NetworkManager;
 import com.twolinessoftware.notifications.GoogleServicesManager;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -26,16 +30,12 @@ public class BaseActivity extends AppCompatActivity {
 
 	private DataManager mDataManager;
 
+	@Bind(R.id.toolbar)
+	Toolbar mToolbar;
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
+	@Bind(R.id.progress_bar)
+	ProgressBar mProgressBar;
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
 
 
 	@Override
@@ -47,6 +47,7 @@ public class BaseActivity extends AppCompatActivity {
 		mDataManager = BaseApplication.get(this).getComponent().dataManager();
 
 		setContentView(getContentView());
+		ButterKnife.bind(this);
 
 	}
 
@@ -129,6 +130,24 @@ public class BaseActivity extends AppCompatActivity {
 		} else {
 			super.onBackPressed();
 		}
+	}
+
+
+	public void clearBackStack() {
+		int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+		for (int i = 0; i < backStackCount; i++) {
+			int backStackId = getSupportFragmentManager().getBackStackEntryAt(i).getId();
+			getSupportFragmentManager().popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		}
+	}
+
+	/**
+	 * Default show progress. Override for specific implementations (i.e. dialog/loading bar/etc..)
+	 * @param visible
+	 */
+	public void showProgress(boolean visible) {
+
+		mProgressBar.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
 	}
 
 }

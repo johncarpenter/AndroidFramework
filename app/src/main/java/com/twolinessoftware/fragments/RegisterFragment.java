@@ -23,22 +23,21 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-import com.twolinessoftware.smarterlist.Injector;
-import com.twolinessoftware.smarterlist.R;
-import com.twolinessoftware.smarterlist.event.OnCommunicationStatusEvent;
-import com.twolinessoftware.smarterlist.event.OnErrorEvent;
-import com.twolinessoftware.smarterlist.service.AccountService;
-import com.twolinessoftware.smarterlist.util.AccountUtils;
+import com.twolinessoftware.BaseApplication;
+import com.twolinessoftware.events.OnCommunicationStatusEvent;
+import com.twolinessoftware.events.OnErrorEvent;
+import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.utils.ValidationUtil;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by John on 2015-04-02.
@@ -49,32 +48,31 @@ public class RegisterFragment extends  BaseFragment{
         return R.layout.fragment_register;
     }
 
-    @InjectView(R.id.edit_email)
-    EditText m_editEmail;
+    @Bind(R.id.edit_email)
+    AutoCompleteTextView mEditEmail;
 
-    @InjectView(R.id.edit_password)
-    EditText m_editPassword;
+    @Bind(R.id.edit_password)
+    EditText mEditPassword;
 
-    @InjectView(R.id.button_register)
-    Button m_buttonRegister;
-
-    @Inject
-    AccountManager m_accountManager;
+    @Bind(R.id.button_register)
+    Button mButtonRegister;
 
     @Inject
-    Bus m_eventBus;
+    AccountManager mAccountManager;
 
     @Inject
-    AccountService m_accountService;
+    NetworkManager mNetworkManager;
 
+    @Inject
+    EventBus mEventBus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-        getBaseActivity().setTitle(R.string.register_toolbar_title);
-        Injector.inject(this);
+        getBaseActivity().setTitle(R.string.register_fragment_title);
+        BaseApplication.get(getBaseActivity()).getComponent().inject(this);
     }
 
     @Override
@@ -89,25 +87,25 @@ public class RegisterFragment extends  BaseFragment{
 
         prepopulateAccount();
 
-        m_editPassword.requestFocus();
-        m_editPassword.setTransformationMethod(null);
+        mEditPassword.requestFocus();
+        mEditPassword.setTransformationMethod(null);
 
-        m_editEmail.setOnFocusChangeListener((v, hasfocus) -> {
+        mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
             if (hasfocus) {
-                m_editEmail.setText("");
+                mEditEmail.setText("");
             }
-            m_editEmail.setOnFocusChangeListener(null);
+            mEditEmail.setOnFocusChangeListener(null);
         });
 
     }
 
     private void prepopulateAccount() {
 
-        Account[] accounts = m_accountManager.getAccounts();
+        Account[] accounts = mAccountManager.getAccounts();
         for (Account account : accounts)
         {
-            if(AccountUtils.isValidEmail(account.name)){
-                m_editEmail.setText(account.name);
+            if(ValidationUtil.isValidEmail(account.name)){
+                mEditEmail.setText(account.name);
                 break;
             }
         }
@@ -116,41 +114,40 @@ public class RegisterFragment extends  BaseFragment{
     @OnClick(R.id.button_register)
     public void onClickLogin(View view){
 
-        String email = m_editEmail.getText().toString().trim();
-        String password = m_editPassword.getText().toString().trim();
+        String email = mEditEmail.getText().toString().trim();
+        String password = mEditPassword.getText().toString().trim();
 
         if (validateFields(email,password)) {
-            m_accountService.registerUser(m_editEmail.getText().toString(), m_editPassword.getText().toString());
+            mNetworkManager.register(mEditEmail.getText().toString(), mEditPassword.getText().toString());
         }
     }
 
     private boolean validateFields(String email, String password) {
 
         if(email == null || email.isEmpty() || password == null || password.isEmpty()){
-            m_eventBus.post(new OnErrorEvent(OnErrorEvent.Error.VALIDATION_EMPTY_FIELDS));
+            mEventBus.post(new OnErrorEvent(OnErrorEvent.Error.VALIDATION_EMPTY_FIELDS));
             return false;
         }
 
         if(password.length() < 6){
-            m_eventBus.post(new OnErrorEvent(OnErrorEvent.Error.VALIDATION_PASSWORD_LENGTH));
+            mEventBus.post(new OnErrorEvent(OnErrorEvent.Error.VALIDATION_PASSWORD_LENGTH));
             return false;
         }
 
-        if(!AccountUtils.isValidEmail(email)){
-            m_eventBus.post(new OnErrorEvent(OnErrorEvent.Error.VALIDATION_INVALID_EMAIL));
+        if(!ValidationUtil.isValidEmail(email)){
+            mEventBus.post(new OnErrorEvent(OnErrorEvent.Error.VALIDATION_INVALID_EMAIL));
             return false;
         }
         return true;
     }
 
-    @Subscribe
-    public void onCommunicationEvent(OnCommunicationStatusEvent event) {
+    public void onEventMainThread(OnCommunicationStatusEvent event) {
         switch (event.getStatus()) {
-            case PROGRESS:
-                m_buttonRegister.setEnabled(false);
+            case busy:
+                mButtonRegister.setEnabled(false);
                 break;
             default:
-                m_buttonRegister.setEnabled(true);
+                mButtonRegister.setEnabled(true);
         }
     }
 }

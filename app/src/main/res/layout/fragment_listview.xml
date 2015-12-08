@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerViewinclude_empty_list.xml
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/list_master"
             android:scrollbars="vertical"
             android:layout_width="match_parent"

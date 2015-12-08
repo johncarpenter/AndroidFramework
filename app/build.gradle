@@ -43,7 +43,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
     compile "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
     compile "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
-    
+    compile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
 
     compile 'com.jakewharton:butterknife:7.0.1'
 
@@ -91,6 +91,11 @@ dependencies {
 
     // Offline storage of data
     compile 'nl.qbusict:cupboard:2.1.4'
+
+    // Error messages
+    compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
 
     /**
      * Testing Dependencies from here on

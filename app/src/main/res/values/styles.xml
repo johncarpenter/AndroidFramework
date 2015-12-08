@@ -44,7 +44,7 @@
 		<item name="selectedBold">true</item>
 	</style>
 
-	<style name="SmarterList.ButtonFlat" parent="android:Widget.Holo.Button">
+	<style name="BaseApplication.ButtonFlat" parent="android:Widget.Holo.Button">
 		<item name="android:textColor">?android:attr/textColorHighlight</item>
 		<item name="android:textAllCaps">true</item>
 		<item name="android:textStyle">bold</item>
@@ -54,7 +54,7 @@
 		<item name="android:background">@drawable/button</item>
 	</style>
 
-	<style name="SmarterList.ActionMode" parent="Base.Widget.AppCompat.ActionMode">
+	<style name="BaseApplication.ActionMode" parent="Base.Widget.AppCompat.ActionMode">
 		<item name="android:background">?attr/colorPrimary</item>
 		<item name="android:height">?attr/actionBarSize</item>
 
@@ -67,6 +67,17 @@
 		<item name="closeItemLayout">@layout/abc_action_mode_close_item_material</item>
 
 
+	</style>
+
+	<style name="BaseApplication.TextStyle.List.Caption" parent="TextAppearance.AppCompat">
+		<item name="android:textColor">?android:attr/textColorHighlight</item>
+		<item name="android:layout_marginTop">-2dp</item>
+		<item name="android:textSize">@dimen/text_size_med</item>
+	</style>
+
+	<style name="BaseApplication.TextStyle.List.Title" parent="TextAppearance.AppCompat">
+		<item name="android:textStyle">bold</item>
+		<item name="android:textSize">@dimen/text_size_lrg</item>
 	</style>
 
 </resources>

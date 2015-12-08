@@ -27,10 +27,7 @@ public class ApplicationDatabaseHelper extends SQLiteOpenHelper {
 
     static {
         // register our models
-        cupboard().register(User.class);
-        cupboard().register(Clinic.class);
-        cupboard().register(Doctor.class);
-        cupboard().register(Appointment.class);
+        // cupboard().register(User.class);
     }
 
     @Override

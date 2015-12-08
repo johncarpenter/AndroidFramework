@@ -23,36 +23,36 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.AutoCompleteTextView;
 
-import com.squareup.otto.Bus;
-import com.twolinessoftware.smarterlist.Injector;
-import com.twolinessoftware.smarterlist.R;
-import com.twolinessoftware.smarterlist.event.OnErrorEvent;
-import com.twolinessoftware.smarterlist.service.AccountService;
-import com.twolinessoftware.smarterlist.util.AccountUtils;
+import com.twolinessoftware.BaseApplication;
+import com.twolinessoftware.events.OnErrorEvent;
+import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.utils.ValidationUtil;
+import com.twolinessoftware.utils.ViewUtils;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by John on 2015-04-02.
  */
 public class ResetPasswordFragment extends  BaseFragment{
 
-    @InjectView(R.id.edit_email)
-    EditText m_editEmail;
+    @Bind(R.id.edit_email)
+    AutoCompleteTextView mEditEmail;
 
     @Inject
-    Bus m_eventBus;
+    EventBus mEventBus;
 
     @Inject
-    AccountManager m_accountManager;
+    AccountManager mAccountManager;
 
     @Inject
-    AccountService m_accountService;
+    NetworkManager mNetworkManager;
 
     @Override
     protected int setContentView() {
@@ -65,7 +65,7 @@ public class ResetPasswordFragment extends  BaseFragment{
 
         setHasOptionsMenu(true);
         getBaseActivity().setTitle(R.string.login_toolbar_title);
-        Injector.inject(this);
+        BaseApplication.get(getBaseActivity()).getComponent().inject(this);
     }
 
     @Override
@@ -79,21 +79,22 @@ public class ResetPasswordFragment extends  BaseFragment{
         super.onViewCreated(view, savedInstanceState);
         prepopulateAccount();
 
-        m_editEmail.setOnFocusChangeListener((v,hasfocus)->{
+        mEditEmail.setAdapter(ViewUtils.getEmailAddressAdapter(getBaseActivity()));
+        mEditEmail.setOnFocusChangeListener((v,hasfocus)->{
             if(hasfocus) {
-                m_editEmail.setText("");
+                mEditEmail.setText("");
             }
-            m_editEmail.setOnFocusChangeListener(null);
+            mEditEmail.setOnFocusChangeListener(null);
         });
     }
 
     private void prepopulateAccount() {
 
-        Account[] accounts = m_accountManager.getAccounts();
+        Account[] accounts = mAccountManager.getAccounts();
         for (Account account : accounts)
         {
-            if(AccountUtils.isValidEmail(account.name)){
-                m_editEmail.setText(account.name);
+            if(ValidationUtil.isValidEmail(account.name)){
+                mEditEmail.setText(account.name);
                 break;
             }
         }
@@ -103,12 +104,12 @@ public class ResetPasswordFragment extends  BaseFragment{
 
     @OnClick(R.id.button_reset)
     public void onClickLogin(View view){
-        String email = m_editEmail.getText().toString().trim();
+        String email = mEditEmail.getText().toString().trim();
 
-       if(!AccountUtils.isValidEmail(email)){
-           m_eventBus.post(new OnErrorEvent(OnErrorEvent.Error.VALIDATION_INVALID_EMAIL));
+       if(!ValidationUtil.isValidEmail(email)){
+           mEventBus.post(new OnErrorEvent(OnErrorEvent.Error.VALIDATION_INVALID_EMAIL));
        }else{
-           m_accountService.resetPassword(email);
+           mNetworkManager.forgotPassword(email);
         }
     }
 

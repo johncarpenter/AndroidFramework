@@ -7,8 +7,8 @@ import android.telephony.TelephonyManager;
 
 import com.twolinessoftware.BaseApplication;
 
-public class DeviceUtils {
-	private static final String TAG=DeviceUtils.class.getSimpleName();
+public class DeviceUtil {
+	private static final String TAG=DeviceUtil.class.getSimpleName();
 	private static final boolean LOG= BaseApplication.LOG;
 
 	public static String getPhoneNumber() {

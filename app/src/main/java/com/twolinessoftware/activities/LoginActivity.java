@@ -3,20 +3,28 @@ package com.twolinessoftware.activities;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
+import com.twolinessoftware.BaseApplication;
+import com.twolinessoftware.Constants;
+import com.twolinessoftware.authentication.AuthenticationManager;
+import com.twolinessoftware.events.OnAccountLoggedInEvent;
+import com.twolinessoftware.events.OnAccountPasswordResetEvent;
+import com.twolinessoftware.events.OnCommunicationStatusEvent;
+import com.twolinessoftware.events.OnErrorEvent;
 import com.twolinessoftware.fragments.LoginFragment;
 import com.twolinessoftware.fragments.RegisterFragment;
+import com.twolinessoftware.notifications.GoogleServicesManager;
+import com.twolinessoftware.utils.NotificationUtil;
 
 import javax.inject.Inject;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.LifecycleCallback;
+import timber.log.Timber;
 
 /**
  * Created by John on 2015-04-02.
@@ -30,8 +38,17 @@ public class LoginActivity extends BaseActivity {
 
     private LoginFragment m_loginFragment;
 
+
     @Inject
-    AccountManager m_accountManager;
+    AccountManager mAccountManager;
+
+    @Inject
+    AuthenticationManager mAuthenticationManager;
+
+    @Inject
+    GoogleServicesManager mGoogleServicesManager;
+
+
 
     private AccountAuthenticatorResponse m_accountAuthenticatorResponse;
 
@@ -42,18 +59,19 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (m_accountUtils.isLoggedIn()) {
-            // @todo logout page?
-            Ln.e("Account is already logged in");
+        BaseApplication.get(this).getComponent().inject(this);
+
+
+
+        if (mAuthenticationManager.isLoggedIn()) {
+            Timber.e("Account is already logged in. Finishing activty");
             finish();
         }
 
         m_registerFragment = new RegisterFragment();
         m_loginFragment = new LoginFragment();
 
-        showFragment(m_registerFragment,false,false);
-
-        showEntryDialog();
+        setFragment(m_registerFragment,false);
 
         m_accountAuthenticatorResponse =
                 getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
@@ -64,27 +82,27 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    private void showEntryDialog() {
-        Dialog dialog = new AlertDialog.Builder(LoginActivity.this)
-                .setTitle(getString(R.string.register_why_signup))
-                .setMessage(getString(R.string.register_why_signup_text))
-                .setPositiveButton(R.string.register_why_signup_button, (dialog1, which) -> {
 
-                })
-                .setCancelable(true)
-                .create();
-
-        dialog.show();
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_register:
-                showFragment(m_registerFragment, false, true);
+                setFragment(m_registerFragment, true);
                 return true;
             case R.id.menu_login:
-                showFragment(m_loginFragment, false, true);
+                setFragment(m_loginFragment, true);
                 return true;
 
         }
@@ -92,11 +110,10 @@ public class LoginActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Subscribe
-    public void onCommunicationEvent(OnCommunicationStatusEvent event) {
-        Ln.v("Progress:" + event.getStatus().toString());
+    public void onEventMainThread(OnCommunicationStatusEvent event) {
+         Timber.v("Communication Progress:" + event.getStatus().toString());
         switch (event.getStatus()) {
-            case PROGRESS:
+            case busy:
                 showProgress(true);
                 break;
             default:
@@ -104,57 +121,32 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    @Subscribe
-    public void onErrorEvent(OnErrorEvent event) {
-        Ln.e("Error event:"+event.getError().getDisplayError());
+    public void onEventMainThread(OnErrorEvent event) {
+        Timber.e("Error event:" + event.getError().getDisplayError());
 
-        showErrorCrouton(getString(event.getError().getDisplayError()));
+        NotificationUtil.showErrorCrouton(this, R.id.fragment_container, getString(event.getError().getDisplayError()));
     }
 
-    @Subscribe
-    public void onAccountLoginEvent(OnAccountLoggedInEvent event) {
+    public void onEventMainThread(OnAccountLoggedInEvent event) {
         Intent intent = event.getIntent();
 
         finishLogin(event.getIntent());
 
-        m_googleService.registerGcm();
-
-
-        if(event.isNewAccount()){
-            createInitialList();
-        }
-
-        m_accountUtils.scheduleSmartlistSync();
+        // @todo send the GCM registration to the server
+        mGoogleServicesManager.getGCMService().register();
 
         setAccountAuthenticatorResult(intent.getExtras());
         setResult(RESULT_OK, intent);
-        finish();// @todo show upsell page?
-
-    }
-
-    private void createInitialList() {
-        SmartList smartList = new SmartList(getString(R.string.default_smartlist_name),
-                getString(R.string.default_smartlist_desc),
-                Constants.DEFAULT_MASTERLIST_NAME,"http://storage.googleapis.com/smarterlist_icons/ic_grocery_list.png");
-        smartList.setOwner(m_accountUtils.getEmailAddress());
-
-        // Write the data, sync later
-        smartList.setItemId(0);
-        int localId = m_smartListDAO.save(smartList);
-        smartList = m_smartListDAO.findById(localId);
-
-        // Try a background sync now
-       m_smartListService.createSmartList(smartList);
+        finish();
     }
 
 
-    @Subscribe
-    public void onAccountResetSent(OnAccountPasswordResetEvent event) {
-        Crouton c = getInfoCrouton(getString(R.string.reset_link_sent));
+
+    public void onEventMainThread(OnAccountPasswordResetEvent event) {
+        Crouton c = NotificationUtil.getInfoCrouton(this,R.id.fragment_container,getString(R.string.reset_link_sent));
         c.setLifecycleCallback(new LifecycleCallback() {
             @Override
             public void onDisplayed() {
-
             }
 
             @Override
@@ -168,20 +160,18 @@ public class LoginActivity extends BaseActivity {
     private void finishLogin(Intent intent) {
 
         String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-        String accountPassword = intent.getStringExtra(KEY_ACCOUNT_PASSWORD);
-        final Account account = new Account(accountName, Constants.SMARTERLIST_ACCOUNT_TYPE);
+
+        final Account account = new Account(accountName, Constants.BASE_ACCOUNT_TYPE);
 
         String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
 
-        String authtokenType = Constants.SMARTERLIST_TOKEN_TYPE;
+        String authtokenType = Constants.BASE_ACCOUNT_TYPE;
 
-        ContentResolver.setSyncAutomatically(account, Constants.SMARTERLIST_ACCOUNT_TYPE, true);
-        ContentResolver.setIsSyncable(account, Constants.SMARTERLIST_ACCOUNT_TYPE, 1);
+        ContentResolver.setSyncAutomatically(account, Constants.BASE_ACCOUNT_TYPE, true);
+        ContentResolver.setIsSyncable(account, Constants.BASE_ACCOUNT_TYPE, 1);
 
-        m_accountManager.addAccountExplicitly(account, accountPassword, null);
-        m_accountManager.setAuthToken(account, authtokenType, authtoken);
-
-        m_accountUtils.forceAuthToken(authtoken);
+        mAccountManager.addAccountExplicitly(account, null, null);
+        mAccountManager.setAuthToken(account, authtokenType, authtoken);
 
 
     }

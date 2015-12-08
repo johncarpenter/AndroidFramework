@@ -1,22 +1,25 @@
 package com.twolinessoftware.utils;
 
+import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
 
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.R;
 import com.twolinessoftware.activities.BaseActivity;
-import com.twolinessoftware.activities.RatingActivity;
 import com.twolinessoftware.data.DataManager;
 
 import net.danlew.android.joda.DateUtils;
 
-import java.util.List;
-
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 import timber.log.Timber;
 
 /**
@@ -29,6 +32,34 @@ public class NotificationUtil {
     private static DataManager getDataManager(BaseActivity activity) {
         return activity.getDataManager();
     }
+
+
+
+    public static void showErrorCrouton(Activity activity, @LayoutRes int container, String message) {
+
+        Style style = new Style.Builder()
+                .setHeightDimensionResId(R.dimen.crouton_height)
+                .setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM)
+                .setBackgroundColorValue(activity.getResources().getColor(R.color.pal_red, android.R.style.Theme))
+                .build();
+
+        Crouton.makeText(activity, message, style, container).show();
+    }
+
+    public static Crouton getInfoCrouton(Activity activity, @LayoutRes int container, String message) {
+
+        Style style = new Style.Builder()
+                .setHeightDimensionResId(R.dimen.crouton_height)
+                .setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM)
+                .setBackgroundColorValue(activity.getResources().getColor(R.color.pal_blue, android.R.style.Theme))
+                .setTextAppearance(R.style.SmarterList_TextStyle_Body_Bold)
+                .build();
+
+        return Crouton.makeText(this, message, style, R.id.container);
+    }
+
+
+
 
     public static void showGenericOkDialog(final BaseActivity activity,String title, String message) {
 
@@ -161,7 +192,7 @@ public class NotificationUtil {
                 .setPositiveButton(R.string.notification_call_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DeviceUtils.placeCall(getDataManager(activity).getDoctor(appointment.getDoctorId()).getPhone());
+                        DeviceUtil.placeCall(getDataManager(activity).getDoctor(appointment.getDoctorId()).getPhone());
                     }
                 })
                 .setNegativeButton(R.string.notification_cancel_button, null)

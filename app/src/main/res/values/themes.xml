@@ -23,10 +23,7 @@
         <item name="android:windowActionModeOverlay">true</item>
         <item name="windowActionModeOverlay">true</item>
 
-        <item name="android:actionModeCloseDrawable">@drawable/ic_action_cancel</item>
-
         <!-- Widget Styles -->
-        <item name="android:editTextStyle">@style/BaseApplication.Widget.App.EditText</item>
         <item name="vpiTitlePageIndicatorStyle">@style/BaseApplication.TitlePageIndicator</item>
 
         <item name="android:buttonStyle">@style/BaseApplication.ButtonFlat</item>

@@ -39,25 +39,25 @@ import rx.android.schedulers.AndroidSchedulers;
 public abstract class BaseRecyclerViewFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.refresh_layout)
-    protected SwipeRefreshLayout m_swipeRefreshLayout;
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Bind(R.id.list_master)
-    RecyclerView m_masterListView;
+    RecyclerView mMasterListView;
 
     @Bind(R.id.layout_empty)
-    ViewGroup m_emptyLayoutView;
+    ViewGroup mEmptyLayoutView;
 
-    private boolean m_onViewCreatedCalled;
+    private boolean mOnViewCreatedCalled;
 
-    protected RecyclerView.Adapter m_adapter;
+    protected RecyclerView.Adapter mAdapter;
 
-    protected RecyclerView.LayoutManager m_layoutManager;
+    protected RecyclerView.LayoutManager mLayoutManager;
 
     @SuppressLint("HandlerLeak")
-    public final Handler m_delayShowEmptyHandler = new Handler(Looper.getMainLooper()) {
+    public final Handler mDelayShowEmptyHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
-            setEmptyViewVisibile((m_adapter.getItemCount() == 0));
+            setEmptyViewVisibile((mAdapter.getItemCount() == 0));
         }
     };
     private boolean m_emptyViewEnabled;
@@ -65,7 +65,7 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
 
     @Override
     protected int setContentView() {
-        return R.layout.fragment_masterlistview;
+        return R.layout.fragment_listview;
     }
 
 
@@ -75,7 +75,7 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
             setRefreshing(false);
 
             // Item loading may be delayed, lets not show the empty right away
-            m_delayShowEmptyHandler.sendEmptyMessageDelayed(0, 250);
+            mDelayShowEmptyHandler.sendEmptyMessageDelayed(0, 250);
         }
     }
 
@@ -89,8 +89,8 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
 
-        m_swipeRefreshLayout.setOnRefreshListener(this);
-        m_onViewCreatedCalled = true;
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mOnViewCreatedCalled = true;
         setRefreshable(false);
 
         super.onViewCreated(view, savedInstanceState);
@@ -100,14 +100,14 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
     public void onResume() {
         super.onResume();
 
-        if (!m_onViewCreatedCalled) {
+        if (!mOnViewCreatedCalled) {
             throw new RuntimeException("RecyclerFragment requires super.onViewCreated");
         }
 
-        if (m_adapter != null) {
-            ((AdapterLifecycleInterface) m_adapter).onResume();
+        if (mAdapter != null) {
+            ((AdapterLifecycleInterface) mAdapter).onResume();
             m_dataObserver = new EmptyDataObserver();
-            m_adapter.registerAdapterDataObserver(m_dataObserver);
+            mAdapter.registerAdapterDataObserver(m_dataObserver);
         }
 
     }
@@ -116,19 +116,19 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
     public void onPause() {
         super.onPause();
 
-        if (m_adapter != null) {
-            ((AdapterLifecycleInterface) m_adapter).onPause();
+        if (mAdapter != null) {
+            ((AdapterLifecycleInterface) mAdapter).onPause();
         }
-        m_delayShowEmptyHandler.removeMessages(0);
+        mDelayShowEmptyHandler.removeMessages(0);
 
-        if (m_adapter != null && m_dataObserver != null) {
-            m_adapter.unregisterAdapterDataObserver(m_dataObserver);
+        if (mAdapter != null && m_dataObserver != null) {
+            mAdapter.unregisterAdapterDataObserver(m_dataObserver);
         }
 
     }
 
     public void setEmptyViewEnable(boolean enabled) {
-        if (!m_onViewCreatedCalled) {
+        if (!mOnViewCreatedCalled) {
             throw new RuntimeException("RecyclerFragment requires super.onViewCreated");
         }
         m_emptyViewEnabled = enabled;
@@ -136,22 +136,22 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
 
     public void setRefreshable(boolean refreshable) {
 
-        if (!m_onViewCreatedCalled) {
+        if (!mOnViewCreatedCalled) {
             throw new RuntimeException("RecyclerFragment requires super.onViewCreated");
         }
 
-        m_swipeRefreshLayout.setEnabled(refreshable);
+        mSwipeRefreshLayout.setEnabled(refreshable);
     }
 
     public void setRefreshing(boolean refreshing) {
 
-        if (!m_onViewCreatedCalled) {
+        if (!mOnViewCreatedCalled) {
             throw new RuntimeException("RecyclerFragment requires super.onViewCreated");
         }
 
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (m_swipeRefreshLayout != null) {
-                m_swipeRefreshLayout.setRefreshing(refreshing);
+            if (mSwipeRefreshLayout != null) {
+                mSwipeRefreshLayout.setRefreshing(refreshing);
             }
         });
     }
@@ -159,8 +159,8 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
     public void setEmptyViewVisibile(boolean visible) {
         if (m_emptyViewEnabled) {
             Observable.create(subscriber -> {
-                        m_masterListView.setVisibility(visible ? View.GONE : View.VISIBLE);
-                        m_emptyLayoutView.setVisibility(visible ? View.VISIBLE : View.GONE);
+                        mMasterListView.setVisibility(visible ? View.GONE : View.VISIBLE);
+                        mEmptyLayoutView.setVisibility(visible ? View.VISIBLE : View.GONE);
                         subscriber.onCompleted();
                     }
             )
@@ -170,7 +170,7 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
     }
 
     public ViewGroup getEmptyView() {
-        return m_emptyLayoutView;
+        return mEmptyLayoutView;
     }
 
     @Override

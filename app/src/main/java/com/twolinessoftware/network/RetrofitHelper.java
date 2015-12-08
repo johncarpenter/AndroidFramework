@@ -54,22 +54,22 @@ public class RetrofitHelper {
 
         if (cause.getKind() == RetrofitError.Kind.NETWORK) {
             if (cause.getCause() instanceof SocketTimeoutException) {
-                return ApiException.TIMEOUT;
+                return CommException.TIMEOUT;
             } else {
-                return ApiException.NO_CONNECTION;
+                return CommException.NO_CONNECTION;
             }
         }
 
         if (cause.getResponse() == null) {
-            return ApiException.UNKNOWN;
+            return CommException.UNKNOWN;
         }
 
         // @todo parse the errors response and append to the throwable error
 
-        ApiException apiException = ApiException.UNKNOWN;
-        apiException.setCode(cause.getResponse().getStatus());
+        CommException commException = CommException.UNKNOWN;
+        commException.setCode(cause.getResponse().getStatus());
 
-        return apiException;
+        return commException;
 
     };
 

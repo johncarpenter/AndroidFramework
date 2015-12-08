@@ -20,7 +20,6 @@
     android:layout_gravity="bottom|center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/button_background"
     android:orientation="vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:stateListAnimator="@anim/raise"
@@ -41,10 +40,9 @@
 
 
     <ImageView
-        android:id="@+id/imagecheck_icon"
+        android:id="@+id/image_icon"
         android:layout_width="@dimen/image_list_icon_sm"
         android:layout_height="@dimen/image_list_icon_sm"
-        android:src="@drawable/ic_add"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/content_margins"
         android:layout_marginRight="@dimen/content_margins"
@@ -65,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/content_margins_half"
-            style="@style/SmarterList.TextStyle.Body.Bold"
+            style="@style/BaseApplication.TextStyle.List.Title"
             android:text="info"/>
 
         <TextView
@@ -75,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/content_margins_half"
             android:layout_marginBottom="@dimen/content_margins_half"
-            style="@style/SmarterList.TextStyle.Caption"/>
+            style="@style/BaseApplication.TextStyle.List.Caption"/>
 
 
     </LinearLayout>

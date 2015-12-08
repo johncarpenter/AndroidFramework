@@ -30,13 +30,11 @@ import android.os.IBinder;
 import android.text.TextUtils;
 
 import com.twolinessoftware.BaseApplication;
-import com.twolinessoftware.smarterlist.Constants;
-import com.twolinessoftware.smarterlist.Injector;
-import com.twolinessoftware.smarterlist.activity.LoginActivity;
-import com.twolinessoftware.smarterlist.model.Token;
-import com.twolinessoftware.smarterlist.util.Ln;
+import com.twolinessoftware.activities.LoginActivity;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 /**
  * Authenticator service that returns a subclass of AbstractAccountAuthenticator in onBind()
@@ -44,7 +42,11 @@ import javax.inject.Inject;
 public class AccountAuthenticatorService extends Service {
 
     @Inject
-    AccountManager m_accountManager;
+    AccountManager mAccountManager;
+
+    @Inject
+    AuthenticationManager mAuthenticationManager;
+
 
     private static AccountAuthenticatorImpl sAccountAuthenticator = null;
 
@@ -105,22 +107,7 @@ public class AccountAuthenticatorService extends Service {
         @Override
         public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
 
-            // Extract the username and password from the Account Manager, and ask
-           String authToken = m_accountManager.peekAuthToken(account, authTokenType);
-
-            // Lets give another try to authenticate the user. We will resend the user/password
-            if (TextUtils.isEmpty(authToken)) {
-                Ln.v("Empty auth token refreshing from server");
-                authToken = retrieveAuthTokenFromServer(account);
-            }else{
-                // Check if the token is expired
-                long expiry = Long.valueOf(m_accountManager.getUserData(account, Constants.USER_DATA_AUTH_TOKEN_EXPIRY));
-                if(System.currentTimeMillis() > expiry){
-                    Ln.v("Expired auth token refreshing from server");
-                    authToken = retrieveAuthTokenFromServer(account);
-                }
-            }
-
+           String authToken = mAccountManager.peekAuthToken(account, authTokenType);
 
             // If we get an authToken - we return it
             if (!TextUtils.isEmpty(authToken)) {
@@ -133,7 +120,7 @@ public class AccountAuthenticatorService extends Service {
             }
 
 
-            // If we get here, then we couldn't access the user's password - so we
+            // If we get here, then we couldn't access the token - so we
             // need to re-prompt them for their credentials. We do that by creating
             // an intent to display our AuthenticatorActivity.
             Bundle reply = new Bundle();
@@ -145,28 +132,6 @@ public class AccountAuthenticatorService extends Service {
 
             return reply;
 
-        }
-
-        private String retrieveAuthTokenFromServer(Account account){
-
-            String authToken = null;
-
-            final String password = m_accountManager.getPassword(account);
-            if (password != null) {
-
-                Token token = m_accountService.getAccessToken(account.name,password);
-
-                if(token != null){
-                    authToken = token.accessToken;
-
-                    long expiry = System.currentTimeMillis() + (token.expiresIn*1000);
-                    m_accountManager.setUserData(account,Constants.USER_DATA_AUTH_TOKEN_EXPIRY, String.valueOf(expiry));
-                }
-
-                ContentResolver.setSyncAutomatically(account, Constants.SMARTERLIST_ACCOUNT_TYPE, true);
-
-            }
-            return authToken;
         }
 
         @Override

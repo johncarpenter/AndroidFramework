@@ -3,6 +3,8 @@ package com.twolinessoftware;
 
 import android.accounts.AccountManager;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.twolinessoftware.authentication.AuthenticationManager;
@@ -56,15 +58,26 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    AuthenticationManager provideAuthneticationManager( AccountManager accountManager) {
+    AuthenticationManager provideAuthenticationManager( AccountManager accountManager) {
         return new AuthenticationManager(mApplication,accountManager);
     }
 
     @Provides
     @Singleton
     EventBus provideEventBus() {
-        // @todo inject the eventbus builder here if needed
+        // @todo inject the eventbus builder here if needed. Warning this is only half implemented
         return EventBus.getDefault();
+    }
+
+    @Provides
+    SharedPreferences provideSharedPreferences(){
+        return mApplication.getSharedPreferences(Constants.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+    }
+
+    @Singleton
+    @Provides
+    PreferencesHelper providePreferencesHelper(SharedPreferences sharedPreferences){
+        return new PreferencesHelper(sharedPreferences);
     }
 
 }

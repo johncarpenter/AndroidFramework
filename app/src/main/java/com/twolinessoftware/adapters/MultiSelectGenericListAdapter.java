@@ -35,6 +35,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by John on 2015-04-08.
@@ -65,12 +66,12 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
 
         @Override
         public void onCompleted() {
-            Ln.v("Refresh completed");
+            Timber.v("Refresh completed");
         }
 
         @Override
         public void onError(Throwable e) {
-            Ln.e("Error loading data: " + Log.getStackTraceString(e));
+            Timber.e("Error loading data: " + Log.getStackTraceString(e));
         }
 
         @Override
@@ -79,7 +80,7 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
             onDataLoaded(items);
 
             //this works as a incremental update, might be useful if the list is large
-            Ln.v("Updating list with " + items.size() + " items");
+            Timber.v("Updating list with " + items.size() + " items");
 
 
             synchronized (m_entries) {
@@ -155,7 +156,7 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
     }
 
     public void setFilter(String filter) {
-        Ln.v("Filtering on " + filter);
+        Timber.v("Filtering on " + filter);
 
         if (filter == null || filter.isEmpty()) {
             m_filteredItems.clear();

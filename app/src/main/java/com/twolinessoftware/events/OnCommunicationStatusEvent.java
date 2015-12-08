@@ -3,7 +3,7 @@ package com.twolinessoftware.events;
 /**
  *
  */
-public class CommunicationStatusEvent {
+public class OnCommunicationStatusEvent {
 
     public enum Status{
         idle,
@@ -13,7 +13,7 @@ public class CommunicationStatusEvent {
 
     private Status status;
 
-    public CommunicationStatusEvent(Status status) {
+    public OnCommunicationStatusEvent(Status status) {
         this.status = status;
     }
 

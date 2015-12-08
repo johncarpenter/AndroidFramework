@@ -2,11 +2,15 @@ package com.twolinessoftware;
 
 import android.app.Application;
 
+import com.twolinessoftware.activities.LoginActivity;
 import com.twolinessoftware.authentication.AccountAuthenticatorService;
 import com.twolinessoftware.authentication.AuthenticationManager;
 import com.twolinessoftware.authentication.AuthenticationModule;
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.data.DataManagerModule;
+import com.twolinessoftware.fragments.LoginFragment;
+import com.twolinessoftware.fragments.RegisterFragment;
+import com.twolinessoftware.fragments.ResetPasswordFragment;
 import com.twolinessoftware.network.NetworkManager;
 import com.twolinessoftware.network.NetworkModule;
 import com.twolinessoftware.notifications.GoogleServicesManager;
@@ -23,6 +27,13 @@ import dagger.Component;
 public interface ApplicationComponent {
 
     // Activities
+    void inject(LoginActivity loginActivity);
+
+
+    // Fragments
+    void inject(LoginFragment loginFragment);
+    void inject(RegisterFragment registerFragment);
+    void inject(ResetPasswordFragment resetPasswordFragment);
 
     // Adapters
 
