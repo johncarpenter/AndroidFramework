@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2015. 2Lines Software,Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+<merge xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/button_background"
+        android:stateListAnimator="@anim/raise"
+        android:visibility="gone"
+        android:clickable="true"
+        tools:ignore="UnusedAttribute">
+
+
+        <ImageView
+            android:id="@+id/image_icon_empty"
+            android:layout_width="@dimen/card_icon_size"
+            android:layout_height="@dimen/card_icon_size"
+            android:layout_margin="@dimen/content_margins"
+            android:layout_gravity="center"
+            android:src="@drawable/empty_shelves" />
+
+        <LinearLayout
+            android:layout_gravity="left|center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_info_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmarterList.TextStyle.Title"
+                android:text="@string/error_title" />
+
+            <TextView
+                android:id="@+id/text_info_sub_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/SmarterList.TextStyle.Caption"
+                android:text="@string/error_get_started" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</merge>

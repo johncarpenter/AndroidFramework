@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2015. 2Lines Software,Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_action_start"
+    android:layout_gravity="bottom|center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/button_background"
+    android:orientation="vertical"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:stateListAnimator="@anim/raise"
+    tools:ignore="UnusedAttribute">
+
+<LinearLayout
+    android:layout_gravity="bottom|center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:orientation="horizontal"
+    android:layout_weight="1">
+
+    <View
+        android:id="@+id/view_colorsidebar"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"/>
+
+
+
+    <ImageView
+        android:id="@+id/imagecheck_icon"
+        android:layout_width="@dimen/image_list_icon_sm"
+        android:layout_height="@dimen/image_list_icon_sm"
+        android:src="@drawable/ic_add"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/content_margins"
+        android:layout_marginRight="@dimen/content_margins"
+        android:layout_marginTop="@dimen/content_margins_half"
+        android:layout_marginBottom="@dimen/content_margins_half"/>
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/content_margins"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_info"
+            android:layout_gravity="left|center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/content_margins_half"
+            style="@style/SmarterList.TextStyle.Body.Bold"
+            android:text="info"/>
+
+        <TextView
+            android:id="@+id/text_info_sub"
+            android:layout_gravity="left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/content_margins_half"
+            android:layout_marginBottom="@dimen/content_margins_half"
+            style="@style/SmarterList.TextStyle.Caption"/>
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image_icon_right"
+        android:layout_width="@dimen/image_list_icon_sm"
+        android:layout_height="@dimen/image_list_icon_sm"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/content_margins"
+        android:layout_marginRight="@dimen/content_margins"
+        android:layout_marginTop="@dimen/content_margins_half"
+        android:layout_marginBottom="@dimen/content_margins_half"/>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@color/pal_grey_5"/>
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/pal_grey_5"/>
+</LinearLayout>

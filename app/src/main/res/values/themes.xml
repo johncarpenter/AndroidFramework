@@ -1,0 +1,42 @@
+<resources>
+
+    <style name="BaseApplication"></style>
+
+    <!-- Base application theme. -->
+    <style name="BaseApplication.App" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="colorPrimary">@color/pal_4</item>
+        <item name="colorPrimaryDark">@color/pal_5</item>
+        <item name="colorAccent">@color/pal_4</item>
+
+        <item name="android:windowBackground">@color/pal_grey_1</item>
+
+        <item name="android:textColorPrimary">@color/pal_grey_6</item>
+        <item name="android:textColor">@color/pal_grey_6</item>
+
+        <item name="android:textColorSecondary">@color/pal_grey_6</item>
+        <item name="android:textColorHighlight">@color/pal_grey_4</item>
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+
+        <item name="android:actionModeCloseDrawable">@drawable/ic_action_cancel</item>
+
+        <!-- Widget Styles -->
+        <item name="android:editTextStyle">@style/BaseApplication.Widget.App.EditText</item>
+        <item name="vpiTitlePageIndicatorStyle">@style/BaseApplication.TitlePageIndicator</item>
+
+        <item name="android:buttonStyle">@style/BaseApplication.ButtonFlat</item>
+        <item name="android:actionModeStyle">@style/BaseApplication.ActionMode</item>
+    </style>
+
+
+    <style name="SmarterList.App.Tutorial" parent="BaseApplication.App">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+</resources>
