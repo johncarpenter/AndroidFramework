@@ -7,17 +7,15 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.twolinessoftware.BaseApplication;
+import com.twolinessoftware.R;
 import com.twolinessoftware.events.OnErrorEvent;
 import com.twolinessoftware.network.NetworkManager;
 import com.twolinessoftware.utils.ValidationUtil;
 import com.twolinessoftware.utils.ViewUtils;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -123,7 +121,7 @@ public class LoginFragment extends  BaseFragment{
 
     @OnClick(R.id.text_forgot_password)
     public void onClickForgotPassword(View view){
-        getBaseActivity().showFragment(new ResetPasswordFragment(),true);
+        getBaseActivity().setFragment(new ResetPasswordFragment(),true);
     }
 
 }

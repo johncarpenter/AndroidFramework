@@ -40,7 +40,7 @@
 
 
     <ImageView
-        android:id="@+id/image_icon"
+        android:id="@+id/image_icon_left"
         android:layout_width="@dimen/image_list_icon_sm"
         android:layout_height="@dimen/image_list_icon_sm"
         android:layout_gravity="center"

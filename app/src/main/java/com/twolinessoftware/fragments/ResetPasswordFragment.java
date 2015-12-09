@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 
 import com.twolinessoftware.BaseApplication;
+import com.twolinessoftware.R;
 import com.twolinessoftware.events.OnErrorEvent;
 import com.twolinessoftware.network.NetworkManager;
 import com.twolinessoftware.utils.ValidationUtil;
@@ -64,7 +65,7 @@ public class ResetPasswordFragment extends  BaseFragment{
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-        getBaseActivity().setTitle(R.string.login_toolbar_title);
+        getBaseActivity().setTitle(R.string.forgot_fragment_title);
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
     }
 

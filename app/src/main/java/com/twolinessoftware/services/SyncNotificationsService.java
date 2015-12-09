@@ -3,35 +3,13 @@ package com.twolinessoftware.services;
 import android.content.Context;
 import android.content.Intent;
 
-import com.twolinessoftware.BaseApplication;
-import com.twolinessoftware.data.DataManager;
-import com.twolinessoftware.network.NetworkManager;
-import com.twolinessoftware.network.messages.BaseServerMessage;
-import com.twolinessoftware.notifications.AnalyticsService;
-import com.twolinessoftware.notifications.GoogleServicesManager;
-import com.twolinessoftware.notifications.PushNotificationBroadcastReceiver;
-import com.twolinessoftware.storage.DataStore;
-import com.twolinessoftware.utils.NotificationUtil;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
 import com.google.android.gms.gcm.TaskParams;
+import com.twolinessoftware.BaseApplication;
 
-import org.joda.time.DateTime;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
@@ -95,24 +73,11 @@ public class SyncNotificationsService extends GcmTaskService {
     public int onRunTask(TaskParams taskParams) {
 
         /**
-         * Not logged in or in the process of testing
+         * Sync Data with the server
          */
-        if(!DataStore.getInstance().getSignedIn() || DataStore.getInstance().getUserId()==-1){
-            Timber.v("Skipping data sync: not logged in");
-            return GcmNetworkManager.RESULT_SUCCESS;
-        }
+        boolean isComplete = true;
+        boolean isReschedule = false;
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        Timber.v("Syncing Notification Information ");
-
-
-
-        try {
-            latch.await(30, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            Timber.e("latch timeout:");
-        }
 
         if(isComplete && !isReschedule){
             return GcmNetworkManager.RESULT_SUCCESS;

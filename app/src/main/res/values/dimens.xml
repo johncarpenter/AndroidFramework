@@ -13,6 +13,8 @@
     <dimen name="navigation_drawer_header_height">128dp</dimen>
     <dimen name="navigation_drawer_shop_header_height">168dp</dimen><!--3*item height-->
 
+    <!-- Error Message Crouton -->
+    <dimen name="crouton_height">46dp</dimen>
 
     <dimen name="toolbar_elevation">12dp</dimen>
 

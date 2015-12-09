@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.twolinessoftware.BaseApplication;
+import com.twolinessoftware.R;
 import com.twolinessoftware.events.OnCommunicationStatusEvent;
 import com.twolinessoftware.events.OnErrorEvent;
 import com.twolinessoftware.network.NetworkManager;
@@ -113,7 +114,6 @@ public class RegisterFragment extends  BaseFragment{
 
     @OnClick(R.id.button_register)
     public void onClickLogin(View view){
-
         String email = mEditEmail.getText().toString().trim();
         String password = mEditPassword.getText().toString().trim();
 

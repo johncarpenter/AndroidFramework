@@ -1,6 +1,8 @@
 package com.twolinessoftware.activities;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,9 +17,12 @@ import android.widget.ProgressBar;
 
 import com.tsengvn.typekit.TypekitContextWrapper;
 import com.twolinessoftware.BaseApplication;
+import com.twolinessoftware.R;
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.network.NetworkManager;
 import com.twolinessoftware.notifications.GoogleServicesManager;
+import com.twolinessoftware.utils.NotificationUtil;
+import com.twolinessoftware.utils.PermissionUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,8 +40,6 @@ public class BaseActivity extends AppCompatActivity {
 
 	@Bind(R.id.progress_bar)
 	ProgressBar mProgressBar;
-
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +94,7 @@ public class BaseActivity extends AppCompatActivity {
 
 	protected void setFragment(Fragment fragment) { setFragment(fragment, true); }
 
-	protected void setFragment(Fragment fragment, boolean addToBackstack) {
+	public void setFragment(Fragment fragment, boolean addToBackstack) {
 		if (fragment == null) return;
 		FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
 		if(addToBackstack) {
@@ -148,6 +151,45 @@ public class BaseActivity extends AppCompatActivity {
 	public void showProgress(boolean visible) {
 
 		mProgressBar.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+	}
+
+
+	public void requestContactsPermission(){
+		String permission = Manifest.permission.GET_ACCOUNTS;
+		if(!PermissionUtil.hasPermission(this,permission)){
+			if(PermissionUtil.shouldShowRequestPermissionRationale(this,permission)){
+				NotificationUtil.showGenericOkDialog(this,"Need Contact Permission","Yup Sure do");
+			}else{
+				PermissionUtil.requestPermission(this,permission,123);
+			}
+		}
+
+	}
+
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+										   String permissions[], int[] grantResults) {
+		switch (requestCode) {
+			case 123: {
+				// If request is cancelled, the result arrays are empty.
+				if (grantResults.length > 0
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+					// permission was granted, yay! Do the
+					// contacts-related task you need to do.
+
+				} else {
+
+					// permission denied, boo! Disable the
+					// functionality that depends on this permission.
+				}
+				return;
+			}
+
+			// other 'case' lines to check for other
+			// permissions this app might request
+		}
 	}
 
 }

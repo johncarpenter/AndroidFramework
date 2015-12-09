@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.events.OnCommunicationStatusEvent;
+import com.twolinessoftware.events.OnErrorEvent;
 import com.twolinessoftware.notifications.GoogleServicesManager;
 import com.twolinessoftware.services.SyncNotificationsService;
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -63,7 +64,7 @@ public class NetworkManager {
 
         mEventBus.post(new OnCommunicationStatusEvent(OnCommunicationStatusEvent.Status.busy));
 
-        getBaseApiService()
+       /* getBaseApiService()
                 .login(new AuthenticateMessage(email, pass))
                 .subscribeOn(getScheduler())
                 .subscribe(new Subscriber<User>() {
@@ -103,7 +104,7 @@ public class NetworkManager {
                         mEventBus.post(new UserAuthenticatedEvent(user));
 
                     }
-                });
+                });*/
 
 
     }
@@ -112,9 +113,8 @@ public class NetworkManager {
 
         Timber.v("Authenticating " + email);
 
-        mEventBus.post(new CommunicationStatusEvent(CommunicationStatusEvent.Status.busy));
-
-        getBaseApiService()
+        mEventBus.post(new OnCommunicationStatusEvent(OnCommunicationStatusEvent.Status.busy));
+      /*  getBaseApiService()
                 .register(new AuthenticateMessage(email, pass))
                 .subscribeOn(getScheduler())
                 .subscribe(new Subscriber<User>() {
@@ -154,7 +154,7 @@ public class NetworkManager {
                         mEventBus.post(new UserAuthenticatedEvent(user));
 
                     }
-                });
+                });*/
 
 
     }
@@ -164,9 +164,8 @@ public class NetworkManager {
 
         Timber.v("Sending Forgot Password Link");
 
-        mEventBus.post(new CommunicationStatusEvent(CommunicationStatusEvent.Status.busy));
-
-        getBaseApiService()
+        mEventBus.post(new OnCommunicationStatusEvent(OnCommunicationStatusEvent.Status.busy));
+      /*  getBaseApiService()
                 .resetPassword(new EmailWrapper(email))
                 .subscribeOn(getScheduler())
                 .subscribe(new Subscriber<BasicServerResponse>() {
@@ -193,7 +192,7 @@ public class NetworkManager {
                     }
                 });
 
-
+*/
     }
 
 
@@ -230,7 +229,7 @@ public class NetworkManager {
                 return false;
             default:
                  // Broadcast Communication related errors
-                mEventBus.post(new OnCommunicationErrorEvent(commException.getCode()));
+                mEventBus.post(new OnErrorEvent(OnErrorEvent.Error.COMMUNICATION));
                 return true;
         }
 

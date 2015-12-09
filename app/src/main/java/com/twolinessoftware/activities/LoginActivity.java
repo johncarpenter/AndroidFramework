@@ -1,15 +1,18 @@
 package com.twolinessoftware.activities;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.MenuItem;
 
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.Constants;
+import com.twolinessoftware.R;
 import com.twolinessoftware.authentication.AuthenticationManager;
 import com.twolinessoftware.events.OnAccountLoggedInEvent;
 import com.twolinessoftware.events.OnAccountPasswordResetEvent;
@@ -38,7 +41,6 @@ public class LoginActivity extends BaseActivity {
 
     private LoginFragment m_loginFragment;
 
-
     @Inject
     AccountManager mAccountManager;
 
@@ -47,8 +49,6 @@ public class LoginActivity extends BaseActivity {
 
     @Inject
     GoogleServicesManager mGoogleServicesManager;
-
-
 
     private AccountAuthenticatorResponse m_accountAuthenticatorResponse;
 
@@ -71,7 +71,7 @@ public class LoginActivity extends BaseActivity {
         m_registerFragment = new RegisterFragment();
         m_loginFragment = new LoginFragment();
 
-        setFragment(m_registerFragment,false);
+        setFragment(m_registerFragment, false);
 
         m_accountAuthenticatorResponse =
                 getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
@@ -140,10 +140,8 @@ public class LoginActivity extends BaseActivity {
         finish();
     }
 
-
-
     public void onEventMainThread(OnAccountPasswordResetEvent event) {
-        Crouton c = NotificationUtil.getInfoCrouton(this,R.id.fragment_container,getString(R.string.reset_link_sent));
+        Crouton c = NotificationUtil.getInfoCrouton(this, R.id.fragment_container, getString(R.string.forgot_reset_link_sent));
         c.setLifecycleCallback(new LifecycleCallback() {
             @Override
             public void onDisplayed() {

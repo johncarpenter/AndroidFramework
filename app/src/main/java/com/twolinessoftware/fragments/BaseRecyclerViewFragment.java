@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.twolinessoftware.R;
 import com.twolinessoftware.adapters.AdapterLifecycleInterface;
 
 import butterknife.Bind;

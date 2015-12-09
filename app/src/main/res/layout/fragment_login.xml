@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             style="?android:attr/textAppearanceLarge"
             android:layout_marginLeft="15dip"
-            android:text="@string/login_title" />
+            android:text="@string/login_fragment_title" />
 
         <AutoCompleteTextView
             android:id="@+id/edit_email"
@@ -28,9 +28,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:inputType="textEmailAddress"
-            android:drawableLeft="@drawable/ic_action_add_person"
-            android:drawablePadding="@dimen/content_margins_half"
-            android:hint="@string/login_email" />
+            android:hint="@string/login_fragment_email" />
 
         <EditText
             android:id="@+id/edit_password"
@@ -40,10 +38,8 @@
             android:layout_marginTop="@dimen/content_margins_half"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_action_accounts"
             android:singleLine="true"
-
-            android:hint="@string/login_password"
+            android:hint="@string/login_fragment_password"
             android:inputType="textPassword" />
 
 
@@ -57,16 +53,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/pal_button"
-            android:text="@string/login_button" />
+            android:text="@string/login_fragment_button" />
 
         <TextView
             android:id="@+id/text_forgot_password"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            style="@style/SmarterList.TextStyle.Caption"
+            style="?android:textAppearanceMedium"
             android:bufferType="spannable"
-            android:text="@string/login_forgot"
+            android:text="@string/login_password_forgot"
             android:layout_margin="@dimen/content_margins_half"/>
 
     </LinearLayout>

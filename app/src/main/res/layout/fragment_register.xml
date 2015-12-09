@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             style="?android:attr/textAppearanceLarge"
             android:layout_marginLeft="15dip"
-            android:text="@string/register_title" />
+            android:text="@string/register_fragment_title" />
 
         <AutoCompleteTextView
             android:id="@+id/edit_email"
@@ -41,10 +41,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:inputType="textEmailAddress"
-            android:drawableLeft="@drawable/ic_action_add_person"
             android:drawablePadding="@dimen/content_margins_half"
-            android:hint="@string/login_email" />
+            android:inputType="textEmailAddress"
+            android:hint="@string/register_fragment_email" />
 
         <EditText
             android:id="@+id/edit_password"
@@ -54,13 +53,9 @@
             android:layout_marginTop="@dimen/content_margins_half"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_action_accounts"
             android:singleLine="true"
-
-            android:hint="@string/login_password"
+            android:hint="@string/register_fragment_password"
             android:inputType="textPassword" />
-
-
 
         <Button
             android:id="@+id/button_register"
@@ -71,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/pal_button"
-            android:text="@string/register_button" />
+            android:text="@string/register_fragment_button" />
 
 
     </LinearLayout>

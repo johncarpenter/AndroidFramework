@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.twolinessoftware.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,7 +38,7 @@ public class GenericListViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.view_colorsidebar)
     View colorSideBar;
 
-    @Bind(R.id.imagecheck_icon)
+    @Bind(R.id.image_icon_left)
     public ImageView icon;
 
     @Bind(R.id.image_icon_right)

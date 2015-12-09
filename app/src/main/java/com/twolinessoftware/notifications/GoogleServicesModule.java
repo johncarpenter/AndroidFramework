@@ -2,6 +2,7 @@ package com.twolinessoftware.notifications;
 
 import android.content.Context;
 
+import com.twolinessoftware.PreferencesHelper;
 import com.twolinessoftware.network.BaseApiService;
 
 import dagger.Module;
@@ -20,8 +21,8 @@ public class GoogleServicesModule {
     }
 
     @Provides
-    GCMService provideGCMService(BaseApiService apiService) {
-        return new GCMService(mContext,apiService);
+    GCMService provideGCMService(BaseApiService apiService, PreferencesHelper preferencesHelper) {
+        return new GCMService(mContext,apiService, preferencesHelper);
     }
 
     @Provides

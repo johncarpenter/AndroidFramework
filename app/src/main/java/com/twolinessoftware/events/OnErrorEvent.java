@@ -18,6 +18,8 @@ package com.twolinessoftware.events;
 
 import android.support.annotation.StringRes;
 
+import com.twolinessoftware.R;
+
 /**
  * Created by John on 2015-04-01.
  */
@@ -31,9 +33,11 @@ public class OnErrorEvent {
         VALIDATION_PASSWORD_LENGTH(R.string.error_password_length),
         VALIDATION_INVALID_EMAIL(R.string.error_invalid_email),
         REGISTER_EMAIL_TAKEN(R.string.error_register_email_taken),
-        REGISTER_EMAIL_INVALID(R.string.error_register_invalid_email), REQUIRES_LOGIN(R.string.error_requires_login),
-        UNKNOWN_SERVER(R.string.error_connection_failed), GOOGLE_SERVICES(R.string.common_google_play_services_error_notification_requested_by_msg),
-        AUTHENTICATION(R.string.error_authentication);
+        REGISTER_EMAIL_INVALID(R.string.error_register_invalid_email),
+        REQUIRES_LOGIN(R.string.error_requires_login),
+        UNKNOWN_SERVER(R.string.error_connection_failed),
+        GOOGLE_SERVICES(R.string.common_google_play_services_error_notification_requested_by_msg);
+
 
         private final int m_displayErrorResId;
 

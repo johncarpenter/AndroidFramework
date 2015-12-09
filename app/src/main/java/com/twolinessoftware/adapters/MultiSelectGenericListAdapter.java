@@ -26,8 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.twolinessoftware.smarterlist.R;
-import com.twolinessoftware.smarterlist.util.Ln;
+import com.twolinessoftware.R;
 
 import java.util.ArrayList;
 import java.util.List;

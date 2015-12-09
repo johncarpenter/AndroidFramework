@@ -5,18 +5,15 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
-import com.twolinessoftware.network.BaseApiService;
-import com.twolinessoftware.storage.DataStore;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.twolinessoftware.PreferencesHelper;
+import com.twolinessoftware.network.BaseApiService;
 
 import java.io.IOException;
 
-import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
@@ -26,21 +23,23 @@ public class GCMService extends GooglePlayService {
 
     private final BaseApiService mApi;
 
+    private final PreferencesHelper mPreferencesHelper;
+
     private GoogleCloudMessaging mGoogleCloudMessaging;
 
     private String mRegistrationId;
 
-    private static final String GCM_SENDER_ID = "30842492115"; // Production Account Value
-   // private static final String GCM_SENDER_ID = "305305541396"; // Test Account Value
+    private static final String GCM_SENDER_ID = "";
 
-    public GCMService(Context context, BaseApiService apiService) {
+    public GCMService(Context context, BaseApiService apiService, PreferencesHelper preferencesHelper) {
         super(context);
         mApi = apiService;
+        mPreferencesHelper = preferencesHelper;
     }
 
     public void register() {
         // Don't bother registering GCM unless an account is active
-        if (DataStore.getInstance().getSignedIn() && hasPlayServices()) {
+        if (hasPlayServices()) {
             mGoogleCloudMessaging = GoogleCloudMessaging.getInstance(getContext());
 
             mRegistrationId = getRegistrationId();
@@ -75,7 +74,7 @@ public class GCMService extends GooglePlayService {
         });
 
 
-        registerGCM
+       /* registerGCM
                 .flatMap(new Func1<String, Observable<User>>() {
                     @Override
                     public Observable<User> call(String s) {
@@ -110,7 +109,7 @@ public class GCMService extends GooglePlayService {
                         Timber.v("GCM Updated");
                         EventBus.getDefault().post(new GcmUpdatedEvent(true));
                     }
-                });
+                });*/
 
 
     }
@@ -119,14 +118,14 @@ public class GCMService extends GooglePlayService {
 
         int appVersion = getAppVersion(getContext());
 
-        mDataStore.storeGcmRegistration(regId, appVersion);
+        mPreferencesHelper.storeGcmRegistration(regId, appVersion);
 
     }
 
 
     private String getRegistrationId() {
 
-        String registrationId = mDataStore.getGcmRegistration();
+        String registrationId = mPreferencesHelper.getGcmRegistration();
 
         if (TextUtils.isEmpty(registrationId)) {
             Timber.v("Registration not found.");
@@ -136,7 +135,7 @@ public class GCMService extends GooglePlayService {
         // Check if app was updated; if so, it must clear the registration ID
         // since the existing regID is not guaranteed to work with the new
         // app version.
-        int registeredVersion = mDataStore.getGcmRegistrationVersion();
+        int registeredVersion = mPreferencesHelper.getGcmRegistrationVersion();
 
         int currentVersion = getAppVersion(getContext());
 
@@ -163,34 +162,9 @@ public class GCMService extends GooglePlayService {
 
     public static class GcmUpdatedEvent{
         public final boolean success;
-
         public GcmUpdatedEvent(boolean success) {
             this.success = success;
         }
-
-    }
-
-    public static class GcmUserWrapper{
-
-        private GcmWrapper user;
-
-
-        public GcmUserWrapper(String pushToken) {
-            this.user = new GcmWrapper();
-            this.user.userId = DataStore.getInstance().getUserId();
-            this.user.pushToken = pushToken;
-            this.user.pushEnabled = true;
-            this.user. pushType = "ANDROID";
-        }
-
-
-    }
-
-    private static class GcmWrapper{
-        long userId;
-        boolean pushEnabled;
-        String pushType;
-        String pushToken;
     }
 
 }
