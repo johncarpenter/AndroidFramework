@@ -23,8 +23,5 @@ public class PushNotificationBroadcastReceiver extends BroadcastReceiver {
 
     }
 
-
-
-
 }
 

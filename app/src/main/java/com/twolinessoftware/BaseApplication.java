@@ -4,20 +4,20 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.firebase.client.Firebase;
+import com.joanzapata.iconify.Iconify;
+import com.joanzapata.iconify.fonts.MaterialModule;
+import com.karumi.dexter.Dexter;
+import com.tsengvn.typekit.Typekit;
+import com.twolinessoftware.activities.UiModule;
 import com.twolinessoftware.authentication.AuthenticationModule;
-import com.twolinessoftware.data.ApplicationDatabaseHelper;
 import com.twolinessoftware.data.DataManagerModule;
 import com.twolinessoftware.network.NetworkModule;
 import com.twolinessoftware.notifications.GoogleServicesModule;
-import com.tsengvn.typekit.Typekit;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import org.joda.time.DateTime;
-
 import de.greenrobot.event.EventBus;
-import nl.qbusict.cupboard.CupboardBuilder;
-import nl.qbusict.cupboard.CupboardFactory;
 import timber.log.Timber;
 
 public class BaseApplication extends Application{
@@ -34,24 +34,32 @@ public class BaseApplication extends Application{
 				.networkModule(new NetworkModule(this))
 				.dataManagerModule(new DataManagerModule(this))
 				.authenticationModule(new AuthenticationModule(this))
+				.uiModule(new UiModule(this))
 				.build();
 
 		initializeDatabase();
 
 		initializeLogging();
 
-
-		JodaTimeAndroid.init(this);
+		initializeLibraries();
 
 		initializeFonts();
+
+		initializeIcons();
+	}
+
+	private void initializeIcons() {
+		Iconify.with(new MaterialModule());
+	}
+
+	private void initializeLibraries() {
+		JodaTimeAndroid.init(this);
+
+		Dexter.initialize(this);
 	}
 
 	private void initializeDatabase(){
-		// Forces Cupboard to use annotations globally
-		CupboardFactory.setCupboard(new CupboardBuilder()
-				.useAnnotations()
-				.registerFieldConverter(DateTime.class,new ApplicationDatabaseHelper.JodaTimeConverter())
-				.build());
+		Firebase.setAndroidContext(this);
 	}
 
 	private void initializeFonts() {

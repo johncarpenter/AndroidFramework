@@ -22,7 +22,6 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.app.Service;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,11 +29,9 @@ import android.os.IBinder;
 import android.text.TextUtils;
 
 import com.twolinessoftware.BaseApplication;
-import com.twolinessoftware.activities.LoginActivity;
+import com.twolinessoftware.activities.login.LoginActivity;
 
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 /**
  * Authenticator service that returns a subclass of AbstractAccountAuthenticator in onBind()
@@ -87,7 +84,7 @@ public class AccountAuthenticatorService extends Service {
             Bundle reply = new Bundle();
 
             Intent i = new Intent(mContext, LoginActivity.class);
-            i.putExtra(LoginActivity.EXTRA_IS_ADDING,true);
+            i.putExtra(AuthenticationManager.EXTRA_IS_ADDING,true);
             i.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             reply.putParcelable(AccountManager.KEY_INTENT, i);
 
@@ -126,7 +123,7 @@ public class AccountAuthenticatorService extends Service {
             Bundle reply = new Bundle();
 
             Intent i = new Intent(mContext, LoginActivity.class);
-            i.putExtra(LoginActivity.EXTRA_IS_ADDING,true);
+            i.putExtra(AuthenticationManager.EXTRA_IS_ADDING,true);
             i.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             reply.putParcelable(AccountManager.KEY_INTENT, i);
 

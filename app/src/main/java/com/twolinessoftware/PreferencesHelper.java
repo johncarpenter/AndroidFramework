@@ -1,6 +1,10 @@
 package com.twolinessoftware;
 
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
+
+import com.twolinessoftware.model.User;
+import com.twolinessoftware.utils.GsonUtil;
 
 import javax.inject.Inject;
 
@@ -33,12 +37,46 @@ public class PreferencesHelper {
         return mSharedPreferences.getInt(KEYS.PREFERENCE_APP_VERSION, Integer.MIN_VALUE);
     }
 
-
     public void clear() {
         mSharedPreferences.edit().clear().apply();
     }
 
+    public void storeToken(String accessToken) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(KEYS.PREFERENCE_AUTH_TOKEN, accessToken);
+        editor.apply();
+    }
+
+    public String getAuthToken() {
+        return mSharedPreferences.getString(KEYS.PREFERENCE_AUTH_TOKEN, null);
+    }
+
+    public void storeUserProfile(User user) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(KEYS.PREFERENCE_USER, GsonUtil.buildGsonAdapter().toJson(user));
+        editor.commit();
+    }
+
+    public User getUserProfile() {
+        if ( !mSharedPreferences.contains(KEYS.PREFERENCE_USER) ) {
+            return null;
+        }
+        return GsonUtil.buildGsonAdapter().fromJson(mSharedPreferences.getString(KEYS.PREFERENCE_USER, null), User.class);
+    }
+
+    @Nullable
+    public String getUserUid(){
+        User user = getUserProfile();
+        if( user != null ){
+            return user.getUid();
+        }
+        return null;
+    }
+
+
     private static class KEYS {
+        public static final String PREFERENCE_AUTH_TOKEN = "auth_token";
+        public static final String PREFERENCE_USER = "user_json";
         public static final String PREFERENCE_REG_ID = "gcm_registration";
         public static final String PREFERENCE_APP_VERSION = "gcm_version";
     }

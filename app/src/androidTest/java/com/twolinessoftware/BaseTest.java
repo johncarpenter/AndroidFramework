@@ -219,27 +219,6 @@ public abstract class BaseTest {
     }
 
 
-    public void waitForTestingEvent(final int eventId){
-
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        final Object busLock = new Object(){
-            public void onEventMainThread(TestingStatusEvent event){
-                if(event.getEventId() == eventId) {
-                    latch.countDown();
-                }
-            }
-        };
-        EventBus.getDefault().register(busLock);
-
-        try {
-            latch.await(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            Assert.fail("Interrupted");
-        }
-
-        EventBus.getDefault().unregister(busLock);
-    }
 
 
 }

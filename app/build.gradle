@@ -7,7 +7,7 @@ android {
     buildToolsVersion "23.0.1"
     defaultConfig {
         applicationId "com.twolinessoftware.android"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 23
 
         versionCode 1
@@ -18,6 +18,8 @@ android {
     packagingOptions {
         // required for testing
         exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
     buildTypes {
         release {
@@ -36,7 +38,7 @@ android {
 
 dependencies {
 
-    final SUPPORT_LIBRARY_VERSION = '23.0.1'
+    final SUPPORT_LIBRARY_VERSION = '23.2.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -58,9 +60,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.0.14'
     
     // Prevents leaks by tying observables to lifecycle
-    compile 'com.trello:rxlifecycle:0.3.0'
-    compile 'com.trello:rxlifecycle-components:0.3.0'
-
+    compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
 
     // Wanted to use retrofit 2, but its in beta. Don't update to 2 major changes in ver 2
     compile 'com.squareup.retrofit:retrofit:1.9.0'
@@ -74,7 +74,7 @@ dependencies {
     compile 'com.jakewharton.timber:timber:3.1.0'
 
     // Google Specific Utils
-    final GOOGLE_PLAY_VERSION = '8.1.0'
+    final GOOGLE_PLAY_VERSION = '8.4.0'
     compile "com.google.android.gms:play-services-maps:$GOOGLE_PLAY_VERSION"
     compile "com.google.android.gms:play-services-location:$GOOGLE_PLAY_VERSION"
     compile "com.google.android.gms:play-services-gcm:$GOOGLE_PLAY_VERSION"
@@ -86,16 +86,24 @@ dependencies {
     // Custom fonts (located in /asset)
     compile 'com.tsengvn:Typekit:1.0.0'
 
+    // Icons
+    compile 'com.joanzapata.iconify:android-iconify-material:2.2.2'
+
+
     // Page indicators
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
 
     // Offline storage of data
     compile 'nl.qbusict:cupboard:2.1.4'
 
-    // Error messages
-    compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
-        exclude group: 'com.google.android', module: 'support-v4'
-    }
+
+    compile 'com.firebase:firebase-client-android:2.5.0'
+
+    // Text Validation
+    compile 'com.mobsandgeeks:android-saripaar:2.0.3'
+
+    // Permissions Utility
+    compile 'com.karumi:dexter:2.2.2'
 
     /**
      * Testing Dependencies from here on

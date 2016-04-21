@@ -15,7 +15,7 @@
         <item name="android:textColor">@color/pal_grey_6</item>
 
         <item name="android:textColorSecondary">@color/pal_grey_6</item>
-        <item name="android:textColorHighlight">@color/pal_grey_4</item>
+        <item name="android:textColorHighlight">@color/pal_grey_5</item>
 
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>

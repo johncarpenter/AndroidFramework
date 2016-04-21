@@ -2,6 +2,7 @@ package com.twolinessoftware.network;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.twolinessoftware.Config;
+import com.twolinessoftware.utils.GsonUtil;
 
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;

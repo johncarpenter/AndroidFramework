@@ -1,61 +1,67 @@
 package com.twolinessoftware.activities;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tsengvn.typekit.TypekitContextWrapper;
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.R;
-import com.twolinessoftware.data.DataManager;
-import com.twolinessoftware.network.NetworkManager;
-import com.twolinessoftware.notifications.GoogleServicesManager;
-import com.twolinessoftware.utils.NotificationUtil;
-import com.twolinessoftware.utils.PermissionUtil;
+import com.twolinessoftware.activities.login.LoginActivity;
+import com.twolinessoftware.authentication.AuthenticationManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class BaseActivity extends AppCompatActivity {
 
-	private NetworkManager mNetworkManager;
 
-	private GoogleServicesManager mGoogleServicesManager;
-
-	private DataManager mDataManager;
-
-	@Bind(R.id.toolbar)
+    private static final int REQUEST_LOGIN = 12;
+    @Bind(R.id.toolbar)
 	Toolbar mToolbar;
 
 	@Bind(R.id.progress_bar)
 	ProgressBar mProgressBar;
 
+	@Bind(R.id.coordinator_layout)
+	CoordinatorLayout mCoordinatorLayout;
+
+	private AuthenticationManager mAuthenticationManager;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mNetworkManager = BaseApplication.get(this).getComponent().networkManager();
-		mGoogleServicesManager = BaseApplication.get(this).getComponent().googleServicesManager();
-		mDataManager = BaseApplication.get(this).getComponent().dataManager();
-
 		setContentView(getContentView());
+
 		ButterKnife.bind(this);
+
+		setSupportActionBar(mToolbar);
+		mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+
+		mAuthenticationManager = BaseApplication.get(this).getComponent().authenticationManager();
 
 	}
 
-	protected int getContentView() {
-		return R.layout.activity_main;
+	public int getContentView() {
+		return R.layout.activity_base;
 	}
 
 
@@ -64,71 +70,54 @@ public class BaseActivity extends AppCompatActivity {
 		super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_global, menu);
-		return true;
+
+	public Toolbar getToolbar() {
+		return mToolbar;
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		int id=item.getItemId();
-
-		switch(id) {
-            // Global Items
-		}
-		return super.onOptionsItemSelected(item);
+	protected void setFragment(Fragment fragment) {
+		setFragment(fragment, true);
 	}
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-		if(toolbar != null) {
-			setSupportActionBar(toolbar);
-			toolbar.setNavigationOnClickListener(v -> onBackPressed());
-		}
-
+	public void setFragmentAtTop(Fragment fragment) {
+		clearBackStack();
+		setFragment(fragment, false);
 	}
 
-	protected void setFragment(Fragment fragment) { setFragment(fragment, true); }
+
+	public Fragment getCurrentFragment() {
+		return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+	}
 
 	public void setFragment(Fragment fragment, boolean addToBackstack) {
-		if (fragment == null) return;
-		FragmentTransaction ft= getSupportFragmentManager().beginTransaction();
-		if(addToBackstack) {
+		if ( fragment == null ) return;
+
+		fragment.setRetainInstance(true);
+
+
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		if ( addToBackstack ) {
 			ft.addToBackStack(null);
 		}
-		//ft.setCustomAnimations(com.twolinessoftware.R.anim.enter_from_right, com.twolinessoftware.R.anim.exit_to_left, com.twolinessoftware.R.anim.enter_from_left, com.twolinessoftware.R.anim.exit_to_right)
 		ft.replace(R.id.fragment_container, fragment)
-			.commit();
+				.commitAllowingStateLoss();
+
+		getSupportFragmentManager().executePendingTransactions();
 	}
 
 	public void enableBack(boolean enable) {
-		ActionBar ab = getSupportActionBar();
-		ab.setDisplayHomeAsUpEnabled(enable);
-		ab.setDisplayShowHomeEnabled(enable);
+		ActionBar actionBar = getSupportActionBar();
+		if ( actionBar != null ) {
+			actionBar.setDisplayHomeAsUpEnabled(enable);
+			actionBar.setDisplayShowHomeEnabled(enable);
+		}
 	}
-
-
-	public NetworkManager getNetworkManager() {
-		return mNetworkManager;
-	}
-
-	public GoogleServicesManager getGoogleServicesManager() {
-		return mGoogleServicesManager;
-	}
-
-    public DataManager getDataManager() {
-        return mDataManager;
-    }
 
 	@Override
 	public void onBackPressed() {
 
 		FragmentManager fm = getSupportFragmentManager();
-		if (fm.getBackStackEntryCount() > 0) {
+		if ( fm.getBackStackEntryCount() > 0 ) {
 			fm.popBackStack();
 		} else {
 			super.onBackPressed();
@@ -138,7 +127,7 @@ public class BaseActivity extends AppCompatActivity {
 
 	public void clearBackStack() {
 		int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-		for (int i = 0; i < backStackCount; i++) {
+		for ( int i = 0; i < backStackCount; i++ ) {
 			int backStackId = getSupportFragmentManager().getBackStackEntryAt(i).getId();
 			getSupportFragmentManager().popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 		}
@@ -146,50 +135,73 @@ public class BaseActivity extends AppCompatActivity {
 
 	/**
 	 * Default show progress. Override for specific implementations (i.e. dialog/loading bar/etc..)
+	 *
 	 * @param visible
 	 */
 	public void showProgress(boolean visible) {
-
 		mProgressBar.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
 	}
 
 
-	public void requestContactsPermission(){
-		String permission = Manifest.permission.GET_ACCOUNTS;
-		if(!PermissionUtil.hasPermission(this,permission)){
-			if(PermissionUtil.shouldShowRequestPermissionRationale(this,permission)){
-				NotificationUtil.showGenericOkDialog(this,"Need Contact Permission","Yup Sure do");
-			}else{
-				PermissionUtil.requestPermission(this,permission,123);
-			}
-		}
+	public void showDialog(BaseDialogFragment baseDialogFragment, String tag) {
+		if ( baseDialogFragment == null ) return;
 
+		baseDialogFragment.setRetainInstance(true);
+
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.addToBackStack(tag);
+		baseDialogFragment.show(ft, tag);
+		getSupportFragmentManager().executePendingTransactions();
 	}
 
 
-	@Override
-	public void onRequestPermissionsResult(int requestCode,
-										   String permissions[], int[] grantResults) {
-		switch (requestCode) {
-			case 123: {
-				// If request is cancelled, the result arrays are empty.
-				if (grantResults.length > 0
-						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+	protected void startActivityAtTop(Class<? extends BaseActivity> activityClass) {
+		Intent intent = new Intent(BaseActivity.this, activityClass);
 
-					// permission was granted, yay! Do the
-					// contacts-related task you need to do.
+		TaskStackBuilder.create(this).addParentStack(activityClass)
+				.addNextIntentWithParentStack(intent)
+				.startActivities();
+		finish();
+	}
 
-				} else {
+	@NonNull
+	public Snackbar makeSnackbar( @NonNull CharSequence text, int duration) {
+		Snackbar snackBarView = Snackbar.make(mCoordinatorLayout, text, duration);
+		snackBarView.setActionTextColor(ContextCompat.getColor(BaseActivity.this, R.color.pal_blue));
 
-					// permission denied, boo! Disable the
-					// functionality that depends on this permission.
-				}
-				return;
-			}
+		TextView tv = (TextView) snackBarView.getView().findViewById(android.support.design.R.id.snackbar_text);
+		tv.setTextColor(ContextCompat.getColor(BaseActivity.this, R.color.pal_white));
+		return snackBarView;
+	}
 
-			// other 'case' lines to check for other
-			// permissions this app might request
+	public void requiresLogin(){
+		if(!mAuthenticationManager.isLoggedIn()){
+			Timber.e("This activity requires a login context");
+			startActivityForResult(new Intent(BaseActivity.this,LoginActivity.class),REQUEST_LOGIN);
 		}
 	}
+
+    public void hideToolbar() {
+        if(getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
+    }
+
+
+    @SuppressLint("CommitPrefEdits")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if ( requestCode == REQUEST_LOGIN ) {
+            switch (resultCode) {
+                case RESULT_CANCELED:
+                    finish();
+                    break;
+                case RESULT_OK:
+                    Timber.v("Returning from login");
+                    break;
+            }
+        }
+    }
+
 
 }

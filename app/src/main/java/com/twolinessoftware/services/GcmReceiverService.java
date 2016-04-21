@@ -6,7 +6,6 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.OneoffTask;
 import com.google.android.gms.gcm.Task;
-import com.twolinessoftware.network.NetworkManager;
 
 import timber.log.Timber;
 
@@ -15,8 +14,10 @@ import timber.log.Timber;
  */
 public class GcmReceiverService extends GcmListenerService {
 
+    private static final String ONEOFFTAG = "Sync_Service_Once";
     public static String MESSAGE_TYPE_PROVIDER_MESSAGE = "message";
     public static String MESSAGE_TYPE_PROVIDER_NAME = "title";
+
 
 
     @Override
@@ -27,7 +28,7 @@ public class GcmReceiverService extends GcmListenerService {
 
             OneoffTask toggleTask = new OneoffTask.Builder()
                     .setService(SyncNotificationsService.class)
-                    .setTag(NetworkManager.ONEOFFTAG)
+                    .setTag(GcmReceiverService.ONEOFFTAG)
                     .setExecutionWindow(1, 30) // execute now +/- 5 s
                     .setPersisted(false)      // Persist Task Across reboots
                     .setRequiredNetwork(Task.NETWORK_STATE_ANY) // Requires network (yes)

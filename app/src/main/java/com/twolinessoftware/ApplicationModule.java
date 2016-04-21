@@ -8,8 +8,8 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.twolinessoftware.authentication.AuthenticationManager;
+import com.twolinessoftware.authentication.UserManager;
 import com.twolinessoftware.data.DataManager;
-import com.twolinessoftware.network.BaseApiService;
 import com.twolinessoftware.network.NetworkManager;
 import com.twolinessoftware.notifications.AnalyticsService;
 import com.twolinessoftware.notifications.GCMService;
@@ -21,7 +21,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
-import rx.Scheduler;
 
 @Module
 public class ApplicationModule {
@@ -40,8 +39,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    NetworkManager provideNetworkManager( BaseApiService baseApiService, Scheduler scheduler, EventBus eventBus, GoogleServicesManager googleServicesManager, DataManager dataManager) {
-        return new NetworkManager( mApplication, baseApiService,  scheduler,  eventBus, googleServicesManager, dataManager);
+    NetworkManager provideNetworkManager(UserManager userManager, PreferencesHelper preferencesHelper, AuthenticationManager authenticationManager) {
+        return new NetworkManager(userManager, preferencesHelper, authenticationManager);
     }
 
     @Provides
@@ -58,14 +57,13 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    AuthenticationManager provideAuthenticationManager( AccountManager accountManager) {
-        return new AuthenticationManager(mApplication,accountManager);
+    AuthenticationManager provideAuthenticationManager( AccountManager accountManager, PreferencesHelper preferencesHelper, UserManager userManager) {
+        return new AuthenticationManager(mApplication,accountManager,preferencesHelper, userManager);
     }
 
     @Provides
     @Singleton
     EventBus provideEventBus() {
-        // @todo inject the eventbus builder here if needed. Warning this is only half implemented
         return EventBus.getDefault();
     }
 
