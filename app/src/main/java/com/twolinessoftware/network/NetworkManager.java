@@ -30,10 +30,13 @@ public class NetworkManager {
         mAuthenticationManager = authenticationManager;
     }
 
+    public Observable<User> createUser(String uid, String email){
+        Timber.v("Creating new user profile");
+        return mUserManager.createUser(uid,new User(email));
+    }
+
     public Observable<User> getMe(){
-
         Timber.v("Retrieving User Profile");
-
         return mUserManager.getMe();
     }
 

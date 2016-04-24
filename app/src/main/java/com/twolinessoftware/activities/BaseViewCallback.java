@@ -19,10 +19,14 @@ package com.twolinessoftware.activities;
 
 import com.twolinessoftware.ErrorException;
 
-public abstract interface BaseViewCallback {
+public interface BaseViewCallback {
 
     void showProgress(boolean show);
 
     void onError(ErrorException.Code code);
+
+    void setToolbarVisibility(boolean visible);
+
+    void onLogout();
 
 }

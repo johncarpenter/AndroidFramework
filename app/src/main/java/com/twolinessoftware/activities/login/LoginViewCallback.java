@@ -35,4 +35,5 @@ public interface LoginViewCallback extends BaseViewCallback{
     void onFinishLogin(Intent intent);
 
     void onPasswordReset();
+
 }

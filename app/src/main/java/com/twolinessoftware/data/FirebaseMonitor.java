@@ -22,6 +22,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.twolinessoftware.ErrorException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -87,15 +88,21 @@ public class FirebaseMonitor<T> {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
+                        if(dataSnapshot == null || !dataSnapshot.exists()){
+                            subscriber.onNext(new FirebaseChange<T>(FirebaseChange.State.Empty,null));
+                            return;
+                        }
+
                         for ( DataSnapshot snapshot : dataSnapshot.getChildren() ) {
                             subscriber.onNext(new FirebaseChange<>(FirebaseChange.State.Data, snapshot.getValue(mTypeParameterClass)));
                         }
+
                         subscriber.onCompleted();
                     }
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-
+                        subscriber.onError(new ErrorException(ErrorException.Code.FIREBASE_ERROR_GENERIC));
                     }
                 };
 

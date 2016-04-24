@@ -57,10 +57,37 @@ public class FirebaseUserManager implements UserManager {
         monitorFirebaseAuthChanges();
     }
 
+    public Observable<User> createUser(String uid, User user) {
+
+        if ( uid == null ) {
+            return Observable.error(new AccountNotLoggedInException());
+        }
+
+        Timber.v("Creating New User Profile:"+uid);
+
+        return Observable.create(new Observable.OnSubscribe<User>(){
+
+            @Override
+            public void call(Subscriber<? super User> subscriber) {
+                // Create User Profile since it doesn't exist
+                User user = mPreferencesHelper.getUserProfile();
+                Timber.v("Thawing User Profile:"+user.toString());
+                getFirebaseForUser(uid).setValue(user);
+                mPreferencesHelper.storeUserProfile(user);
+                subscriber.onNext(user);
+                subscriber.onCompleted();
+            }
+        });
+
+
+    }
+
     @Override
     public Observable<User> getMe() {
 
         String userId = mPreferencesHelper.getUserUid();
+
+        Timber.v("Getting User Profile:"+userId);
 
         if ( userId == null ) {
             return Observable.error(new AccountNotLoggedInException());
@@ -74,14 +101,9 @@ public class FirebaseUserManager implements UserManager {
                         Timber.v("Updated user information: " + userFirebaseChange.getValue().toString());
                         mPreferencesHelper.storeUserProfile(userFirebaseChange.getValue());
                         return Observable.just(userFirebaseChange.getValue());
-                    } else {
-                        // Create User Profile since it doesn't exist
-                        Timber.v("Creating new user");
-
-                        User user = mPreferencesHelper.getUserProfile();
-                        getFirebaseForUser(userId).setValue(user);
-                        mPreferencesHelper.storeUserProfile(user);
-                        return Observable.just(user);
+                    }else{
+                        Timber.e("No user profile available, creating new profile");
+                        return createUser(userId,mPreferencesHelper.getUserProfile());
                     }
                 });
     }
@@ -105,7 +127,6 @@ public class FirebaseUserManager implements UserManager {
                         User user = new User(email);
                         user.setUid(authData.getUid());
                         mPreferencesHelper.storeUserProfile(user);
-
 
                         final Token token = new Token(authData.getToken(), authData.getExpires());
                         subscriber.onNext(token);
@@ -134,12 +155,12 @@ public class FirebaseUserManager implements UserManager {
     @Override
     public Observable<Token> register(String email, String password) {
 
-        return createUser(email, password)
+        return createFirebaseUser(email, password)
                 .flatMap(pass -> login(email, password));
 
     }
 
-    private Observable<Boolean> createUser(String email, String password) {
+    private Observable<Boolean> createFirebaseUser(String email, String password) {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
@@ -157,10 +178,9 @@ public class FirebaseUserManager implements UserManager {
                         switch (firebaseError.getCode()) {
                             case FirebaseError.EMAIL_TAKEN:
                                 subscriber.onError(new ErrorException(ErrorException.Code.EMAIL_TAKEN));
-                                return;
+                                break;
                             default:
                                 subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
-                                return;
                         }
                     }
                 });

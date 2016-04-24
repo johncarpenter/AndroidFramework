@@ -27,6 +27,9 @@ import rx.observables.BlockingObservable;
  */
 public interface UserManager {
 
+
+    Observable<User> createUser(String uid, User user);
+
     Observable<User> getMe();
 
     // Use with caution. This is a blocking call (obviously)

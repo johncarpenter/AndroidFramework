@@ -20,6 +20,7 @@ package com.twolinessoftware.activities.login;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.R;
@@ -56,13 +57,17 @@ public class MainLoginSplashFragment extends BaseFragment {
             Timber.e("Fragment called outside of Login Context");
             throw new IllegalArgumentException("Fragment Called Outside of LoginActivity Context");
         }
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mMainLoginSplashPresenter.detachView();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

@@ -17,17 +17,22 @@
 
 package com.twolinessoftware.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by johncarpenter on 2016-04-18.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     @SerializedName("email")
+    @JsonProperty("email")
     private String mEmail;
 
-    @SerializedName("mUid")
+    @SerializedName("uid")
+    @JsonProperty("uid")
     private String mUid;
 
     public User(String email) {
@@ -41,8 +46,8 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                ", mEmail='" + mEmail + '\'' +
-                ", mUid='" + mUid + '\'' +
+                ", email='" + mEmail + '\'' +
+                ", uid='" + mUid + '\'' +
                 '}';
     }
 

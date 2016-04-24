@@ -1,6 +1,7 @@
 package com.twolinessoftware.activities;
 
 import android.annotation.SuppressLint;
+import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,8 +29,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class BaseActivity extends AppCompatActivity {
-
+public abstract class BaseActivity extends AppCompatActivity implements BaseViewCallback {
 
     private static final int REQUEST_LOGIN = 12;
     @Bind(R.id.toolbar)
@@ -43,7 +42,6 @@ public class BaseActivity extends AppCompatActivity {
 	CoordinatorLayout mCoordinatorLayout;
 
 	private AuthenticationManager mAuthenticationManager;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -143,27 +141,10 @@ public class BaseActivity extends AppCompatActivity {
 	}
 
 
-	public void showDialog(BaseDialogFragment baseDialogFragment, String tag) {
+	public void showDialog(DialogFragment baseDialogFragment, String tag) {
 		if ( baseDialogFragment == null ) return;
-
-		baseDialogFragment.setRetainInstance(true);
-
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.addToBackStack(tag);
-		baseDialogFragment.show(ft, tag);
-		getSupportFragmentManager().executePendingTransactions();
+		baseDialogFragment.show(getSupportFragmentManager(),tag);
 	}
-
-
-	protected void startActivityAtTop(Class<? extends BaseActivity> activityClass) {
-		Intent intent = new Intent(BaseActivity.this, activityClass);
-
-		TaskStackBuilder.create(this).addParentStack(activityClass)
-				.addNextIntentWithParentStack(intent)
-				.startActivities();
-		finish();
-	}
-
 	@NonNull
 	public Snackbar makeSnackbar( @NonNull CharSequence text, int duration) {
 		Snackbar snackBarView = Snackbar.make(mCoordinatorLayout, text, duration);
@@ -181,9 +162,13 @@ public class BaseActivity extends AppCompatActivity {
 		}
 	}
 
-    public void hideToolbar() {
+    public void setToolbarVisible(boolean visible) {
         if(getSupportActionBar() != null){
-            getSupportActionBar().hide();
+            if(visible){
+				getSupportActionBar().show();
+			}else{
+				getSupportActionBar().hide();
+			}
         }
     }
 
@@ -203,5 +188,13 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+	@Override
+	public void onLogout() {
+		mAuthenticationManager.logout(this);
+	}
 
+	@Override
+	public void setToolbarVisibility(boolean visible) {
+		setToolbarVisible(visible);
+	}
 }
