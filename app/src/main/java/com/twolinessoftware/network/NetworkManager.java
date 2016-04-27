@@ -8,6 +8,8 @@ import com.twolinessoftware.authentication.Token;
 import com.twolinessoftware.authentication.UserManager;
 import com.twolinessoftware.model.User;
 
+import org.joda.time.DateTime;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -24,18 +26,21 @@ public class NetworkManager {
 
 
     @Inject
-    public NetworkManager( UserManager userManager, PreferencesHelper preferencesHelper,AuthenticationManager authenticationManager) {
+    public NetworkManager(UserManager userManager, PreferencesHelper preferencesHelper, AuthenticationManager authenticationManager) {
         mUserManager = userManager;
         mPreferenceHelper = preferencesHelper;
         mAuthenticationManager = authenticationManager;
     }
 
-    public Observable<User> createUser(String uid, String email){
+    public Observable<User> createUser(String uid, String email) {
         Timber.v("Creating new user profile");
-        return mUserManager.createUser(uid,new User(email));
+        User user = new User(email);
+        user.setCreated(DateTime.now());
+
+        return mUserManager.createUser(uid,user);
     }
 
-    public Observable<User> getMe(){
+    public Observable<User> getMe() {
         Timber.v("Retrieving User Profile");
         return mUserManager.getMe();
     }
@@ -44,7 +49,7 @@ public class NetworkManager {
 
         Timber.v("Authenticating " + email);
 
-        return mUserManager.login(email,pass)
+        return mUserManager.login(email, pass)
                 .flatMap(token -> {
                     mPreferenceHelper.storeToken(token.getAccessToken());
                     Intent intent = mAuthenticationManager.generateAuthIntent(token, email, pass);
@@ -58,7 +63,7 @@ public class NetworkManager {
 
         Timber.v("Creating new account " + email);
 
-        return mUserManager.register(email,pass)
+        return mUserManager.register(email, pass)
                 .flatMap(token -> {
                     mPreferenceHelper.storeToken(token.getAccessToken());
                     Intent intent = mAuthenticationManager.generateAuthIntent(token, email, pass);
@@ -67,7 +72,7 @@ public class NetworkManager {
                 });
     }
 
-    public Observable<Boolean> forgotPassword(final String email){
+    public Observable<Boolean> forgotPassword(final String email) {
 
         Timber.v("Sending Forgot Password Link");
 

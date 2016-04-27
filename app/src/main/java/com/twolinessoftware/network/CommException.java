@@ -26,6 +26,6 @@ public class CommException extends Throwable {
 
     @Override
     public String getMessage() {
-        return "ApiException:"+code;
+        return "ApiException:" + code;
     }
 }

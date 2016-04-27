@@ -26,7 +26,7 @@ import com.twolinessoftware.activities.BaseNavigationActivity;
 /**
  * Created by johncarpenter on 2016-04-20.
  */
-public class MainActivity extends BaseNavigationActivity implements MainActivityCallback{
+public class MainActivity extends BaseNavigationActivity implements MainActivityCallback {
 
     @Override
     public int getDrawerMenuId() {

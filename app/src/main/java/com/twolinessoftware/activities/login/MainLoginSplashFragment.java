@@ -40,7 +40,7 @@ public class MainLoginSplashFragment extends BaseFragment {
     MainLoginSplashPresenter mMainLoginSplashPresenter;
     private LoginViewCallback mCallback;
 
-    public static MainLoginSplashFragment newInstance(){
+    public static MainLoginSplashFragment newInstance() {
         return new MainLoginSplashFragment();
     }
 
@@ -50,10 +50,10 @@ public class MainLoginSplashFragment extends BaseFragment {
 
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
-        if(context instanceof LoginViewCallback){
+        if ( context instanceof LoginViewCallback ) {
             mCallback = (LoginViewCallback) context;
             mMainLoginSplashPresenter.attachView(mCallback);
-        }else{
+        } else {
             Timber.e("Fragment called outside of Login Context");
             throw new IllegalArgumentException("Fragment Called Outside of LoginActivity Context");
         }
@@ -81,12 +81,12 @@ public class MainLoginSplashFragment extends BaseFragment {
     }
 
     @OnClick(R.id.button_register)
-    public void onButtonRegister(){
+    public void onButtonRegister() {
         mMainLoginSplashPresenter.navigateToCreate();
     }
 
     @OnClick(R.id.button_login)
-    public void onButtonLogin(){
+    public void onButtonLogin() {
         mMainLoginSplashPresenter.navigateToSignIn();
     }
 

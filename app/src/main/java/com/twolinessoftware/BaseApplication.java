@@ -2,7 +2,6 @@ package com.twolinessoftware;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.firebase.client.Firebase;
 import com.joanzapata.iconify.Iconify;
@@ -10,103 +9,113 @@ import com.joanzapata.iconify.fonts.MaterialModule;
 import com.karumi.dexter.Dexter;
 import com.tsengvn.typekit.Typekit;
 import com.twolinessoftware.authentication.AuthenticationModule;
+import com.twolinessoftware.data.ApplicationDatabaseHelper;
 import com.twolinessoftware.data.DataManagerModule;
 import com.twolinessoftware.network.NetworkModule;
-import com.twolinessoftware.notifications.GoogleServicesModule;
+import com.twolinessoftware.services.ServicesModule;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import org.joda.time.DateTime;
+
 import de.greenrobot.event.EventBus;
+import nl.qbusict.cupboard.CupboardBuilder;
+import nl.qbusict.cupboard.CupboardFactory;
 import timber.log.Timber;
 
-public class BaseApplication extends Application{
+public class BaseApplication extends Application {
 
-	private ApplicationComponent mApplicationComponent;
+    private ApplicationComponent mApplicationComponent;
 
-	@Override
-	public void onCreate () {
-		super.onCreate();
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-		mApplicationComponent = DaggerApplicationComponent.builder()
-				.applicationModule(new ApplicationModule(this))
-				.googleServicesModule(new GoogleServicesModule(this))
-				.networkModule(new NetworkModule(this))
-				.dataManagerModule(new DataManagerModule(this))
-				.authenticationModule(new AuthenticationModule(this))
-				.build();
+        mApplicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .networkModule(new NetworkModule(this))
+                .dataManagerModule(new DataManagerModule(this))
+                .authenticationModule(new AuthenticationModule(this))
+                .servicesModule(new ServicesModule(this))
+                .build();
 
-		initializeDatabase();
+        initializeDatabase();
 
-		initializeLogging();
+        initializeLogging();
 
-		initializeLibraries();
+        initializeLibraries();
 
-		initializeFonts();
+        initializeFonts();
 
-		initializeIcons();
-	}
+        initializeIcons();
+    }
 
-	private void initializeIcons() {
-		Iconify.with(new MaterialModule());
-	}
+    private void initializeIcons() {
+        Iconify.with(new MaterialModule());
+    }
 
-	private void initializeLibraries() {
-		JodaTimeAndroid.init(this);
+    private void initializeLibraries() {
+        JodaTimeAndroid.init(this);
 
-		Dexter.initialize(this);
-	}
+        Dexter.initialize(this);
+    }
 
-	private void initializeDatabase(){
-		Firebase.setAndroidContext(this);
-	}
+    private void initializeDatabase() {
 
-	private void initializeFonts() {
-		// Add Custom Fonts into the assets directory
-		Typekit.getInstance();
-				//.addNormal(Typekit.createFromAsset(this, "AmsiPro-SemiBold.otf"))
-				//.addBold(Typekit.createFromAsset(this, "AmsiPro-Bold.otf"))
-				//.addItalic(Typekit.createFromAsset(this, "AmsiPro-Light.otf"))
-				//.addBoldItalic(Typekit.createFromAsset(this, "AmsiPro-Bold.otf"));
+        // Forces Cupboard to use annotations globally
+        CupboardFactory.setCupboard(new CupboardBuilder()
+                .useAnnotations()
+                .registerFieldConverter(DateTime.class, new ApplicationDatabaseHelper.JodaTimeConverter())
+                //  .registerFieldConverter(ComplexClass.class, new GsonFieldConverter<>(GsonUtil.buildGsonAdapter(), ComplexClass.class))
+                .build());
 
-	}
+        Firebase.setAndroidContext(this);
+    }
 
-	private void initializeLogging(){
+    private void initializeFonts() {
+        // Add Custom Fonts into the assets directory
+        Typekit.getInstance();
+        //.addNormal(Typekit.createFromAsset(this, "AmsiPro-SemiBold.otf"))
+        //.addBold(Typekit.createFromAsset(this, "AmsiPro-Bold.otf"))
+        //.addItalic(Typekit.createFromAsset(this, "AmsiPro-Light.otf"))
+        //.addBoldItalic(Typekit.createFromAsset(this, "AmsiPro-Bold.otf"));
 
-		if (BuildConfig.DEBUG){
-			Timber.plant(new Timber.DebugTree());
-		}else{
-			Timber.plant(new ErrorReportingTree());
-		}
+    }
 
-		EventBus.builder().throwSubscriberException(BuildConfig.DEBUG).installDefaultEventBus();
+    private void initializeLogging() {
 
-	}
+        if ( BuildConfig.DEBUG ) {
+            Timber.plant(new Timber.DebugTree());
+        } else {
+            Timber.plant(new ErrorReportingTree());
+        }
+
+        EventBus.builder().throwSubscriberException(BuildConfig.DEBUG).installDefaultEventBus();
+
+    }
 
 
     public static BaseApplication get(Context context) {
         return (BaseApplication) context.getApplicationContext();
     }
 
-	public ApplicationComponent getComponent() {
-		return mApplicationComponent;
-	}
+    public ApplicationComponent getComponent() {
+        return mApplicationComponent;
+    }
 
-	// Needed to replace the component with a test specific one
-	public void setComponent(ApplicationComponent applicationComponent) {
-		mApplicationComponent = applicationComponent;
-	}
+    // Needed to replace the component with a test specific one
+    public void setComponent(ApplicationComponent applicationComponent) {
+        mApplicationComponent = applicationComponent;
+    }
 
-	/**
-	 * Extracts the Timber.e logs and forwards them to the google analytics for tracking
-	 */
-	private class ErrorReportingTree extends Timber.Tree {
-		@Override protected void log(int priority, String tag, String message, Throwable t) {
-			if (priority == Log.VERBOSE || priority == Log.DEBUG || priority == Log.INFO) {
-				return;
-			}
-			String concatMessage = "["+t+"] "+message;
-			mApplicationComponent.googleServicesManager().getAnalyticsService().trackError(concatMessage,false);
-		}
-	}
+    /**
+     * Extracts the Timber.e logs and forwards them to the google analytics for tracking
+     */
+    private class ErrorReportingTree extends Timber.Tree {
+        @Override
+        protected void log(int priority, String tag, String message, Throwable t) {
+            // Direct Production Logs If Necessary
+        }
+    }
 
 }

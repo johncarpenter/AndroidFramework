@@ -61,31 +61,31 @@ public class GenericListViewHolder extends RecyclerView.ViewHolder {
         return m_view;
     }
 
-    public void setText(String text){
+    public void setText(String text) {
         textMain.setText(text);
     }
 
-    public void setCaption(String caption){
-        if(!TextUtils.isEmpty(caption)){
+    public void setCaption(String caption) {
+        if ( !TextUtils.isEmpty(caption) ) {
             textCaption.setVisibility(View.VISIBLE);
             textCaption.setText(caption);
-        }else{
+        } else {
             removeCaption();
         }
 
     }
 
-    public void removeCaption(){
+    public void removeCaption() {
         textCaption.setVisibility(View.INVISIBLE);
     }
 
-    public void setIconRight(int resId){
+    public void setIconRight(int resId) {
         boolean visible = resId != 0;
-        iconRight.setVisibility(visible? View.VISIBLE: View.GONE);
+        iconRight.setVisibility(visible ? View.VISIBLE : View.GONE);
         iconRight.setImageResource(resId);
     }
 
-    public void removeIconRight(){
+    public void removeIconRight() {
         iconRight.setVisibility(View.GONE);
     }
 

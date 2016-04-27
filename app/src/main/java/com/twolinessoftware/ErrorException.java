@@ -22,7 +22,7 @@ package com.twolinessoftware;
  */
 public class ErrorException extends Exception {
 
-    public enum Code{
+    public enum Code {
         INVALID_CREDENTIALS,
         EMAIL_TAKEN, NO_DATA_AVAILABLE, FIREBASE_ERROR_GENERIC, GENERIC_ERROR
     }

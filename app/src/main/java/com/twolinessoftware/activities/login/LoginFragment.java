@@ -36,6 +36,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.R;
 import com.twolinessoftware.activities.BaseFragment;
+import com.twolinessoftware.utils.ThemeUtil;
 import com.twolinessoftware.utils.ValidationUtil;
 import com.twolinessoftware.utils.ViewUtils;
 
@@ -50,7 +51,7 @@ import timber.log.Timber;
 /**
  * Created by John on 2015-04-02.
  */
-public class LoginFragment extends BaseFragment implements Validator.ValidationListener{
+public class LoginFragment extends BaseFragment implements Validator.ValidationListener {
 
     @Email(messageResId = R.string.error_invalid_email)
     @NotEmpty(messageResId = R.string.error_field_required)
@@ -72,7 +73,7 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
     private Validator mValidator;
 
 
-    public static LoginFragment newInstance(){
+    public static LoginFragment newInstance() {
         return new LoginFragment();
     }
 
@@ -102,10 +103,10 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
 
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
-        if(context instanceof LoginViewCallback){
+        if ( context instanceof LoginViewCallback ) {
             mCallback = (LoginViewCallback) context;
             mLoginPresenter.attachView(mCallback);
-        }else{
+        } else {
             Timber.e("Fragment called outside of Login Context");
             throw new IllegalArgumentException("Fragment Called Outside of LoginActivity Context");
         }
@@ -125,16 +126,16 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
 
         prepopulateAccount();
         mEditEmail.setAdapter(ViewUtils.getEmailAddressAdapter(getBaseActivity()));
-        mEditEmail.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_email).colorRes(R.color.pal_white).actionBarSize(), null, null, null);
+        mEditEmail.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_email).color(ThemeUtil.getPrimaryColor(getBaseActivity())).actionBarSize(), null, null, null);
         mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
-            if (hasfocus) {
+            if ( hasfocus ) {
                 mEditEmail.setText("");
             }
             mEditEmail.setOnFocusChangeListener(null);
         });
 
 
-        mEditPassword.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_lock_open).colorRes(R.color.pal_white).actionBarSize(), null, null, null);
+        mEditPassword.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_lock_open).color(ThemeUtil.getPrimaryColor(getBaseActivity())).actionBarSize(), null, null, null);
         mEditPassword.requestFocus();
 
         mEditPassword.setOnEditorActionListener((v, actionId, event) -> {
@@ -146,14 +147,12 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
         });
 
 
-
     }
 
     private void prepopulateAccount() {
         Account[] accounts = mAccountManager.getAccounts();
-        for (Account account : accounts)
-        {
-            if(ValidationUtil.isValidEmail(account.name)){
+        for ( Account account : accounts ) {
+            if ( ValidationUtil.isValidEmail(account.name) ) {
                 mEditEmail.setText(account.name);
                 break;
             }
@@ -161,12 +160,12 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
     }
 
     @OnClick(R.id.button_login)
-    public void onClickLogin(View view){
-       mValidator.validate();
+    public void onClickLogin(View view) {
+        mValidator.validate();
     }
 
     @OnClick(R.id.text_forgot_password)
-    public void onClickForgotPassword(View view){
+    public void onClickForgotPassword(View view) {
         mCallback.onNavigateToForgotPassword();
     }
 
@@ -174,8 +173,7 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
     public void onValidationSucceeded() {
         String email = mEditEmail.getText().toString().trim();
         String password = mEditPassword.getText().toString().trim();
-        mCallback.showProgress(true);
-        mLoginPresenter.login(email,password);
+        mLoginPresenter.login(email, password);
     }
 
     @Override

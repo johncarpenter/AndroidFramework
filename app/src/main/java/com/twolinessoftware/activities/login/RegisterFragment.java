@@ -28,6 +28,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.MaterialIcons;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
@@ -35,7 +37,9 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.R;
 import com.twolinessoftware.activities.BaseFragment;
+import com.twolinessoftware.utils.ThemeUtil;
 import com.twolinessoftware.utils.ValidationUtil;
+import com.twolinessoftware.utils.ViewUtils;
 
 import java.util.List;
 
@@ -44,7 +48,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
-
 
 
 /**
@@ -75,7 +78,7 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
 
     private LoginViewCallback mCallback;
 
-    public static RegisterFragment newInstance(){
+    public static RegisterFragment newInstance() {
         return new RegisterFragment();
     }
 
@@ -97,10 +100,10 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
 
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
-        if(context instanceof LoginViewCallback){
+        if ( context instanceof LoginViewCallback ) {
             mCallback = (LoginViewCallback) context;
             mRegisterPresenter.attachView(mCallback);
-        }else{
+        } else {
             Timber.e("Fragment called outside of Login Context");
             throw new IllegalArgumentException("Fragment Called Outside of LoginActivity Context");
         }
@@ -125,16 +128,18 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
 
         prepopulateAccount();
 
-        mEditPassword.requestFocus();
-        mEditPassword.setTransformationMethod(null);
-
+        mEditEmail.setAdapter(ViewUtils.getEmailAddressAdapter(getBaseActivity()));
+        mEditEmail.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_email).color(ThemeUtil.getPrimaryColor(getBaseActivity())).actionBarSize(), null, null, null);
         mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
-            if (hasfocus) {
+            if ( hasfocus ) {
                 mEditEmail.setText("");
             }
             mEditEmail.setOnFocusChangeListener(null);
         });
 
+
+        mEditPassword.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_lock_open).color(ThemeUtil.getPrimaryColor(getBaseActivity())).actionBarSize(), null, null, null);
+        mEditPassword.requestFocus();
 
         mEditPassword.setOnEditorActionListener((v, actionId, event) -> {
             if ( actionId == EditorInfo.IME_ACTION_DONE ) {
@@ -148,9 +153,8 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
     private void prepopulateAccount() {
 
         Account[] accounts = mAccountManager.getAccounts();
-        for (Account account : accounts)
-        {
-            if(ValidationUtil.isValidEmail(account.name)){
+        for ( Account account : accounts ) {
+            if ( ValidationUtil.isValidEmail(account.name) ) {
                 mEditEmail.setText(account.name);
                 break;
             }
@@ -158,7 +162,7 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
     }
 
     @OnClick(R.id.button_register)
-    public void onClickLogin(View view){
+    public void onClickLogin(View view) {
         mValidator.validate();
     }
 
@@ -168,7 +172,7 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
         String email = mEditEmail.getText().toString().trim();
         String password = mEditPassword.getText().toString().trim();
         mCallback.showProgress(true);
-        mRegisterPresenter.register(email,password);
+        mRegisterPresenter.register(email, password);
     }
 
     @Override

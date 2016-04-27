@@ -117,14 +117,14 @@ public abstract class BaseNavigationActivity extends BaseActivity {
                     return true;
                 case R.id.menu_about:
                     if ( differentMenuSelection ) {
-                       //
+                        //
                     }
                     mDrawerLayout.closeDrawers();
                     expandToolbar();
                     return true;
                 case R.id.menu_settings:
                     if ( differentMenuSelection ) {
-                         //
+                        //
                     }
                     mDrawerLayout.closeDrawers();
                     return true;
@@ -144,7 +144,10 @@ public abstract class BaseNavigationActivity extends BaseActivity {
         setupHeader();
     }
 
-    protected void updateHeaderInfo(){};
+    protected void updateHeaderInfo() {
+    }
+
+    ;
 
     private void setupHeader() {
         // Set the header

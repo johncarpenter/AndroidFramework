@@ -8,10 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.network.BaseApiService;
 import com.twolinessoftware.network.NetworkManager;
-import com.twolinessoftware.notifications.AnalyticsService;
-import com.twolinessoftware.notifications.GCMService;
-import com.twolinessoftware.notifications.GoogleServicesManager;
-import com.twolinessoftware.notifications.SpatialService;
+import com.twolinessoftware.services.AnalyticsService;
+import com.twolinessoftware.services.GCMService;
+import com.twolinessoftware.services.SpatialService;
 import com.twolinessoftware.storage.DataStore;
 
 import javax.inject.Singleton;
@@ -38,7 +37,7 @@ public class MockApplicationModule {
     @Provides
     @Singleton
     NetworkManager provideNetworkManager(BaseApiService baseApiService, Scheduler scheduler, EventBus eventBus, GoogleServicesManager googleServicesManager, DataManager dataManager) {
-        return new NetworkManager(mApplication, baseApiService, scheduler,eventBus,googleServicesManager,dataManager);
+        return new NetworkManager(mApplication, baseApiService, scheduler, eventBus, googleServicesManager, dataManager);
     }
 
 
@@ -50,13 +49,13 @@ public class MockApplicationModule {
 
     @Provides
     @Singleton
-    GoogleServicesManager provideGoogleServicesManager( GCMService gcmService, SpatialService spatialService, AnalyticsService analyticsService) {
+    GoogleServicesManager provideGoogleServicesManager(GCMService gcmService, SpatialService spatialService, AnalyticsService analyticsService) {
         return new GoogleServicesManager(mApplication, gcmService, spatialService, analyticsService);
     }
 
     @Provides
     @Singleton
-    DataManager provideDataManager( SQLiteDatabase database) {
+    DataManager provideDataManager(SQLiteDatabase database) {
         return new DataManager(mApplication, database);
     }
 

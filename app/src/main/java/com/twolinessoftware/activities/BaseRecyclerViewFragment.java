@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.twolinessoftware.R;
-import com.twolinessoftware.activities.BaseFragment;
 import com.twolinessoftware.adapters.AdapterLifecycleInterface;
 
 import butterknife.Bind;
@@ -103,11 +102,11 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
     public void onResume() {
         super.onResume();
 
-        if (!mOnViewCreatedCalled) {
+        if ( !mOnViewCreatedCalled ) {
             throw new RuntimeException("RecyclerFragment requires super.onViewCreated");
         }
 
-        if (mAdapter != null) {
+        if ( mAdapter != null ) {
             ((AdapterLifecycleInterface) mAdapter).onResume();
             m_dataObserver = new EmptyDataObserver();
             mAdapter.registerAdapterDataObserver(m_dataObserver);
@@ -119,19 +118,19 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
     public void onPause() {
         super.onPause();
 
-        if (mAdapter != null) {
+        if ( mAdapter != null ) {
             ((AdapterLifecycleInterface) mAdapter).onPause();
         }
         mDelayShowEmptyHandler.removeMessages(0);
 
-        if (mAdapter != null && m_dataObserver != null) {
+        if ( mAdapter != null && m_dataObserver != null ) {
             mAdapter.unregisterAdapterDataObserver(m_dataObserver);
         }
 
     }
 
     public void setEmptyViewEnable(boolean enabled) {
-        if (!mOnViewCreatedCalled) {
+        if ( !mOnViewCreatedCalled ) {
             throw new RuntimeException("RecyclerFragment requires super.onViewCreated");
         }
         m_emptyViewEnabled = enabled;
@@ -139,7 +138,7 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
 
     public void setRefreshable(boolean refreshable) {
 
-        if (!mOnViewCreatedCalled) {
+        if ( !mOnViewCreatedCalled ) {
             throw new RuntimeException("RecyclerFragment requires super.onViewCreated");
         }
 
@@ -148,19 +147,19 @@ public abstract class BaseRecyclerViewFragment extends BaseFragment implements S
 
     public void setRefreshing(boolean refreshing) {
 
-        if (!mOnViewCreatedCalled) {
+        if ( !mOnViewCreatedCalled ) {
             throw new RuntimeException("RecyclerFragment requires super.onViewCreated");
         }
 
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (mSwipeRefreshLayout != null) {
+            if ( mSwipeRefreshLayout != null ) {
                 mSwipeRefreshLayout.setRefreshing(refreshing);
             }
         });
     }
 
     public void setEmptyViewVisibile(boolean visible) {
-        if (m_emptyViewEnabled) {
+        if ( m_emptyViewEnabled ) {
             Observable.create(subscriber -> {
                         mMasterListView.setVisibility(visible ? View.GONE : View.VISIBLE);
                         mEmptyLayoutView.setVisibility(visible ? View.VISIBLE : View.GONE);

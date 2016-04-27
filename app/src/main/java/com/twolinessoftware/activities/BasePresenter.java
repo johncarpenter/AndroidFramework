@@ -20,7 +20,7 @@ package com.twolinessoftware.activities;
 /**
  * Created by johncarpenter on 2016-04-18.
  */
-public interface BasePresenter<V extends  BaseViewCallback> {
+public interface BasePresenter<V extends BaseViewCallback> {
 
     void attachView(V baseView);
 

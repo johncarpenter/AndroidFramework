@@ -48,5 +48,4 @@ public interface UserManager {
     void unregisterAuthListener(AuthChangedListener listener);
 
 
-
 }

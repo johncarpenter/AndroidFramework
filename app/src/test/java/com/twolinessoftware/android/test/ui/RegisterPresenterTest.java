@@ -16,9 +16,11 @@
 
 package com.twolinessoftware.android.test.ui;
 
+import android.content.Context;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.twolinessoftware.ErrorException;
+import com.twolinessoftware.PreferencesHelper;
 import com.twolinessoftware.activities.login.LoginViewCallback;
 import com.twolinessoftware.activities.login.RegisterPresenter;
 import com.twolinessoftware.authentication.AuthenticationManager;
@@ -28,7 +30,9 @@ import com.twolinessoftware.network.NetworkManager;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -40,6 +44,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @SmallTest
+@RunWith(MockitoJUnitRunner.class)
 public class RegisterPresenterTest {
 
     @Mock
@@ -51,29 +56,37 @@ public class RegisterPresenterTest {
     @Mock
     AuthenticationManager mAuthenticationManager;
 
+    @Mock
+    PreferencesHelper mPreferencesHelper;
+
+    @Mock
+    Context mContext;
+
     private RegisterPresenter mRegisterPresenter;
 
     @Before
-    public void before(){
+    public void before() {
         initMocks(this);
-        mRegisterPresenter = new RegisterPresenter(mNetworkManager,mAuthenticationManager, Schedulers.immediate());
+
+        mRegisterPresenter = new RegisterPresenter(mNetworkManager, mAuthenticationManager, Schedulers.immediate(),mPreferencesHelper);
         mRegisterPresenter.attachView(mLoginViewCallback);
     }
 
     @Test
-    public void registerPresenter_EnsureLoginIsCalled(){
+    public void registerPresenter_EnsureLoginIsCalled() {
 
+        when(mNetworkManager.register(any(), any())).thenReturn(Observable.just(new Token("test", 10)));
 
-        when(mNetworkManager.register(any(),any())).thenReturn(Observable.just(new Token("test",10)));
+        when(mNetworkManager.createUser(any(),any())).thenReturn(Observable.just(new User("email")));
 
-        when(mNetworkManager.getMe()).thenReturn(Observable.just(new User("email")));
+        when(mPreferencesHelper.getUserUid()).thenReturn("uid");
 
-        mRegisterPresenter.register("email","password");
+        mRegisterPresenter.register("email", "password");
 
 
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).register("email","password");
-        verify(mNetworkManager).getMe();
+        verify(mNetworkManager).register("email", "password");
+        verify(mNetworkManager).createUser("uid","email");
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onFinishLogin(any());
@@ -81,14 +94,14 @@ public class RegisterPresenterTest {
     }
 
     @Test
-    public void registerPresenter_ShowErrorOnInvalidPassword(){
+    public void registerPresenter_ShowErrorOnInvalidPassword() {
 
-        when(mNetworkManager.register(any(),any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.EMAIL_TAKEN)));
+        when(mNetworkManager.register(any(), any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.EMAIL_TAKEN)));
 
-        mRegisterPresenter.register("email","password");
+        mRegisterPresenter.register("email", "password");
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).register("email","password");
-        verify(mNetworkManager,never()).getMe();
+        verify(mNetworkManager).register("email", "password");
+        verify(mNetworkManager, never()).createUser(any(),any());
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onError(ErrorException.Code.EMAIL_TAKEN);

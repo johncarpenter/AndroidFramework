@@ -18,7 +18,7 @@ public class PreferencesHelper {
     private SharedPreferences mSharedPreferences;
 
     @Inject
-    public PreferencesHelper(SharedPreferences sharedPreferences){
+    public PreferencesHelper(SharedPreferences sharedPreferences) {
         this.mSharedPreferences = sharedPreferences;
     }
 
@@ -54,10 +54,10 @@ public class PreferencesHelper {
     }
 
     public void storeUserProfile(User user) {
-        Timber.v("Storing User Profile:"+user.toString());
+        Timber.v("Storing User Profile:" + user.toString());
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(KEYS.PREFERENCE_USER, GsonUtil.buildGsonAdapter().toJson(user));
-        editor.commit();
+        editor.apply();
     }
 
     public User getUserProfile() {
@@ -68,9 +68,9 @@ public class PreferencesHelper {
     }
 
     @Nullable
-    public String getUserUid(){
+    public String getUserUid() {
         User user = getUserProfile();
-        if( user != null ){
+        if ( user != null ) {
             return user.getUid();
         }
         return null;

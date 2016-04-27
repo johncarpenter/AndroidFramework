@@ -19,7 +19,7 @@ public class DataManager {
     }
 
     @Inject
-    public DataManager(Context context,SQLiteDatabase database){
+    public DataManager(Context context, SQLiteDatabase database) {
         mDatabase = database;
         mContext = context;
     }

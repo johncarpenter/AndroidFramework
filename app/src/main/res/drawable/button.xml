@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8" ?> 
+<?xml version="1.0" encoding="utf-8" ?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!--  Pressed -->
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <stroke android:width="2dp" android:color="@android:color/white" />
-            <solid android:color="@color/pal_grey_2" />
+            <stroke android:width="2dp" android:color="@android:color/white"/>
+            <solid android:color="@color/pal_grey_2"/>
             <padding android:bottom="5dp" android:left="5dp" android:right="5dp" android:top="5dp"/>
         </shape>
     </item>
@@ -12,7 +12,7 @@
     <!--  Normal -->
     <item>
         <shape android:shape="rectangle">
-            <stroke android:width="2dp" android:color="@android:color/white" />
+            <stroke android:width="2dp" android:color="@android:color/white"/>
             <padding android:bottom="5dp" android:left="5dp" android:right="5dp" android:top="5dp"/>
         </shape>
     </item>

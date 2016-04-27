@@ -36,22 +36,22 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(setContentView(),container,false);
+        View view = inflater.inflate(setContentView(), container, false);
         ButterKnife.bind(this, view);
         return view;
     }
 
     // Finishes the fragment and passes control to the activity
-    protected void finish(boolean removeFromStack){
-        if(removeFromStack) {
+    protected void finish(boolean removeFromStack) {
+        if ( removeFromStack ) {
             getBaseActivity().onBackPressed();
         }
     }
 
-   @Override
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()){
+        if ( mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed() ) {
             mCompositeSubscription.unsubscribe();
         }
     }

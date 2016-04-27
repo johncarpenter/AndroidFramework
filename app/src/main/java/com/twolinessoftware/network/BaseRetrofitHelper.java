@@ -19,7 +19,7 @@ import timber.log.Timber;
 /**
  *
  */
-public class RetrofitHelper {
+public class BaseRetrofitHelper {
 
     public static final int CONNECT_TIMEOUT = 20; // seconds
 
@@ -53,15 +53,15 @@ public class RetrofitHelper {
                 .getBody()).getBytes());
         Timber.v("Error:Cause:" + json);
 
-        if (cause.getKind() == RetrofitError.Kind.NETWORK) {
-            if (cause.getCause() instanceof SocketTimeoutException) {
+        if ( cause.getKind() == RetrofitError.Kind.NETWORK ) {
+            if ( cause.getCause() instanceof SocketTimeoutException ) {
                 return CommException.TIMEOUT;
             } else {
                 return CommException.NO_CONNECTION;
             }
         }
 
-        if (cause.getResponse() == null) {
+        if ( cause.getResponse() == null ) {
             return CommException.UNKNOWN;
         }
 

@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:minHeight="?attr/actionBarSize"
-    app:layout_collapseMode="pin"
-    android:background="?attr/colorPrimary">
+    app:layout_collapseMode="pin">
 
     <ProgressBar
         android:id="@+id/progress_bar"

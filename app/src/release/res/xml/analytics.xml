@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--string name="ga_trackingId">UA-68989972-1</string-->
-    <string name="ga_trackingId">UA-40831615-7</string>
+    <string name="ga_trackingId">UA-</string>
     <!-- catch and report uncaught exceptions from the app -->
     <bool name="ga_reportUncaughtExceptions">true</bool>
 
@@ -10,11 +9,6 @@
     <!-- Enable automatic Activity measurement -->
     <bool name="ga_autoActivityTracking">true</bool>
 
-    <!-- The screen names that will appear in reports -->
-    <screenName name="com.twolinessoftware.activities.WelcomeActivity">Welcome Activity</screenName>
-    <screenName name="com.twolinessoftware.activities.MainActivity">Main Activity</screenName>
-    <screenName name="com.twolinessoftware.activities.RatingActivity">Rating Activity</screenName>
-    <screenName name="com.twolinessoftware.activities.ReferActivity">Refer Activity</screenName>
 
 
 </resources>

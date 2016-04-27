@@ -2,9 +2,9 @@ package com.twolinessoftware;
 
 import android.content.Context;
 
-import com.twolinessoftware.network.BaseApiService;
-import com.twolinessoftware.network.RetrofitHelper;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import com.twolinessoftware.network.BaseApiService;
+import com.twolinessoftware.network.BaseRetrofitHelper;
 
 import java.io.IOException;
 
@@ -31,14 +31,14 @@ public class MockNetworkModule {
         try {
             mMockWebServer.start();
         } catch (IOException e) {
-            fail("Unable to start mock server:"+e.getMessage());
+            fail("Unable to start mock server:" + e.getMessage());
         }
 
     }
 
     @Provides
     BaseApiService provideAppreciadoApiService() {
-        return new RetrofitHelper().newAppreciadoApiService(mMockWebServer.url("/").toString());
+        return new BaseRetrofitHelper().newAppreciadoApiService(mMockWebServer.url("/").toString());
     }
 
 
@@ -48,8 +48,7 @@ public class MockNetworkModule {
     }
 
     @Provides
-    MockWebServer providerMockWebServer()
-    {
+    MockWebServer providerMockWebServer() {
         return mMockWebServer;
     }
 

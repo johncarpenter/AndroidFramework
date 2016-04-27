@@ -24,7 +24,7 @@ import com.twolinessoftware.activities.BaseViewCallback;
 /**
  * Created by johncarpenter on 2016-04-18.
  */
-public interface LoginViewCallback extends BaseViewCallback{
+public interface LoginViewCallback extends BaseViewCallback {
 
     void onNavigateToForgotPassword();
 

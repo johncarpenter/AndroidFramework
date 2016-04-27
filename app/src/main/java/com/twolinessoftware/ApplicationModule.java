@@ -11,10 +11,6 @@ import com.twolinessoftware.authentication.AuthenticationManager;
 import com.twolinessoftware.authentication.UserManager;
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.network.NetworkManager;
-import com.twolinessoftware.notifications.AnalyticsService;
-import com.twolinessoftware.notifications.GCMService;
-import com.twolinessoftware.notifications.GoogleServicesManager;
-import com.twolinessoftware.notifications.SpatialService;
 
 import javax.inject.Singleton;
 
@@ -45,20 +41,14 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    GoogleServicesManager provideGoogleServicesManager( GCMService gcmService, SpatialService spatialService, AnalyticsService analyticsService) {
-        return new GoogleServicesManager(mApplication, gcmService, spatialService, analyticsService);
-    }
-
-    @Provides
-    @Singleton
-    DataManager provideDataManager( SQLiteDatabase database) {
+    DataManager provideDataManager(SQLiteDatabase database) {
         return new DataManager(mApplication, database);
     }
 
     @Provides
     @Singleton
-    AuthenticationManager provideAuthenticationManager( AccountManager accountManager, PreferencesHelper preferencesHelper, UserManager userManager) {
-        return new AuthenticationManager(mApplication,accountManager,preferencesHelper, userManager);
+    AuthenticationManager provideAuthenticationManager(AccountManager accountManager, PreferencesHelper preferencesHelper, UserManager userManager) {
+        return new AuthenticationManager(mApplication, accountManager, preferencesHelper, userManager);
     }
 
     @Provides
@@ -68,13 +58,13 @@ public class ApplicationModule {
     }
 
     @Provides
-    SharedPreferences provideSharedPreferences(){
-        return mApplication.getSharedPreferences(Constants.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+    SharedPreferences provideSharedPreferences() {
+        return mApplication.getSharedPreferences(Config.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
     }
 
     @Singleton
     @Provides
-    PreferencesHelper providePreferencesHelper(SharedPreferences sharedPreferences){
+    PreferencesHelper providePreferencesHelper(SharedPreferences sharedPreferences) {
         return new PreferencesHelper(sharedPreferences);
     }
 

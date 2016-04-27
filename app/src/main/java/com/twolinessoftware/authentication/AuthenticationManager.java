@@ -12,7 +12,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.twolinessoftware.BaseApplication;
-import com.twolinessoftware.Constants;
+import com.twolinessoftware.Config;
 import com.twolinessoftware.PreferencesHelper;
 
 import org.joda.time.DateTime;
@@ -26,7 +26,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-
 
 
 /**
@@ -63,7 +62,7 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
     public Intent generateAuthIntent(Token accessToken, String username, String password) {
         Bundle data = new Bundle();
         data.putString(AccountManager.KEY_ACCOUNT_NAME, username);
-        data.putString(AccountManager.KEY_ACCOUNT_TYPE, Constants.BASE_ACCOUNT_TYPE);
+        data.putString(AccountManager.KEY_ACCOUNT_TYPE, Config.BASE_ACCOUNT_TYPE);
         data.putString(AccountManager.KEY_AUTHTOKEN, accessToken.getAccessToken());
         data.putLong(AuthenticationManager.KEY_AUTH_TOKEN_EXPIRY, accessToken.getExpiresIn());
         data.putBoolean(AuthenticationManager.EXTRA_IS_ADDING, true);
@@ -72,17 +71,17 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
         return new Intent().putExtras(data);
     }
 
-    public void completeLogin(Intent intent){
+    public void completeLogin(Intent intent) {
         String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 
-        final Account account = new Account(accountName, Constants.BASE_ACCOUNT_TYPE);
+        final Account account = new Account(accountName, Config.BASE_ACCOUNT_TYPE);
 
         String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
 
-        String authtokenType = Constants.BASE_ACCOUNT_TYPE;
+        String authtokenType = Config.BASE_ACCOUNT_TYPE;
 
-        ContentResolver.setSyncAutomatically(account, Constants.BASE_ACCOUNT_TYPE, true);
-        ContentResolver.setIsSyncable(account, Constants.BASE_ACCOUNT_TYPE, 1);
+        ContentResolver.setSyncAutomatically(account, Config.BASE_ACCOUNT_TYPE, true);
+        ContentResolver.setIsSyncable(account, Config.BASE_ACCOUNT_TYPE, 1);
 
         mAccountManager.addAccountExplicitly(account, null, null);
 
@@ -155,7 +154,7 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
 
     public void refreshAuthToken() {
 
-        mAccountManager.getAuthToken(getAccount(), Constants.BASE_ACCOUNT_TYPE, null, false, future -> {
+        mAccountManager.getAuthToken(getAccount(), Config.BASE_ACCOUNT_TYPE, null, false, future -> {
             try {
                 Bundle accountDetails = future.getResult();
                 if ( accountDetails.containsKey(AccountManager.KEY_INTENT) ) {
@@ -175,7 +174,7 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
             throw new AccountNotFoundException();
         }
 
-        return mAccountManager.peekAuthToken(getAccount(), Constants.BASE_ACCOUNT_TYPE);
+        return mAccountManager.peekAuthToken(getAccount(), Config.BASE_ACCOUNT_TYPE);
     }
 
     public boolean isLoggedIn() {
@@ -183,7 +182,7 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
     }
 
     public Account getAccount() {
-        Account[] accounts = mAccountManager.getAccountsByType(Constants.BASE_ACCOUNT_TYPE);
+        Account[] accounts = mAccountManager.getAccountsByType(Config.BASE_ACCOUNT_TYPE);
         return accounts.length > 0 ? accounts[0] : null;
     }
 
@@ -194,7 +193,7 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 Account account = getAccount();
-                mAccountManager.invalidateAuthToken(Constants.BASE_ACCOUNT_TYPE, getAuthToken());
+                mAccountManager.invalidateAuthToken(Config.BASE_ACCOUNT_TYPE, getAuthToken());
                 mAccountManager.removeAccount(account, future -> {
                     try {
                         if ( future.getResult() ) {

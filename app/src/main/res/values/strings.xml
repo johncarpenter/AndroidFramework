@@ -2,6 +2,7 @@
     <string name="app_name">Base App</string>
 
     <!-- Error Messages -->
+    <string name="error_dialog_title">Error</string>
     <string name="error_invalid_userpass">Invalid email or password</string>
     <string name="error_validation_fields">Email and Password can\'t be empty</string>
     <string name="error_password_length">Passwords must be at least 6 characters</string>
@@ -13,6 +14,13 @@
     <string name="error_connection_failed">Unable to connect to server</string>
     <string name="error_field_required">Required</string>
     <string name="error_invalid_credentials">That email/password combination is not valid</string>
+
+    <!-- Notification Messages -->
+    <string name="notification_email_sent">Reset Email has been sent</string>
+
+    <!-- Content Strings -->
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
 
     <!-- Empty ListView -->
     <string name="empty_list_title">Empty List</string>
@@ -48,16 +56,12 @@
     <string name="menu_register">Register</string>
     <string name="menu_settings">Menu</string>
     <string name="menu_about">About</string>
+    <string name="menu_main">Main</string>
+    <string name="menu_logout">Logout</string>
 
     <!-- Generic Dialog Messages -->
-    <string name="dialog_ok">Ok</string>
+    <string name="dialog_ok">OK</string>
     <string name="dialog_error">Error</string>
-    <string name="menu_logout">Logout</string>
-    <string name="navigation_drawer_open">Open</string>
-    <string name="navigation_drawer_close">Close</string>
-    <string name="notification_email_sent">Reset Email has been sent</string>
-    <string name="menu_main">Main</string>
-    <string name="error_dialog_title">Error</string>
 
 
 </resources>

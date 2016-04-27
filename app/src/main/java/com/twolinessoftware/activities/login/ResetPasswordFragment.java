@@ -73,7 +73,7 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
     private Validator mValidator;
 
 
-    public static ResetPasswordFragment newInstance(){
+    public static ResetPasswordFragment newInstance() {
         return new ResetPasswordFragment();
     }
 
@@ -100,10 +100,10 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
 
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
-        if(context instanceof LoginViewCallback){
+        if ( context instanceof LoginViewCallback ) {
             LoginViewCallback callback = (LoginViewCallback) context;
             mResetPasswordPresenter.attachView(callback);
-        }else{
+        } else {
             Timber.e("Fragment called outside of Login Context");
             throw new IllegalArgumentException("Fragment Called Outside of LoginActivity Context");
         }
@@ -122,8 +122,8 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
         prepopulateAccount();
 
         mEditEmail.setAdapter(ViewUtils.getEmailAddressAdapter(getBaseActivity()));
-        mEditEmail.setOnFocusChangeListener((v,hasfocus)->{
-            if(hasfocus) {
+        mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
+            if ( hasfocus ) {
                 mEditEmail.setText("");
             }
             mEditEmail.setOnFocusChangeListener(null);
@@ -141,9 +141,8 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
     private void prepopulateAccount() {
 
         Account[] accounts = mAccountManager.getAccounts();
-        for (Account account : accounts)
-        {
-            if(ValidationUtil.isValidEmail(account.name)){
+        for ( Account account : accounts ) {
+            if ( ValidationUtil.isValidEmail(account.name) ) {
                 mEditEmail.setText(account.name);
                 break;
             }
@@ -151,9 +150,8 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
     }
 
 
-
     @OnClick(R.id.button_reset)
-    public void onClickLogin(View view){
+    public void onClickLogin(View view) {
         mValidator.validate();
     }
 

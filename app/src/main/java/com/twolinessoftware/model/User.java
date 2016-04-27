@@ -30,7 +30,6 @@ public class User extends DataModel {
 
     public User(String email) {
         this.mEmail = email;
-
     }
 
     @Override

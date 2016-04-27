@@ -59,7 +59,7 @@ public class ApplicationDatabaseHelper extends SQLiteOpenHelper {
 
         @Override
         public void toContentValue(DateTime dateTime, String key, ContentValues values) {
-            values.put(key,dateTime.getMillis());
+            values.put(key, dateTime.getMillis());
         }
 
         @Override

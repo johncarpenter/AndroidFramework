@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:tools="http://schemas.android.com/tools">
+<merge xmlns:tools="http://schemas.android.com/tools"
+       xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout_empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:stateListAnimator="@anim/raise"
-        android:visibility="gone"
-        android:clickable="true"
-        tools:ignore="UnusedAttribute">
+    <LinearLayout android:id="@+id/layout_empty"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:stateListAnimator="@anim/raise"
+                  android:visibility="gone"
+                  android:clickable="true"
+                  tools:ignore="UnusedAttribute">
 
 
-            <LinearLayout
+        <LinearLayout
             android:layout_gravity="left|center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,14 +23,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:textAppearanceLarge"
-                android:text="@string/empty_list_title" />
+                android:text="@string/empty_list_title"/>
 
             <TextView
                 android:id="@+id/text_info_sub_empty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:textAppearanceMedium"
-                android:text="@string/empty_list_text" />
+                android:text="@string/empty_list_text"/>
 
         </LinearLayout>
 

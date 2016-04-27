@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
         android:layout_weight="1"
-        android:orientation="vertical" >
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_marginLeft="@dimen/spacing_double"
+            android:text="@string/login_fragment_title"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <AutoCompleteTextView
-            android:id="@+id/edit_email"
-            android:layout_marginLeft="@dimen/content_margins"
-            android:layout_marginRight="@dimen/content_margins"
-            android:layout_marginBottom="@dimen/content_margins_half"
-            android:layout_marginTop="@dimen/content_margins_half"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:inputType="textEmailAddress"
-            android:hint="@string/login_fragment_email"
-            android:nextFocusDown="@+id/edit_password"
-            android:nextFocusForward="@+id/edit_password"
-            android:imeOptions="actionNext"/>
+            <AutoCompleteTextView
+                android:id="@+id/edit_email"
+                android:layout_marginLeft="@dimen/spacing_double"
+                android:layout_marginRight="@dimen/spacing_double"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:inputType="textEmailAddress"
+                android:hint="@string/login_fragment_email"
+                android:drawablePadding="@dimen/spacing_normal"
+                android:nextFocusDown="@+id/edit_password"
+                android:nextFocusForward="@+id/edit_password"
+                android:imeOptions="actionNext"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -37,32 +44,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/edit_password"
-            android:layout_marginLeft="@dimen/content_margins"
-            android:layout_marginRight="@dimen/content_margins"
-            android:layout_marginBottom="@dimen/content_margins_half"
-            android:layout_marginTop="@dimen/content_margins_half"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:hint="@string/login_fragment_password"
-            android:inputType="textPassword"
-            android:imeOptions="actionDone"
-            />
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_password"
+                android:layout_marginLeft="@dimen/spacing_double"
+                android:layout_marginRight="@dimen/spacing_double"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:drawablePadding="@dimen/spacing_normal"
+                android:hint="@string/login_fragment_password"
+                android:inputType="textPassword"
+                android:imeOptions="actionDone"
+                />
 
         </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/button_login"
-            android:layout_marginLeft="@dimen/content_margins"
-            android:layout_marginRight="@dimen/content_margins"
-            android:layout_marginBottom="@dimen/content_margins_half"
-            android:layout_marginTop="@dimen/content_margins_half"
+            android:layout_marginLeft="@dimen/spacing_double"
+            android:layout_marginRight="@dimen/spacing_double"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/pal_button"
-            android:text="@string/login_fragment_button" />
+            android:text="@string/login_fragment_button"/>
 
         <TextView
             android:id="@+id/text_forgot_password"
@@ -72,10 +80,9 @@
             style="?android:textAppearanceMedium"
             android:bufferType="spannable"
             android:text="@string/login_password_forgot"
-            android:layout_margin="@dimen/content_margins_half"/>
+            android:layout_margin="@dimen/spacing_normal"/>
 
     </LinearLayout>
-
 
 
 </LinearLayout>

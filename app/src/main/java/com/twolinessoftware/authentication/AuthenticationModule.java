@@ -25,13 +25,13 @@ public class AuthenticationModule {
     }
 
     @Provides
-    AccountManager provideAccountManager(){
+    AccountManager provideAccountManager() {
         return (AccountManager) mContext.getSystemService(Context.ACCOUNT_SERVICE);
     }
 
     @Provides
     @Singleton
-    UserManager provideUserManager(Firebase firebase, PreferencesHelper preferencesHelper){
+    UserManager provideUserManager(Firebase firebase, PreferencesHelper preferencesHelper) {
         return new FirebaseUserManager(firebase, preferencesHelper);
     }
 

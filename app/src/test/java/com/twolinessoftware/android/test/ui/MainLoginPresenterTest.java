@@ -38,20 +38,20 @@ public class MainLoginPresenterTest {
 
 
     @Before
-    public void before(){
+    public void before() {
         initMocks(this);
         mMainLoginPresenter = new MainLoginSplashPresenter();
         mMainLoginPresenter.attachView(mLoginViewCallback);
     }
 
     @Test
-    public void mainLoginPresenter_ShouldRedirectToSignIn(){
+    public void mainLoginPresenter_ShouldRedirectToSignIn() {
         mMainLoginPresenter.navigateToSignIn();
         verify(mLoginViewCallback).onNavigateToLogin();
     }
 
     @Test
-    public void mainLoginPresenter_ShouldRedirectToCreate(){
+    public void mainLoginPresenter_ShouldRedirectToCreate() {
         mMainLoginPresenter.navigateToCreate();
         verify(mLoginViewCallback).onNavigateToRegister();
     }

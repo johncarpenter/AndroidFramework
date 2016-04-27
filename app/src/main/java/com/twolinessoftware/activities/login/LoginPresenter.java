@@ -40,7 +40,7 @@ public class LoginPresenter implements BasePresenter<LoginViewCallback> {
     private Token mToken;
 
     @Inject
-    public LoginPresenter(NetworkManager networkManager, AuthenticationManager authenticationManager, Scheduler scheduler){
+    public LoginPresenter(NetworkManager networkManager, AuthenticationManager authenticationManager, Scheduler scheduler) {
         mNetworkManager = networkManager;
         mAuthenticationManager = authenticationManager;
         mScheduler = scheduler;
@@ -58,26 +58,37 @@ public class LoginPresenter implements BasePresenter<LoginViewCallback> {
         mLoginViewCallback = null;
     }
 
-    public void login(final String email, final String password){
-        mLoginViewCallback.showProgress(true);
+    public void login(final String email, final String password) {
+        if ( mLoginViewCallback != null ) {
+            mLoginViewCallback.showProgress(true);
+        }
 
-        mNetworkManager.authenticate(email,password)
+        mNetworkManager.authenticate(email, password)
                 .subscribeOn(mScheduler)
                 .flatMap(token -> {
                     mToken = token;
                     return mNetworkManager.getMe();
                 })
-                .subscribe(user->{
-                    Timber.v("User Logged in:"+user.getUid());
-                    mLoginViewCallback.showProgress(false);
-                    mLoginViewCallback.onFinishLogin(mAuthenticationManager.generateAuthIntent(mToken, email, password));
-                },error->{
-                    mLoginViewCallback.showProgress(false);
-                    if(error instanceof ErrorException){
+                .subscribe(user -> {
+                    Timber.v("User Logged in:" + user.getUid());
+                    if ( mLoginViewCallback != null ) {
+                        mLoginViewCallback.showProgress(false);
+                        mLoginViewCallback.onFinishLogin(mAuthenticationManager.generateAuthIntent(mToken, email, password));
+                    }
+                }, error -> {
+                    if ( mLoginViewCallback != null ) {
+                        mLoginViewCallback.showProgress(false);
+                    }
+
+                    if ( error instanceof ErrorException ) {
                         ErrorException errorException = (ErrorException) error;
-                        mLoginViewCallback.onError(errorException.getCode());
-                    }else{
-                        mLoginViewCallback.onError(ErrorException.Code.GENERIC_ERROR);
+                        if ( mLoginViewCallback != null ) {
+                            mLoginViewCallback.onError(errorException.getCode());
+                        }
+                    } else {
+                        if ( mLoginViewCallback != null ) {
+                            mLoginViewCallback.onError(ErrorException.Code.GENERIC_ERROR);
+                        }
                     }
                 });
 

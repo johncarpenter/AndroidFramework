@@ -27,6 +27,8 @@ import com.twolinessoftware.PreferencesHelper;
 import com.twolinessoftware.data.FirebaseMonitor;
 import com.twolinessoftware.model.User;
 
+import org.joda.time.DateTime;
+
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
@@ -63,15 +65,15 @@ public class FirebaseUserManager implements UserManager {
             return Observable.error(new AccountNotLoggedInException());
         }
 
-        Timber.v("Creating New User Profile:"+uid);
+        Timber.v("Creating New User Profile:" + uid);
 
-        return Observable.create(new Observable.OnSubscribe<User>(){
+        return Observable.create(new Observable.OnSubscribe<User>() {
 
             @Override
             public void call(Subscriber<? super User> subscriber) {
                 // Create User Profile since it doesn't exist
                 User user = mPreferencesHelper.getUserProfile();
-                Timber.v("Thawing User Profile:"+user.toString());
+                Timber.v("Thawing User Profile:" + user.toString());
                 getFirebaseForUser(uid).setValue(user);
                 mPreferencesHelper.storeUserProfile(user);
                 subscriber.onNext(user);
@@ -87,7 +89,7 @@ public class FirebaseUserManager implements UserManager {
 
         String userId = mPreferencesHelper.getUserUid();
 
-        Timber.v("Getting User Profile:"+userId);
+        Timber.v("Getting User Profile:" + userId);
 
         if ( userId == null ) {
             return Observable.error(new AccountNotLoggedInException());
@@ -101,9 +103,9 @@ public class FirebaseUserManager implements UserManager {
                         Timber.v("Updated user information: " + userFirebaseChange.getValue().toString());
                         mPreferencesHelper.storeUserProfile(userFirebaseChange.getValue());
                         return Observable.just(userFirebaseChange.getValue());
-                    }else{
+                    } else {
                         Timber.e("No user profile available, creating new profile");
-                        return createUser(userId,mPreferencesHelper.getUserProfile());
+                        return createUser(userId, mPreferencesHelper.getUserProfile());
                     }
                 });
     }
@@ -115,7 +117,7 @@ public class FirebaseUserManager implements UserManager {
 
     @Override
     public Observable<Token> login(final String email, final String password) {
-        Timber.v("Logging in user:"+email);
+        Timber.v("Logging in user:" + email);
 
         return Observable.create(new Observable.OnSubscribe<Token>() {
             @Override
@@ -126,6 +128,7 @@ public class FirebaseUserManager implements UserManager {
 
                         User user = new User(email);
                         user.setUid(authData.getUid());
+                        user.setCreated(DateTime.now());
                         mPreferencesHelper.storeUserProfile(user);
 
                         final Token token = new Token(authData.getToken(), authData.getExpires());
@@ -203,7 +206,7 @@ public class FirebaseUserManager implements UserManager {
 
                     @Override
                     public void onError(FirebaseError firebaseError) {
-                        Timber.e("Unable to reset password:"+firebaseError.getMessage());
+                        Timber.e("Unable to reset password:" + firebaseError.getMessage());
                         subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
                     }
                 });
@@ -257,7 +260,7 @@ public class FirebaseUserManager implements UserManager {
         @Override
         public void onAuthStateChanged(AuthData authData) {
             Timber.v("Firebase Auth Status Change:" + authData);
-            if(authData == null && mAuthChangedListener != null){
+            if ( authData == null && mAuthChangedListener != null ) {
                 mAuthChangedListener.get().onLoggedOut();
             }
         }

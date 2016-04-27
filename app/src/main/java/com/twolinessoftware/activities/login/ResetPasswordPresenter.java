@@ -33,7 +33,7 @@ public class ResetPasswordPresenter implements BasePresenter<LoginViewCallback> 
     private NetworkManager mNetworkManager;
 
     @Inject
-    public ResetPasswordPresenter(NetworkManager networkManager,  Scheduler scheduler){
+    public ResetPasswordPresenter(NetworkManager networkManager, Scheduler scheduler) {
         mNetworkManager = networkManager;
         mScheduler = scheduler;
     }
@@ -50,20 +50,20 @@ public class ResetPasswordPresenter implements BasePresenter<LoginViewCallback> 
         mLoginViewCallback = null;
     }
 
-    public void resetPassword(final String email){
+    public void resetPassword(final String email) {
         mLoginViewCallback.showProgress(true);
 
         mNetworkManager.forgotPassword(email)
                 .subscribeOn(mScheduler)
-                .subscribe(reset ->{
+                .subscribe(reset -> {
                     mLoginViewCallback.showProgress(false);
                     mLoginViewCallback.onPasswordReset();
-                },error->{
+                }, error -> {
                     mLoginViewCallback.showProgress(false);
-                    if(error instanceof ErrorException){
+                    if ( error instanceof ErrorException ) {
                         ErrorException errorException = (ErrorException) error;
                         mLoginViewCallback.onError(errorException.getCode());
-                    }else{
+                    } else {
                         mLoginViewCallback.onError(ErrorException.Code.GENERIC_ERROR);
                     }
                 });

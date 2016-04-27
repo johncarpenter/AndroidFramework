@@ -88,8 +88,8 @@ public class FirebaseMonitor<T> {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if(dataSnapshot == null || !dataSnapshot.exists()){
-                            subscriber.onNext(new FirebaseChange<T>(FirebaseChange.State.Empty,null));
+                        if ( dataSnapshot == null || !dataSnapshot.exists() ) {
+                            subscriber.onNext(new FirebaseChange<T>(FirebaseChange.State.Empty, null));
                             return;
                         }
 

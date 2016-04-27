@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -16,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/content_margins"
+            android:layout_margin="@dimen/spacing_double"
             android:layout_gravity="center_horizontal"
             android:text="@string/main_login_fragment_welcome"/>
 
@@ -34,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_margin="@dimen/spacing_double"
         style="@style/BaseApplication.ButtonFlat.Borderless"
         android:text="@string/main_login_fragment_create_account"
         android:id="@+id/button_register"/>
@@ -45,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_margin="@dimen/spacing_double"
         style="@style/BaseApplication.ButtonFlat.Borderless"
         android:text="@string/main_login_fragment_login"
         android:id="@+id/button_login"/>

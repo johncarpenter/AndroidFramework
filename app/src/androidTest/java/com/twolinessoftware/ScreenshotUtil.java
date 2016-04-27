@@ -23,7 +23,7 @@ public class ScreenshotUtil {
         final String path = dir + name + ".png";
 
         File filePath = new File(dir);     // Create directory if not present
-        if (!filePath.isDirectory()) {
+        if ( !filePath.isDirectory() ) {
             Timber.v("Creating directory " + filePath);
             filePath.mkdirs();
         }
@@ -46,21 +46,17 @@ public class ScreenshotUtil {
             out = new FileOutputStream(imageFile);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             Timber.v(e.toString());
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Timber.v(e.toString());
-        }
-
-        finally {
+        } finally {
             try {
-                if (out != null) {
+                if ( out != null ) {
                     out.close();
                 }
             } catch (IOException e) {
-                Timber.v( e.toString());
+                Timber.v(e.toString());
             }
         }
     }

@@ -108,12 +108,12 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
 
     @Override
     public void onNavigateToRegister() {
-        setFragment(RegisterFragment.newInstance(),true);
+        setFragment(RegisterFragment.newInstance(), true);
     }
 
     @Override
     public void onNavigateToLogin() {
-        setFragment(LoginFragment.newInstance(),true);
+        setFragment(LoginFragment.newInstance(), true);
     }
 
     @Override
@@ -126,23 +126,23 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
 
     @Override
     public void onPasswordReset() {
-        makeSnackbar(getString(R.string.notification_email_sent),Snackbar.LENGTH_LONG).show();
+        makeSnackbar(getString(R.string.notification_email_sent), Snackbar.LENGTH_LONG).show();
     }
 
 
     @Override
     public void onError(ErrorException.Code code) {
-        Timber.v("Handling error:"+code.name());
+        Timber.v("Handling error:" + code.name());
         // Show Error to User
-        switch (code){
+        switch (code) {
             case INVALID_CREDENTIALS:
-                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title),getString(R.string.error_invalid_credentials)),"dialog");
+                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_invalid_credentials)), "dialog");
                 break;
             case EMAIL_TAKEN:
-                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title),getString(R.string.error_register_email_taken)),"dialog");
+                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_register_email_taken)), "dialog");
                 break;
             default:
-                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title),getString(R.string.error_communication_generic)),"dialog");
+                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_communication_generic)), "dialog");
                 break;
         }
     }

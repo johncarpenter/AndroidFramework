@@ -48,14 +48,14 @@ public class ResetPasswordPresenterTest {
     private ResetPasswordPresenter mResetPasswordPresenter;
 
     @Before
-    public void before(){
+    public void before() {
         initMocks(this);
         mResetPasswordPresenter = new ResetPasswordPresenter(mNetworkManager, Schedulers.immediate());
         mResetPasswordPresenter.attachView(mLoginViewCallback);
     }
 
     @Test
-    public void resetPasswordPresenter_EnsureResetCalled(){
+    public void resetPasswordPresenter_EnsureResetCalled() {
 
 
         when(mNetworkManager.forgotPassword(any())).thenReturn(Observable.just(true));
@@ -71,7 +71,7 @@ public class ResetPasswordPresenterTest {
     }
 
     @Test
-    public void resetPasswordPresenter_ShowErrorOnResetError(){
+    public void resetPasswordPresenter_ShowErrorOnResetError() {
 
         when(mNetworkManager.forgotPassword(any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.GENERIC_ERROR)));
 
@@ -81,7 +81,7 @@ public class ResetPasswordPresenterTest {
         verify(mNetworkManager).forgotPassword("email");
 
         verify(mLoginViewCallback).showProgress(false);
-        verify(mLoginViewCallback,never()).onPasswordReset();
+        verify(mLoginViewCallback, never()).onPasswordReset();
         verify(mLoginViewCallback).onError(ErrorException.Code.GENERIC_ERROR);
 
     }

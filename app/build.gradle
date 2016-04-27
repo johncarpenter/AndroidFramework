@@ -4,7 +4,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "com.twolinessoftware.android"
         minSdkVersion 19
@@ -34,11 +34,37 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dexOptions {
+        preDexLibraries = false
+        javaMaxHeapSize "2g"
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+
+        // set to true to turn off analysis progress reporting by lint
+        quiet true
+        // if true, stop the gradle build if errors are found
+        abortOnError true
+        // if true, only report errors
+        ignoreWarnings true
+
+        xmlReport false
+
+        htmlReport true
+        // optional path to report (default will be lint-results.html in the builddir)
+        htmlOutput file("build/reports/lint/lint-report.html")
+
+        // set to true to have all release builds run lint on issues with severity=fatal
+        // and abort the build (controlled by abortOnError above) if fatal issues are found
+        checkReleaseBuilds true
+    }
 }
 
 dependencies {
 
-    final SUPPORT_LIBRARY_VERSION = '23.2.0'
+    final SUPPORT_LIBRARY_VERSION = '23.3.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -58,7 +84,7 @@ dependencies {
     // RxJava Extensions. Make threading easier
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.0.14'
-    
+
     // Prevents leaks by tying observables to lifecycle
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
 
@@ -89,7 +115,6 @@ dependencies {
     // Icons
     compile 'com.joanzapata.iconify:android-iconify-material:2.2.2'
 
-
     // Page indicators
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
 
@@ -113,18 +138,17 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
 
-
     // Force usage of support annotations in the test app, since it is internally used by the runner module.
     androidTestApt "com.google.dagger:dagger-compiler:2.0"
 
     androidTestCompile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
-    androidTestCompile ('com.android.support.test.espresso:espresso-core:2.2') {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile ('com.android.support.test:runner:0.3') {
+    androidTestCompile('com.android.support.test:runner:0.3') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile ('com.android.support.test:rules:0.3') {
+    androidTestCompile('com.android.support.test:rules:0.3') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
 

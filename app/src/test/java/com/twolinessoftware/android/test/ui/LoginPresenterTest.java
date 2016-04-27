@@ -54,25 +54,25 @@ public class LoginPresenterTest {
     private LoginPresenter mLoginPresenter;
 
     @Before
-    public void before(){
+    public void before() {
         initMocks(this);
-        mLoginPresenter = new LoginPresenter(mNetworkManager,mAuthenticationManager, Schedulers.immediate());
+        mLoginPresenter = new LoginPresenter(mNetworkManager, mAuthenticationManager, Schedulers.immediate());
         mLoginPresenter.attachView(mLoginViewCallback);
     }
 
     @Test
-    public void login_EnsureLoginIsCalled(){
+    public void login_EnsureLoginIsCalled() {
 
 
-        when(mNetworkManager.authenticate(any(),any())).thenReturn(Observable.just(new Token("test",10)));
+        when(mNetworkManager.authenticate(any(), any())).thenReturn(Observable.just(new Token("test", 10)));
 
         when(mNetworkManager.getMe()).thenReturn(Observable.just(new User("email")));
 
-        mLoginPresenter.login("email","password");
+        mLoginPresenter.login("email", "password");
 
 
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).authenticate("email","password");
+        verify(mNetworkManager).authenticate("email", "password");
         verify(mNetworkManager).getMe();
 
         verify(mLoginViewCallback).showProgress(false);
@@ -81,14 +81,14 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void login_ShowErrorOnInvalidPassword(){
+    public void login_ShowErrorOnInvalidPassword() {
 
-        when(mNetworkManager.authenticate(any(),any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.INVALID_CREDENTIALS)));
+        when(mNetworkManager.authenticate(any(), any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.INVALID_CREDENTIALS)));
 
-        mLoginPresenter.login("email","password");
+        mLoginPresenter.login("email", "password");
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).authenticate("email","password");
-        verify(mNetworkManager,never()).getMe();
+        verify(mNetworkManager).authenticate("email", "password");
+        verify(mNetworkManager, never()).getMe();
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onError(ErrorException.Code.INVALID_CREDENTIALS);

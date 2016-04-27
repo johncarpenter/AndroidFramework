@@ -35,10 +35,10 @@ public class AlertDialogFragment extends DialogFragment {
     private String mTitle;
     private String mMessage;
 
-    public static AlertDialogFragment newInstance(String title, String message){
+    public static AlertDialogFragment newInstance(String title, String message) {
         Bundle args = new Bundle();
-        args.putString(EXTRA_TITLE,title);
-        args.putString(EXTRA_MESSAGE,message);
+        args.putString(EXTRA_TITLE, title);
+        args.putString(EXTRA_MESSAGE, message);
 
         AlertDialogFragment fragment = new AlertDialogFragment();
         fragment.setArguments(args);
@@ -64,7 +64,6 @@ public class AlertDialogFragment extends DialogFragment {
                 })
                 .create();
     }
-
 
 
 }

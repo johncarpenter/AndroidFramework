@@ -24,7 +24,7 @@ public class DataManagerModule {
     }
 
     @Provides
-     SQLiteDatabase provideDatabase(ApplicationDatabaseHelper applicationDatabaseHelper) {
+    SQLiteDatabase provideDatabase(ApplicationDatabaseHelper applicationDatabaseHelper) {
         return applicationDatabaseHelper.getWritableDatabase();
     }
 

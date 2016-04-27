@@ -1,31 +1,16 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin_half">8dp</dimen>
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <dimen name="content_margins">16dp</dimen>
-    <dimen name="content_margins_half">8dp</dimen>
+    <dimen name="spacing_nano">2dp</dimen>
+    <dimen name="spacing_micro">4dp</dimen>
+    <dimen name="spacing_normal">8dp</dimen>
+    <dimen name="spacing_double">16dp</dimen>
+    <dimen name="spacing_huge">72dp</dimen>
 
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">320dp</dimen>
     <dimen name="navigation_drawer_header_height">128dp</dimen>
     <dimen name="navigation_drawer_shop_header_height">168dp</dimen><!--3*item height-->
-
-    <!-- Error Message Crouton -->
-    <dimen name="crouton_height">46dp</dimen>
-
-    <dimen name="toolbar_elevation">12dp</dimen>
-
-    <!-- Flat Button Styles -->
-    <dimen name="btn_flat_corner_radius">6dp</dimen>
-
-    <!--List View -->
-    <dimen name="list_item_height">56dp</dimen>
-    <dimen name="icon_small_standard">35dp</dimen>
-    <dimen name="icon_small_halo">45dp</dimen>
-    <dimen name="image_list_icon_sm">40dp</dimen>
 
     <!-- Text Size spec -->
     <dimen name="text_size_sm">16sp</dimen>
@@ -34,6 +19,10 @@
     <dimen name="text_size_xlrg">30sp</dimen>
     <dimen name="text_size_title">44sp</dimen>
     <dimen name="text_size_tiny">14sp</dimen>
+
+
+    <!-- Default Sizes for Items -->
+    <dimen name="size_icon_sm">42dp</dimen>
 
 
 </resources>

@@ -30,6 +30,7 @@ public abstract class DataModel {
     @SerializedName("uid")
     private String mUid;
 
+
     @SerializedName("mCreated")
     private DateTime mCreated;
 
@@ -37,14 +38,16 @@ public abstract class DataModel {
     private DateTime mUpdated;
 
 
-    public DataModel(){
-        this.mCreated = DateTime.now();
+    public DataModel() {
         setUid(UUID.randomUUID().toString());
     }
 
     public DataModel(String uid) {
         mUid = uid;
-        this.mCreated = DateTime.now();
+    }
+
+    public void setCreated(DateTime created) {
+        mCreated = created;
     }
 
     public DateTime getCreated() {

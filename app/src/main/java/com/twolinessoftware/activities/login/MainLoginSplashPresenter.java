@@ -26,7 +26,7 @@ import javax.inject.Inject;
  */
 public class MainLoginSplashPresenter implements BasePresenter<LoginViewCallback> {
     @Inject
-    public MainLoginSplashPresenter(){
+    public MainLoginSplashPresenter() {
     }
 
     private LoginViewCallback mLoginViewCallback;
@@ -41,11 +41,11 @@ public class MainLoginSplashPresenter implements BasePresenter<LoginViewCallback
         mLoginViewCallback = null;
     }
 
-    public void navigateToSignIn(){
+    public void navigateToSignIn() {
         mLoginViewCallback.onNavigateToLogin();
     }
 
-    public void navigateToCreate(){
+    public void navigateToCreate() {
         mLoginViewCallback.onNavigateToRegister();
     }
 }

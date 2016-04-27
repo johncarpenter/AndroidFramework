@@ -95,8 +95,8 @@ public class NetworkManagerTest {
 
         testSubscriber.assertError(errorException);
 
-        verify(mPreferencesHelper,never()).storeToken(any());
-        verify(mAuthenticationManager,never()).completeLogin(any());
+        verify(mPreferencesHelper, never()).storeToken(any());
+        verify(mAuthenticationManager, never()).completeLogin(any());
 
     }
 
@@ -136,8 +136,8 @@ public class NetworkManagerTest {
 
         testSubscriber.assertError(errorException);
 
-        verify(mPreferencesHelper,never()).storeToken(any());
-        verify(mAuthenticationManager,never()).completeLogin(any());
+        verify(mPreferencesHelper, never()).storeToken(any());
+        verify(mAuthenticationManager, never()).completeLogin(any());
 
     }
 
