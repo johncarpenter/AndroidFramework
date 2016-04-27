@@ -162,9 +162,6 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
         mValidator.validate();
     }
 
-
-
-
     @Override
     public void onValidationSucceeded() {
 

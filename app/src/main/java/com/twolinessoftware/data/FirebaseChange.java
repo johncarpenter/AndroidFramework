@@ -24,7 +24,7 @@ public class FirebaseChange<T> {
 
 
     public enum State {
-        Added, Changed, Removed, Data
+        Added, Changed, Removed, Empty, Data
     }
 
     private State mState;

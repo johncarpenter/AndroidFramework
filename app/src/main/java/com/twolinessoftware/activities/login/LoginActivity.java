@@ -26,6 +26,7 @@ import android.support.design.widget.Snackbar;
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.ErrorException;
 import com.twolinessoftware.R;
+import com.twolinessoftware.activities.AlertDialogFragment;
 import com.twolinessoftware.activities.BaseActivity;
 import com.twolinessoftware.authentication.AuthenticationManager;
 
@@ -45,7 +46,6 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
 
     private Bundle m_resultBundle;
 
-
     public static Intent getStartIntent(Context context, boolean clearPreviousActivities) {
         Intent intent = new Intent(context, LoginActivity.class);
         if ( clearPreviousActivities ) {
@@ -53,7 +53,6 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
         }
         return intent;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +74,7 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
             m_accountAuthenticatorResponse.onRequestContinued();
         }
 
-        hideToolbar();
+        setToolbarVisible(false);
 
     }
 
@@ -133,14 +132,20 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
 
     @Override
     public void onError(ErrorException.Code code) {
+        Timber.v("Handling error:"+code.name());
         // Show Error to User
         switch (code){
             case INVALID_CREDENTIALS:
-                makeSnackbar(getString(R.string.error_invalid_credentials), Snackbar.LENGTH_LONG).show();
+                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title),getString(R.string.error_invalid_credentials)),"dialog");
                 break;
-            case GENERIC_ERROR:
-                makeSnackbar(getString(R.string.error_communication_generic), Snackbar.LENGTH_LONG).show();
+            case EMAIL_TAKEN:
+                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title),getString(R.string.error_register_email_taken)),"dialog");
+                break;
+            default:
+                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title),getString(R.string.error_communication_generic)),"dialog");
                 break;
         }
     }
+
+
 }

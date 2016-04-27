@@ -8,6 +8,8 @@ import com.twolinessoftware.utils.GsonUtil;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 /**
  * Created by johncarpenter on 2015-12-08.
  */
@@ -52,6 +54,7 @@ public class PreferencesHelper {
     }
 
     public void storeUserProfile(User user) {
+        Timber.v("Storing User Profile:"+user.toString());
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(KEYS.PREFERENCE_USER, GsonUtil.buildGsonAdapter().toJson(user));
         editor.commit();

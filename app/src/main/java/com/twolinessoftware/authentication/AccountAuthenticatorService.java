@@ -49,6 +49,11 @@ public class AccountAuthenticatorService extends Service {
 
     public AccountAuthenticatorService() {
         super();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
         BaseApplication.get(this).getComponent().inject(this);
     }
 

@@ -19,18 +19,32 @@ package com.twolinessoftware.activities.main;
 
 import android.os.Bundle;
 
-import com.twolinessoftware.activities.BaseActivity;
+import com.twolinessoftware.ErrorException;
+import com.twolinessoftware.R;
+import com.twolinessoftware.activities.BaseNavigationActivity;
 
 /**
  * Created by johncarpenter on 2016-04-20.
  */
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseNavigationActivity implements MainActivityCallback{
+
+    @Override
+    public int getDrawerMenuId() {
+        return R.id.menu_main;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Check for login
         requiresLogin();
+    }
+
+
+    @Override
+    public void onError(ErrorException.Code code) {
 
     }
+
+
 }

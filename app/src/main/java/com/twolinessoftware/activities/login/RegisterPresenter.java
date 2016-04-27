@@ -64,7 +64,7 @@ public class RegisterPresenter implements BasePresenter<LoginViewCallback> {
                 .subscribeOn(mScheduler)
                 .flatMap(token -> {
                     mToken = token;
-                    return mNetworkManager.getMe();
+                    return mNetworkManager.createUser(mToken.getAccessToken(),email);
                 })
                 .subscribe(user->{
                     mLoginViewCallback.showProgress(false);
@@ -78,7 +78,6 @@ public class RegisterPresenter implements BasePresenter<LoginViewCallback> {
                         mLoginViewCallback.onError(ErrorException.Code.GENERIC_ERROR);
                     }
                 });
-
 
     }
 
