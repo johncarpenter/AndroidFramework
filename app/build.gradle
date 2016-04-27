@@ -64,7 +64,7 @@ android {
 
 dependencies {
 
-    final SUPPORT_LIBRARY_VERSION = '23.3.0'
+    final SUPPORT_LIBRARY_VERSION = '23.2.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
