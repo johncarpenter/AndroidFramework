@@ -109,7 +109,7 @@ public class BaseApplication extends Application {
     }
 
     /**
-     * Extracts the Timber.e logs and forwards them to the google analytics for tracking
+     * Extracts the Timber.e logs and forwards them to the analytics tool for tracking
      */
     private class ErrorReportingTree extends Timber.Tree {
         @Override

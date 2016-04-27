@@ -38,7 +38,7 @@ public class ServicesModule {
 
     @Provides
     GCMService providesGcmService(PreferencesHelper preferencesHelper, EventBus eventBus) {
-        return new GCMService(mContext,preferencesHelper,eventBus);
+        return new GCMService(mContext, preferencesHelper, eventBus);
     }
 
 }

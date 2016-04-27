@@ -79,7 +79,7 @@ public class AnalyticsService {
                 .build());
     }
 
-    public void trackDefaultEvent( String category, String action, long value) {
+    public void trackDefaultEvent(String category, String action, long value) {
         Tracker tracker = getDefaultTracker();
         tracker.send(new HitBuilders.EventBuilder()
                 .setCategory(category)
@@ -89,7 +89,7 @@ public class AnalyticsService {
     }
 
 
-    public void trackDefaultEvent( String category, String action, String label) {
+    public void trackDefaultEvent(String category, String action, String label) {
         Tracker tracker = getDefaultTracker();
         tracker.send(new HitBuilders.EventBuilder()
                 .setCategory(category)

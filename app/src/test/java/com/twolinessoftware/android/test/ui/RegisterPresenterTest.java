@@ -68,7 +68,7 @@ public class RegisterPresenterTest {
     public void before() {
         initMocks(this);
 
-        mRegisterPresenter = new RegisterPresenter(mNetworkManager, mAuthenticationManager, Schedulers.immediate(),mPreferencesHelper);
+        mRegisterPresenter = new RegisterPresenter(mNetworkManager, mAuthenticationManager, Schedulers.immediate(), mPreferencesHelper);
         mRegisterPresenter.attachView(mLoginViewCallback);
     }
 
@@ -77,7 +77,7 @@ public class RegisterPresenterTest {
 
         when(mNetworkManager.register(any(), any())).thenReturn(Observable.just(new Token("test", 10)));
 
-        when(mNetworkManager.createUser(any(),any())).thenReturn(Observable.just(new User("email")));
+        when(mNetworkManager.createUser(any(), any())).thenReturn(Observable.just(new User("email")));
 
         when(mPreferencesHelper.getUserUid()).thenReturn("uid");
 
@@ -86,7 +86,7 @@ public class RegisterPresenterTest {
 
         verify(mLoginViewCallback).showProgress(true);
         verify(mNetworkManager).register("email", "password");
-        verify(mNetworkManager).createUser("uid","email");
+        verify(mNetworkManager).createUser("uid", "email");
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onFinishLogin(any());
@@ -101,7 +101,7 @@ public class RegisterPresenterTest {
         mRegisterPresenter.register("email", "password");
         verify(mLoginViewCallback).showProgress(true);
         verify(mNetworkManager).register("email", "password");
-        verify(mNetworkManager, never()).createUser(any(),any());
+        verify(mNetworkManager, never()).createUser(any(), any());
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onError(ErrorException.Code.EMAIL_TAKEN);

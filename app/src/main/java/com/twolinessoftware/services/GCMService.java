@@ -98,7 +98,7 @@ public class GCMService {
             storeRegistrationId(mRegistrationId);
             return true;
         }).subscribeOn(Schedulers.io())
-        .subscribe(new Subscriber<Boolean>() {
+                .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
                     }

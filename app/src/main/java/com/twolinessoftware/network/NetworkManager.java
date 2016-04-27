@@ -37,7 +37,7 @@ public class NetworkManager {
         User user = new User(email);
         user.setCreated(DateTime.now());
 
-        return mUserManager.createUser(uid,user);
+        return mUserManager.createUser(uid, user);
     }
 
     public Observable<User> getMe() {

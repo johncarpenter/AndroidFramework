@@ -38,7 +38,7 @@ import timber.log.Timber;
 /**
  * Placeholder for location services and geofencing.
  */
-public class SpatialService{
+public class SpatialService {
 
     private EventBus mEventBus;
     private PreferencesHelper mPreferencesHelper;
@@ -91,7 +91,7 @@ public class SpatialService{
                 });
     }
 
-    private LocationRequest getDefaultLocationRequest(){
+    private LocationRequest getDefaultLocationRequest() {
         return LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setSmallestDisplacement(Config.GPS_SMALLEST_DISPLACEMENT_IN_M)

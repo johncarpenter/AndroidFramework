@@ -168,13 +168,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         return true;
     }
 
-    public boolean requiresGooglePlayServices(){
+    public boolean requiresGooglePlayServices() {
 
         GoogleApiAvailability googleApi = GoogleApiAvailability.getInstance();
         int connectionCode = googleApi.isGooglePlayServicesAvailable(BaseActivity.this);
 
-        if(connectionCode != ConnectionResult.SUCCESS){
-            if(googleApi.isUserResolvableError(connectionCode)) {
+        if ( connectionCode != ConnectionResult.SUCCESS ) {
+            if ( googleApi.isUserResolvableError(connectionCode) ) {
                 googleApi.getErrorDialog(this, connectionCode,
                         REQUEST_GOOGLE_PLAY_SERVICES).show();
             }
@@ -208,13 +208,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                     Timber.v("Returning from login");
                     break;
             }
-        }else if( requestCode == REQUEST_GOOGLE_PLAY_SERVICES){
-            if (resultCode != RESULT_OK) {
+        } else if ( requestCode == REQUEST_GOOGLE_PLAY_SERVICES ) {
+            if ( resultCode != RESULT_OK ) {
                 Timber.e("Google play services are not available");
                 // todo: What happens when Google Play Services are not available?
                 finish();
             }
-        }else{
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
 
