@@ -22,31 +22,23 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by johncarpenter on 2016-04-18.
  */
-public class User {
+public class User extends DataModel {
 
     @SerializedName("email")
     private String mEmail;
 
-    @SerializedName("mUid")
-    private String mUid;
 
     public User(String email) {
         this.mEmail = email;
-    }
 
-    public String getUid() {
-        return mUid;
     }
 
     @Override
     public String toString() {
         return "User{" +
                 ", mEmail='" + mEmail + '\'' +
-                ", mUid='" + mUid + '\'' +
+                ", mUid='" + getUid() + '\'' +
                 '}';
     }
 
-    public void setUid(String uid) {
-        mUid = uid;
-    }
 }

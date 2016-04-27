@@ -9,7 +9,6 @@ import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.MaterialModule;
 import com.karumi.dexter.Dexter;
 import com.tsengvn.typekit.Typekit;
-import com.twolinessoftware.activities.UiModule;
 import com.twolinessoftware.authentication.AuthenticationModule;
 import com.twolinessoftware.data.DataManagerModule;
 import com.twolinessoftware.network.NetworkModule;
@@ -34,7 +33,6 @@ public class BaseApplication extends Application{
 				.networkModule(new NetworkModule(this))
 				.dataManagerModule(new DataManagerModule(this))
 				.authenticationModule(new AuthenticationModule(this))
-				.uiModule(new UiModule(this))
 				.build();
 
 		initializeDatabase();

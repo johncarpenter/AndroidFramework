@@ -2,7 +2,6 @@ package com.twolinessoftware;
 
 import android.app.Application;
 
-import com.twolinessoftware.activities.UiModule;
 import com.twolinessoftware.activities.login.LoginActivity;
 import com.twolinessoftware.activities.login.MainLoginSplashFragment;
 import com.twolinessoftware.authentication.AccountAuthenticatorService;
