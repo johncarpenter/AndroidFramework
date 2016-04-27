@@ -1,12 +1,10 @@
 package com.twolinessoftware;
 
 import com.twolinessoftware.data.DataManagerModule;
-import com.twolinessoftware.notifications.GoogleServicesModule;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
-
 
 
 @Singleton

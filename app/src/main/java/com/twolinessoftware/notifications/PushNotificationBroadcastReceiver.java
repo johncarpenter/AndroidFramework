@@ -16,15 +16,12 @@ public class PushNotificationBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Timber.v("Received Push Notification and Sending Android Notifications");
 
-        if(!intent.getAction().equalsIgnoreCase(PUSH_INTENT)){
-            Timber.e("Unknown action to broadcast receiver:aborting:"+intent.getAction());
+        if ( !intent.getAction().equalsIgnoreCase(PUSH_INTENT) ) {
+            Timber.e("Unknown action to broadcast receiver:aborting:" + intent.getAction());
             return;
         }
 
     }
-
-
-
 
 }
 

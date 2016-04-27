@@ -22,7 +22,6 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.app.Service;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,11 +29,9 @@ import android.os.IBinder;
 import android.text.TextUtils;
 
 import com.twolinessoftware.BaseApplication;
-import com.twolinessoftware.activities.LoginActivity;
+import com.twolinessoftware.activities.login.LoginActivity;
 
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 /**
  * Authenticator service that returns a subclass of AbstractAccountAuthenticator in onBind()
@@ -52,30 +49,35 @@ public class AccountAuthenticatorService extends Service {
 
     public AccountAuthenticatorService() {
         super();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
         BaseApplication.get(this).getComponent().inject(this);
     }
 
     public IBinder onBind(Intent intent) {
         IBinder ret = null;
-        if (intent.getAction().equals(AccountManager.ACTION_AUTHENTICATOR_INTENT))
+        if ( intent.getAction().equals(AccountManager.ACTION_AUTHENTICATOR_INTENT) )
             ret = getAuthenticator().getIBinder();
         return ret;
     }
 
     private AccountAuthenticatorImpl getAuthenticator() {
-        if (sAccountAuthenticator == null)
+        if ( sAccountAuthenticator == null )
             sAccountAuthenticator = new AccountAuthenticatorImpl(this);
         return sAccountAuthenticator;
     }
 
-    private  class AccountAuthenticatorImpl extends AbstractAccountAuthenticator {
+    private class AccountAuthenticatorImpl extends AbstractAccountAuthenticator {
         private Context mContext;
 
 
         public AccountAuthenticatorImpl(Context context) {
             super(context);
             mContext = context;
-       }
+        }
 
         /*
          *  The user has requested to add a new account to the system.  We return an intent that will launch our login screen if the user has not logged in yet,
@@ -87,7 +89,7 @@ public class AccountAuthenticatorService extends Service {
             Bundle reply = new Bundle();
 
             Intent i = new Intent(mContext, LoginActivity.class);
-            i.putExtra(LoginActivity.EXTRA_IS_ADDING,true);
+            i.putExtra(AuthenticationManager.EXTRA_IS_ADDING, true);
             i.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             reply.putParcelable(AccountManager.KEY_INTENT, i);
 
@@ -107,10 +109,10 @@ public class AccountAuthenticatorService extends Service {
         @Override
         public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
 
-           String authToken = mAccountManager.peekAuthToken(account, authTokenType);
+            String authToken = mAccountManager.peekAuthToken(account, authTokenType);
 
             // If we get an authToken - we return it
-            if (!TextUtils.isEmpty(authToken)) {
+            if ( !TextUtils.isEmpty(authToken) ) {
                 final Bundle result = new Bundle();
                 result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                 result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
@@ -126,7 +128,7 @@ public class AccountAuthenticatorService extends Service {
             Bundle reply = new Bundle();
 
             Intent i = new Intent(mContext, LoginActivity.class);
-            i.putExtra(LoginActivity.EXTRA_IS_ADDING,true);
+            i.putExtra(AuthenticationManager.EXTRA_IS_ADDING, true);
             i.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             reply.putParcelable(AccountManager.KEY_INTENT, i);
 

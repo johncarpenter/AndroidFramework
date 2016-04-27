@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="ga_trackingId">UA-*</string>
+    <string name="ga_trackingId">UA-</string>
     <!-- catch and report uncaught exceptions from the app -->
     <bool name="ga_reportUncaughtExceptions">true</bool>
 
@@ -9,7 +9,5 @@
     <!-- Enable automatic Activity measurement -->
     <bool name="ga_autoActivityTracking">true</bool>
 
-    <!-- The screen names that will appear in reports -->
-    <screenName name="com.twolinessoftware.android.activities.WelcomeActivity">Welcome Activity</screenName>
 
 </resources>

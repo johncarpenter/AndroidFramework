@@ -14,6 +14,7 @@ public class ViewUtils {
 
     /**
      * Only pulls accounts that are setup by this app. If you want to pull all the accounts you will need the #PermissionUtil.requestPermission(Manifest.permission.READ_CONTACTS) call
+     *
      * @param context
      * @return
      */
@@ -21,8 +22,8 @@ public class ViewUtils {
         Account[] accounts = AccountManager.get(context).getAccounts();
 
         HashSet<String> emailSet = new HashSet<>();
-        for (int i = 0; i < accounts.length; i++) {
-          if (ValidationUtil.isValidEmail(accounts[i].name)) {
+        for ( int i = 0; i < accounts.length; i++ ) {
+            if ( ValidationUtil.isValidEmail(accounts[i].name) ) {
                 emailSet.add(accounts[i].name);
             }
         }

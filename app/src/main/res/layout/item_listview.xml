@@ -15,87 +15,86 @@
   ~   limitations under the License.
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_action_start"
-    android:layout_gravity="bottom|center_horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:stateListAnimator="@anim/raise"
-    tools:ignore="UnusedAttribute">
-
-<LinearLayout
-    android:layout_gravity="bottom|center_horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:orientation="horizontal"
-    android:layout_weight="1">
-
-    <View
-        android:id="@+id/view_colorsidebar"
-        android:layout_width="4dp"
-        android:layout_height="match_parent"/>
-
-
-
-    <ImageView
-        android:id="@+id/image_icon_left"
-        android:layout_width="@dimen/image_list_icon_sm"
-        android:layout_height="@dimen/image_list_icon_sm"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/content_margins"
-        android:layout_marginRight="@dimen/content_margins"
-        android:layout_marginTop="@dimen/content_margins_half"
-        android:layout_marginBottom="@dimen/content_margins_half"/>
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/layout_action_start"
+              android:layout_gravity="bottom|center_horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:minHeight="?android:attr/listPreferredItemHeight"
+              android:stateListAnimator="@anim/raise"
+              tools:ignore="UnusedAttribute">
 
     <LinearLayout
-        android:layout_gravity="center"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/content_margins"
-        android:orientation="vertical">
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/text_info"
-            android:layout_gravity="left|center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/content_margins_half"
-            style="@style/BaseApplication.TextStyle.List.Title"
-            android:text="info"/>
+        <View
+            android:id="@+id/view_colorsidebar"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"/>
 
-        <TextView
-            android:id="@+id/text_info_sub"
-            android:layout_gravity="left"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/image_icon_left"
+            android:layout_width="@dimen/size_icon_sm"
+            android:layout_height="@dimen/size_icon_sm"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/spacing_double"
+            android:layout_marginRight="@dimen/spacing_double"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginBottom="@dimen/spacing_normal"/>
+
+        <LinearLayout
+            android:layout_gravity="center"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/content_margins_half"
-            android:layout_marginBottom="@dimen/content_margins_half"
-            style="@style/BaseApplication.TextStyle.List.Caption"/>
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/spacing_double"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_info"
+                android:layout_gravity="left|center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                style="@style/BaseApplication.TextStyle.List.Title"
+                android:text="info"/>
+
+            <TextView
+                android:id="@+id/text_info_sub"
+                android:layout_gravity="left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                style="@style/BaseApplication.TextStyle.List.Caption"/>
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/image_icon_right"
+            android:layout_width="@dimen/size_icon_sm"
+            android:layout_height="@dimen/size_icon_sm"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/spacing_double"
+            android:layout_marginRight="@dimen/spacing_double"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginBottom="@dimen/spacing_normal"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/pal_grey_5"/>
 
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/image_icon_right"
-        android:layout_width="@dimen/image_list_icon_sm"
-        android:layout_height="@dimen/image_list_icon_sm"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_marginLeft="@dimen/content_margins"
-        android:layout_marginRight="@dimen/content_margins"
-        android:layout_marginTop="@dimen/content_margins_half"
-        android:layout_marginBottom="@dimen/content_margins_half"/>
-
-    <View
-        android:layout_width="1px"
-        android:layout_height="match_parent"
-        android:background="@color/pal_grey_5"/>
-
-
-    </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"

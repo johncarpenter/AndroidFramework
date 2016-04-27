@@ -11,7 +11,6 @@
     <color name="pal_grey_1">@color/grey_50</color><!--Lightest-->
 
 
-
     <color name="pal_grey_5_trans">#88000000</color>
 
     <!-- Alerts and Actions -->
@@ -353,7 +352,6 @@
     <!-- White -->
     <color name="white">#FFFFFF</color>
     <!-- White -->
-
 
 
 </resources>

@@ -1,7 +1,9 @@
 package com.twolinessoftware.services;
 
-import com.twolinessoftware.BaseApplication;
 import com.google.android.gms.iid.InstanceIDListenerService;
+import com.twolinessoftware.BaseApplication;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -9,6 +11,10 @@ import timber.log.Timber;
  *
  */
 public class RefreshIDListenerService extends InstanceIDListenerService {
+
+
+    @Inject
+    GCMService mGCMService;
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
@@ -18,7 +24,8 @@ public class RefreshIDListenerService extends InstanceIDListenerService {
     @Override
     public void onTokenRefresh() {
         Timber.v("GCM Token Invalidated:Refreshing");
-        BaseApplication.get(this).getComponent().googleServicesManager().getGCMService().register();
+        BaseApplication.get(this).getComponent().inject(this);
+        mGCMService.register();
 
     }
 }

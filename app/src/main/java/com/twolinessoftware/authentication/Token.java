@@ -23,10 +23,23 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Token {
 
-    @SerializedName("access_token")
-    public String accessToken;
+    @SerializedName("token")
+    private String accessToken;
 
     @SerializedName("expires_in")
-    public int expiresIn;
+    private long expiresIn;
+
+    public Token(String accessToken, long expiresIn) {
+        this.accessToken = accessToken;
+        this.expiresIn = expiresIn;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public long getExpiresIn() {
+        return expiresIn;
+    }
 
 }

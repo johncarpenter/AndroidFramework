@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:2.1.0'
 
         // Annotation Processor for Dagger 2
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
@@ -12,7 +12,11 @@ buildscript {
         // Java  8 - lambdas
         classpath 'me.tatarka:gradle-retrolambda:2.5.0'
 
+        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
     }
+
+    // Exclude the version that the android plugin depends on.
+    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 allprojects {
     repositories {

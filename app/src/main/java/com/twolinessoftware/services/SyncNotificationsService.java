@@ -16,19 +16,17 @@ import timber.log.Timber;
  * This service pulls the latest dashboard information from the server,
  * and iterates through the appointments to ensure that the alarmmanager
  * has scheduled the notifications correctly.
- *
+ * <p>
  * Sample execution is shown below
- *
+ * <p>
  * OneoffTask toggleTask = new OneoffTask.Builder()
- *   .setService(SyncNotificationsService.class)
- *   .setExecutionWindow(0, 5) // execute now +/- 5 min
- *   .setExtras(bundle)        // Bundle fron NotificationUtils
- *   .setPersisted(false)      // Persist Task Across reboots
- *   .setRequiredNetwork(Task.NETWORK_STATE_ANY) // Requires network (yes)
- *   .setRequiresCharging(false)  // Requires charging (false)
- *   .build();
- *
- *
+ * .setService(SyncNotificationsService.class)
+ * .setExecutionWindow(0, 5) // execute now +/- 5 min
+ * .setExtras(bundle)        // Bundle fron NotificationUtils
+ * .setPersisted(false)      // Persist Task Across reboots
+ * .setRequiredNetwork(Task.NETWORK_STATE_ANY) // Requires network (yes)
+ * .setRequiresCharging(false)  // Requires charging (false)
+ * .build();
  */
 public class SyncNotificationsService extends GcmTaskService {
 
@@ -38,7 +36,7 @@ public class SyncNotificationsService extends GcmTaskService {
 
     }
 
-    public static void schedulePeriodicNotifications(Context context){
+    private static void schedulePeriodicNotifications(Context context) {
 
         long periodSecs = 60 * 60 * 24;     // Auto-update should be performed no more than once per 24 hours
 
@@ -58,7 +56,7 @@ public class SyncNotificationsService extends GcmTaskService {
 
     @Override
     public void onInitializeTasks() {
-        schedulePeriodicNotifications(getApplicationContext());
+        //schedulePeriodicNotifications(getApplicationContext());
     }
 
     @Override
@@ -79,19 +77,15 @@ public class SyncNotificationsService extends GcmTaskService {
         boolean isReschedule = false;
 
 
-        if(isComplete && !isReschedule){
+        if ( isComplete && !isReschedule ) {
             return GcmNetworkManager.RESULT_SUCCESS;
-        }else if(isComplete){
+        } else if ( isComplete ) {
             return GcmNetworkManager.RESULT_RESCHEDULE;
-        }else{
+        } else {
             return GcmNetworkManager.RESULT_FAILURE;
         }
 
     }
-
-
-
-
 
 
 }

@@ -2,149 +2,179 @@ package com.twolinessoftware.authentication;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerFuture;
 import android.accounts.OnAccountsUpdateListener;
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Base64;
+import android.util.Log;
 
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.OneoffTask;
-import com.google.android.gms.gcm.Task;
-import com.twolinessoftware.Constants;
-import com.twolinessoftware.activities.LoginActivity;
-import com.twolinessoftware.events.OnLogoutEvent;
-import com.twolinessoftware.services.SyncNotificationsService;
+import com.twolinessoftware.BaseApplication;
+import com.twolinessoftware.Config;
+import com.twolinessoftware.PreferencesHelper;
+
+import org.joda.time.DateTime;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+
 
 /**
  *
  */
-public class AuthenticationManager implements OnAccountsUpdateListener {
+public class AuthenticationManager implements OnAccountsUpdateListener, AuthChangedListener {
 
-    private EventBus mEventBus;
+    public static final String EXTRA_IS_ADDING = "EXTRA_IS_ADDING";
+    public static final String KEY_ACCOUNT_PASSWORD = "KEY_PASSWORD";
+    public static final String KEY_AUTH_TOKEN_EXPIRY = "KEY_AUTH_TOKEN_EXPIRY";
 
+    private UserManager mUserManager;
+    private PreferencesHelper mPreferencesHelper;
     private Context mContext;
-
     private AccountManager mAccountManager;
 
     @Inject
-    public AuthenticationManager(Context context, AccountManager accountManager){
+    public AuthenticationManager(Context context, AccountManager accountManager, PreferencesHelper preferencesHelper, UserManager userManager) {
         mContext = context;
         mAccountManager = accountManager;
-        mAccountManager.addOnAccountsUpdatedListener(this, new Handler(), false);
-        mEventBus = EventBus.getDefault();
-    }
-
-    @Override
-    public void onAccountsUpdated(Account[] accounts) {
-        if (getAccount() == null) {
-            mEventBus.post(new OnLogoutEvent());
-        }
-    }
-
-    public interface TokenRefreshListener {
-        void onTokenRefreshed();
-
-        void onTokenError();
+        mPreferencesHelper = preferencesHelper;
+        mUserManager = userManager;
     }
 
 
-    public static final Intent generateAuthIntent(Token accessToken, String username) {
-
+    /**
+     * I wanted to make this static, but mocking the test is a nightmare.
+     *
+     * @param accessToken
+     * @param username
+     * @param password
+     * @return
+     */
+    public Intent generateAuthIntent(Token accessToken, String username, String password) {
         Bundle data = new Bundle();
         data.putString(AccountManager.KEY_ACCOUNT_NAME, username);
-        data.putString(AccountManager.KEY_ACCOUNT_TYPE, Constants.BASE_ACCOUNT_TYPE);
-        data.putString(AccountManager.KEY_AUTHTOKEN, accessToken.accessToken);
-        data.putBoolean(LoginActivity.EXTRA_IS_ADDING, true);
+        data.putString(AccountManager.KEY_ACCOUNT_TYPE, Config.BASE_ACCOUNT_TYPE);
+        data.putString(AccountManager.KEY_AUTHTOKEN, accessToken.getAccessToken());
+        data.putLong(AuthenticationManager.KEY_AUTH_TOKEN_EXPIRY, accessToken.getExpiresIn());
+        data.putBoolean(AuthenticationManager.EXTRA_IS_ADDING, true);
+        data.putString(AuthenticationManager.KEY_ACCOUNT_PASSWORD, password);
 
-
-        final Intent res = new Intent();
-        res.putExtras(data);
-        return res;
+        return new Intent().putExtras(data);
     }
 
-    public String getEmailAddress() {
-        if (!isLoggedIn()) {
-            return null;
-        }
+    public void completeLogin(Intent intent) {
+        String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 
-        return getAccount().name;
+        final Account account = new Account(accountName, Config.BASE_ACCOUNT_TYPE);
+
+        String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+
+        String authtokenType = Config.BASE_ACCOUNT_TYPE;
+
+        ContentResolver.setSyncAutomatically(account, Config.BASE_ACCOUNT_TYPE, true);
+        ContentResolver.setIsSyncable(account, Config.BASE_ACCOUNT_TYPE, 1);
+
+        mAccountManager.addAccountExplicitly(account, null, null);
+
+        mAccountManager.setAuthToken(account, authtokenType, authtoken);
+
+        String password = intent.getStringExtra(AuthenticationManager.KEY_ACCOUNT_PASSWORD);
+        mAccountManager.setPassword(account, password);
+
+        long expirySec = intent.getLongExtra(AuthenticationManager.KEY_AUTH_TOKEN_EXPIRY, TimeUnit.DAYS.toSeconds(1));
+
+        DateTime expiry = DateTime.now().plusSeconds((int) expirySec);
+
+        mAccountManager.setUserData(account, AuthenticationManager.KEY_AUTH_TOKEN_EXPIRY, String.valueOf(expiry.getMillis()));
+
+        mUserManager.registerAuthListener(this);
+
     }
 
-    protected String getPassword() {
-        if (!isLoggedIn()) {
-            return null;
-        }
-        return mAccountManager.getPassword(getAccount());
+    public void backgroundLogout() {
+        Timber.v("Logging out");
+
+        BaseApplication application = BaseApplication.get(mContext);
+
+        removeAccount()
+                .observeOn(Schedulers.newThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(pass -> {
+                    mPreferencesHelper.clear();
+                    Timber.v("Data Cleaned");
+                    mUserManager.unregisterAuthListener(this);
+                    mUserManager.logout();
+
+                }, error -> {
+                    Timber.e("Unable to logout:Cause:" + Log.getStackTraceString(error));
+                    restartMainActivity(application);
+                }, () -> restartMainActivity(application));
     }
 
+    public void logout(Activity activity) {
+        Timber.v("Logging out");
 
-    public void invalidateToken() {
-        if (getAuthToken() != null) {
-            Timber.e("Authentication Token Invalidated");
-            mAccountManager.invalidateAuthToken(Constants.BASE_ACCOUNT_TYPE, getAuthToken());
-        }
+        removeAccount()
+                .observeOn(Schedulers.newThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(pass -> {
+                    mPreferencesHelper.clear();
+                    Timber.v("Data Cleaned");
+                    mUserManager.unregisterAuthListener(this);
+                    mUserManager.logout();
+
+
+                }, error -> {
+                    Timber.e("Unable to logout:Cause:" + Log.getStackTraceString(error));
+                    activity.finish();
+                    restartMainActivity(activity);
+                }, () -> {
+                    activity.finish();
+                    restartMainActivity(activity);
+                });
     }
 
-    public void refreshAuthToken(final TokenRefreshListener listener) {
+    private void restartMainActivity(Context activity) {
+        Timber.v("Restarting Main Activity");
 
-        if (getAccount() != null) {
-
-            final AccountManagerFuture<Bundle> future = mAccountManager.getAuthToken(getAccount(), Constants.BASE_ACCOUNT_TYPE, null, false, null, null);
-
-            Observable.create(new Observable.OnSubscribe<String>() {
-                @Override
-                public void call(Subscriber<? super String> subscriber) {
-                    try {
-
-                        Bundle bnd = future.getResult();
-
-                        final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-                        subscriber.onNext(authtoken);
-                        subscriber.onCompleted();
-                    } catch (Exception e) {
-                        subscriber.onError(e);
-                    }
-                }
-            }).subscribeOn(Schedulers.newThread())
-                    .subscribe(token -> {
-                        if (token == null) {
-                            Timber.e("Unable to retrieve token:null");
-                            if (listener != null) {
-                                listener.onTokenError();
-                            }
-                        }
-                    }, error -> {
-                        Timber.e("Unable to retrieve token");
-                        if (listener != null) {
-                            listener.onTokenError();
-                        }
-                    }, () -> {
-                        if (listener != null) {
-                            listener.onTokenRefreshed();
-                        }
-                    });
-
-        }
+        Intent i = mContext.getPackageManager()
+                .getLaunchIntentForPackage(mContext.getPackageName());
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(i);
     }
 
     public void refreshAuthToken() {
 
-        refreshAuthToken(null);
+        mAccountManager.getAuthToken(getAccount(), Config.BASE_ACCOUNT_TYPE, null, false, future -> {
+            try {
+                Bundle accountDetails = future.getResult();
+                if ( accountDetails.containsKey(AccountManager.KEY_INTENT) ) {
+                    // Credentials failed
+                    Timber.v("Unable to login to get token");
+                    backgroundLogout();
+                }
+            } catch (Exception e) {
+                Timber.e("Unable to validate token:Not sure what to do:" + Log.getStackTraceString(e));
+            }
+        }, new Handler());
     }
 
     public String getAuthToken() {
-        return mAccountManager.peekAuthToken(getAccount(), Constants.BASE_ACCOUNT_TYPE);
+        Account account = getAccount();
+        if ( account == null ) {
+            throw new AccountNotFoundException();
+        }
+
+        return mAccountManager.peekAuthToken(getAccount(), Config.BASE_ACCOUNT_TYPE);
     }
 
     public boolean isLoggedIn() {
@@ -152,38 +182,44 @@ public class AuthenticationManager implements OnAccountsUpdateListener {
     }
 
     public Account getAccount() {
-        Account[] accounts = mAccountManager.getAccountsByType(Constants.BASE_ACCOUNT_TYPE);
+        Account[] accounts = mAccountManager.getAccountsByType(Config.BASE_ACCOUNT_TYPE);
         return accounts.length > 0 ? accounts[0] : null;
     }
 
-
-    public void scheduleSync() {
-
-        GcmNetworkManager gcm = GcmNetworkManager.getInstance(mContext);
-
-        OneoffTask syncTask = new OneoffTask.Builder()
-                .setService(SyncNotificationsService.class)
-                .setExecutionWindow(5, 30)
-                .setTag("sync-app")
-                .setUpdateCurrent(true)
-                .setRequiredNetwork(Task.NETWORK_STATE_ANY)
-                .build();
-
-        gcm.schedule(syncTask);
-    }
-
-    public void removeAccount() {
-
+    public Observable<Boolean> removeAccount() {
         Timber.v("Removing account");
-        mAccountManager.removeOnAccountsUpdatedListener(this);
 
-        Account account = getAccount();
-        mAccountManager.invalidateAuthToken(Constants.BASE_ACCOUNT_TYPE, getAuthToken());
-        mAccountManager.clearPassword(account);
-
-        mAccountManager.removeAccount(account,null,null);
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                Account account = getAccount();
+                mAccountManager.invalidateAuthToken(Config.BASE_ACCOUNT_TYPE, getAuthToken());
+                mAccountManager.removeAccount(account, future -> {
+                    try {
+                        if ( future.getResult() ) {
+                            subscriber.onNext(true);
+                            subscriber.onCompleted();
+                        }
+                    } catch (Exception e) {
+                        subscriber.onError(e);
+                    }
+                }, null);
+            }
+        });
 
 
     }
 
+    @Override
+    public void onAccountsUpdated(Account[] accounts) {
+    }
+
+
+    @Override
+    public void onLoggedOut() {
+        Timber.v("Received Logout from provider, attempting to log back in");
+        // Retry
+        refreshAuthToken();
+
+    }
 }

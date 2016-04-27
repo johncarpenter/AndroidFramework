@@ -23,8 +23,12 @@ import java.util.List;
  */
 public interface MultiSelectAdapter<T> {
     void toggleSelection(int position);
+
     void clearSelections();
+
     int getSelectedItemCount();
+
     boolean isSelected(int position);
+
     List<T> getSelectedItems();
 }

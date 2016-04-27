@@ -19,16 +19,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 
+import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.twolinessoftware.activities.WelcomeActivity;
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.data.DataManagerModule;
 import com.twolinessoftware.network.NetworkManager;
-import com.twolinessoftware.notifications.GoogleServicesManager;
-import com.twolinessoftware.notifications.GoogleServicesModule;
 import com.twolinessoftware.storage.DataStore;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-
-import junit.framework.Assert;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -39,12 +35,8 @@ import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -87,11 +79,11 @@ public abstract class BaseTest {
         BaseApplication app
                 = (BaseApplication) getInstrumentation().getTargetContext().getApplicationContext();
 
-       mComponent = DaggerMockComponent.builder()
+        mComponent = DaggerMockComponent.builder()
                 .mockApplicationModule(new MockApplicationModule(app))
                 .mockNetworkModule(new MockNetworkModule(app))
                 .googleServicesModule(new GoogleServicesModule(app))
-               .dataManagerModule(new DataManagerModule(app))
+                .dataManagerModule(new DataManagerModule(app))
                 .build();
         app.setComponent(mComponent);
         mComponent.inject(this);
@@ -99,7 +91,7 @@ public abstract class BaseTest {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
         DataStore.getInstance().clear();
         getDataManager().clear();
     }
@@ -111,12 +103,12 @@ public abstract class BaseTest {
         mActivityRule.launchActivity(intent);
     }
 
-    public void launchActivity(){
+    public void launchActivity() {
         launchActivity(null);
     }
 
-    public Activity getActivity(){
-            return mActivityRule.getActivity();
+    public Activity getActivity() {
+        return mActivityRule.getActivity();
     }
 
     public static ViewInteraction matchToolbarTitle(CharSequence title) {
@@ -124,25 +116,28 @@ public abstract class BaseTest {
                 .check(matches(withToolbarTitle(is(title))));
     }
 
-    public GoogleServicesManager getGoogleServicesManager(){
+    public GoogleServicesManager getGoogleServicesManager() {
         return mComponent.googleServicesManager();
     }
 
-    public NetworkManager getNetworkManager(){
+    public NetworkManager getNetworkManager() {
         return mComponent.networkManager();
     }
 
-    public DataManager getDataManager(){
+    public DataManager getDataManager() {
         return mComponent.dataManager();
     }
 
 
     private static Matcher<Object> withToolbarTitle(final Matcher<CharSequence> textMatcher) {
         return new BoundedMatcher<Object, Toolbar>(Toolbar.class) {
-            @Override public boolean matchesSafely(Toolbar toolbar) {
+            @Override
+            public boolean matchesSafely(Toolbar toolbar) {
                 return textMatcher.matches(toolbar.getTitle());
             }
-            @Override public void describeTo(Description description) {
+
+            @Override
+            public void describeTo(Description description) {
                 description.appendText("with toolbar title: ");
                 textMatcher.describeTo(description);
             }
@@ -154,7 +149,7 @@ public abstract class BaseTest {
 
             @Override
             public boolean matchesSafely(View view) {
-                if (!(view instanceof EditText)) {
+                if ( !(view instanceof EditText) ) {
                     return false;
                 }
                 EditText editText = (EditText) view;
@@ -169,7 +164,7 @@ public abstract class BaseTest {
     }
 
 
-    public void delay(long ms){
+    public void delay(long ms) {
         try {
             Thread.sleep(ms);
         } catch (InterruptedException e) {
@@ -178,14 +173,12 @@ public abstract class BaseTest {
     }
 
     @SuppressWarnings("unchecked")
-    public static Matcher<View> withRecyclerView(@IdRes int viewId)
-    {
+    public static Matcher<View> withRecyclerView(@IdRes int viewId) {
         return allOf(isAssignableFrom(RecyclerView.class), withId(viewId));
     }
 
     @SuppressWarnings("unchecked")
-    public static ViewInteraction onRecyclerItemView(@IdRes int recyclerView,@IdRes int identifyingView, Matcher<View> identifyingMatcher, Matcher<View> childMatcher)
-    {
+    public static ViewInteraction onRecyclerItemView(@IdRes int recyclerView, @IdRes int identifyingView, Matcher<View> identifyingMatcher, Matcher<View> childMatcher) {
         Matcher<View> itemView = allOf(withParent(withRecyclerView(recyclerView)),
                 withChild(allOf(withId(identifyingView), identifyingMatcher)));
         return Espresso.onView(allOf(isDescendantOfA(itemView), childMatcher));
@@ -193,8 +186,9 @@ public abstract class BaseTest {
 
     public static ViewAssertion hasItemsCount(final int count) {
         return new ViewAssertion() {
-            @Override public void check(View view, NoMatchingViewException e) {
-                if (!(view instanceof RecyclerView)) {
+            @Override
+            public void check(View view, NoMatchingViewException e) {
+                if ( !(view instanceof RecyclerView) ) {
                     throw e;
                 }
                 RecyclerView rv = (RecyclerView) view;
@@ -204,41 +198,18 @@ public abstract class BaseTest {
     }
 
 
-    public Activity getCurrentActivity(){
+    public Activity getCurrentActivity() {
 
         getInstrumentation().runOnMainSync(new Runnable() {
             public void run() {
                 Collection resumedActivities = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-                if (resumedActivities.iterator().hasNext()){
-                    currentActivity = (Activity)resumedActivities.iterator().next();
+                if ( resumedActivities.iterator().hasNext() ) {
+                    currentActivity = (Activity) resumedActivities.iterator().next();
                 }
             }
         });
 
         return currentActivity;
-    }
-
-
-    public void waitForTestingEvent(final int eventId){
-
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        final Object busLock = new Object(){
-            public void onEventMainThread(TestingStatusEvent event){
-                if(event.getEventId() == eventId) {
-                    latch.countDown();
-                }
-            }
-        };
-        EventBus.getDefault().register(busLock);
-
-        try {
-            latch.await(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            Assert.fail("Interrupted");
-        }
-
-        EventBus.getDefault().unregister(busLock);
     }
 
 

@@ -3,7 +3,6 @@ package com.twolinessoftware.network;
 import android.content.Context;
 
 import com.twolinessoftware.Config;
-import com.twolinessoftware.Constants;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,9 +21,14 @@ public class NetworkModule {
         mContext = context;
     }
 
+    /**
+     * API Services are defined here
+     *
+     * @return
+     */
     @Provides
     BaseApiService provideBaseApiService() {
-        return new RetrofitHelper().newBaseApiService(Config.URL_ENDPOINT);
+        return new BaseRetrofitHelper().newBaseApiService(Config.URL_ENDPOINT);
     }
 
     @Provides

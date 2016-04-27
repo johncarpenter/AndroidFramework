@@ -21,6 +21,7 @@ package com.twolinessoftware.adapters;
  */
 public interface AdapterLifecycleInterface {
     void onPause();
+
     void onResume();
 
 }

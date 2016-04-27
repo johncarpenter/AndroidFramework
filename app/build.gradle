@@ -4,10 +4,10 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "com.twolinessoftware.android"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 23
 
         versionCode 1
@@ -18,6 +18,8 @@ android {
     packagingOptions {
         // required for testing
         exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
     buildTypes {
         release {
@@ -32,11 +34,37 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dexOptions {
+        preDexLibraries = false
+        javaMaxHeapSize "2g"
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+
+        // set to true to turn off analysis progress reporting by lint
+        quiet true
+        // if true, stop the gradle build if errors are found
+        abortOnError true
+        // if true, only report errors
+        ignoreWarnings true
+
+        xmlReport false
+
+        htmlReport true
+        // optional path to report (default will be lint-results.html in the builddir)
+        htmlOutput file("build/reports/lint/lint-report.html")
+
+        // set to true to have all release builds run lint on issues with severity=fatal
+        // and abort the build (controlled by abortOnError above) if fatal issues are found
+        checkReleaseBuilds true
+    }
 }
 
 dependencies {
 
-    final SUPPORT_LIBRARY_VERSION = '23.0.1'
+    final SUPPORT_LIBRARY_VERSION = '23.3.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -56,11 +84,9 @@ dependencies {
     // RxJava Extensions. Make threading easier
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.0.14'
-    
-    // Prevents leaks by tying observables to lifecycle
-    compile 'com.trello:rxlifecycle:0.3.0'
-    compile 'com.trello:rxlifecycle-components:0.3.0'
 
+    // Prevents leaks by tying observables to lifecycle
+    compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
 
     // Wanted to use retrofit 2, but its in beta. Don't update to 2 major changes in ver 2
     compile 'com.squareup.retrofit:retrofit:1.9.0'
@@ -74,7 +100,7 @@ dependencies {
     compile 'com.jakewharton.timber:timber:3.1.0'
 
     // Google Specific Utils
-    final GOOGLE_PLAY_VERSION = '8.1.0'
+    final GOOGLE_PLAY_VERSION = '8.4.0'
     compile "com.google.android.gms:play-services-maps:$GOOGLE_PLAY_VERSION"
     compile "com.google.android.gms:play-services-location:$GOOGLE_PLAY_VERSION"
     compile "com.google.android.gms:play-services-gcm:$GOOGLE_PLAY_VERSION"
@@ -86,16 +112,23 @@ dependencies {
     // Custom fonts (located in /asset)
     compile 'com.tsengvn:Typekit:1.0.0'
 
+    // Icons
+    compile 'com.joanzapata.iconify:android-iconify-material:2.2.2'
+
     // Page indicators
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
 
     // Offline storage of data
     compile 'nl.qbusict:cupboard:2.1.4'
 
-    // Error messages
-    compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
-        exclude group: 'com.google.android', module: 'support-v4'
-    }
+
+    compile 'com.firebase:firebase-client-android:2.5.0'
+
+    // Text Validation
+    compile 'com.mobsandgeeks:android-saripaar:2.0.3'
+
+    // Permissions Utility
+    compile 'com.karumi:dexter:2.2.2'
 
     /**
      * Testing Dependencies from here on
@@ -105,18 +138,17 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
 
-
     // Force usage of support annotations in the test app, since it is internally used by the runner module.
     androidTestApt "com.google.dagger:dagger-compiler:2.0"
 
     androidTestCompile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
-    androidTestCompile ('com.android.support.test.espresso:espresso-core:2.2') {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile ('com.android.support.test:runner:0.3') {
+    androidTestCompile('com.android.support.test:runner:0.3') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile ('com.android.support.test:rules:0.3') {
+    androidTestCompile('com.android.support.test:rules:0.3') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
 

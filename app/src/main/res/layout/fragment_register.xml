@@ -15,58 +15,70 @@
   ~   limitations under the License.
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="?android:attr/textAppearanceLarge"
-            android:layout_marginLeft="15dip"
-            android:text="@string/register_fragment_title" />
+            android:layout_marginLeft="@dimen/spacing_double"
+            android:text="@string/register_fragment_title"/>
 
-        <AutoCompleteTextView
-            android:id="@+id/edit_email"
-            android:layout_marginLeft="@dimen/content_margins"
-            android:layout_marginRight="@dimen/content_margins"
-            android:layout_marginBottom="@dimen/content_margins_half"
-            android:layout_marginTop="@dimen/content_margins_half"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:drawablePadding="@dimen/content_margins_half"
-            android:inputType="textEmailAddress"
-            android:hint="@string/register_fragment_email" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/edit_password"
-            android:layout_marginLeft="@dimen/content_margins"
-            android:layout_marginRight="@dimen/content_margins"
-            android:layout_marginBottom="@dimen/content_margins_half"
-            android:layout_marginTop="@dimen/content_margins_half"
+            <AutoCompleteTextView
+                android:id="@+id/edit_email"
+                android:layout_marginLeft="@dimen/spacing_double"
+                android:layout_marginRight="@dimen/spacing_double"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:drawablePadding="@dimen/spacing_normal"
+                android:inputType="textEmailAddress"
+                android:hint="@string/register_fragment_email"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:hint="@string/register_fragment_password"
-            android:inputType="textPassword" />
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_password"
+                android:layout_marginLeft="@dimen/spacing_double"
+                android:layout_marginRight="@dimen/spacing_double"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:hint="@string/register_fragment_password"
+                android:inputType="textPassword"/>
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/button_register"
-            android:layout_marginLeft="@dimen/content_margins"
-            android:layout_marginRight="@dimen/content_margins"
-            android:layout_marginBottom="@dimen/content_margins_half"
-            android:layout_marginTop="@dimen/content_margins_half"
+            android:layout_marginLeft="@dimen/spacing_double"
+            android:layout_marginRight="@dimen/spacing_double"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/pal_button"
-            android:text="@string/register_fragment_button" />
+            android:text="@string/register_fragment_button"/>
 
 
     </LinearLayout>

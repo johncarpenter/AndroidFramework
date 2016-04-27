@@ -1,83 +1,52 @@
 <resources>
 
-	<!-- UI Element Styles -->
-	<style name="BaseApplication.Toolbar" parent="Theme.AppCompat.NoActionBar" >
-		<item name="android:textColorPrimary">@color/pal_grey_1</item>
-		<item name="android:textColorSecondary">@color/pal_grey_1</item>
-		<item name="colorPrimary">@color/pal_4</item>
-		<item name="colorPrimaryDark">@color/pal_5</item>
-		<item name="actionMenuTextColor">@color/pal_grey_1</item>
+    <!-- UI Element Styles -->
+    <style name="BaseApplication.TitlePageIndicator">
+        <item name="android:textColor">?android:attr/textColorHighlight</item>
+        <item name="android:layout_marginTop">-2dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">@dimen/spacing_double</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:background">@color/pal_grey_2</item>
 
-		<item name="android:popupBackground">@color/pal_grey_1</item>
-		<item name="android:colorBackground">@color/pal_grey_1</item>
-	</style>
-	<!-- Layout and more styles-->
+        <item name="footerColor">@color/pal_grey_4</item>
+        <item name="footerLineHeight">1dp</item>
+        <item name="footerIndicatorStyle">underline</item>
 
+        <item name="selectedColor">@color/pal_grey_6</item>
+        <item name="selectedBold">true</item>
+    </style>
 
-	<style name="BaseApplication.CaptionBar">
-		<item name="android:textColor">?android:attr/textColorHighlight</item>
-		<item name="android:layout_marginTop">-2dp</item>
-		<item name="android:textAllCaps">true</item>
-		<item name="android:textStyle">bold</item>
-		<item name="android:paddingLeft">@dimen/content_margins</item>
-		<item name="android:paddingTop">2dp</item>
-		<item name="android:paddingBottom">2dp</item>
-		<item name="android:background">@color/pal_grey_2</item>
-	</style>
+    <style name="BaseApplication.ButtonFlat" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">?android:attr/textColorHighlight</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">@dimen/spacing_double</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:background">@drawable/button</item>
+    </style>
 
-
-	<style name="BaseApplication.TitlePageIndicator">
-		<item name="android:textColor">?android:attr/textColorHighlight</item>
-		<item name="android:layout_marginTop">-2dp</item>
-		<item name="android:textAllCaps">true</item>
-		<item name="android:textStyle">bold</item>
-		<item name="android:paddingLeft">@dimen/content_margins</item>
-		<item name="android:paddingTop">2dp</item>
-		<item name="android:paddingBottom">2dp</item>
-		<item name="android:background">@color/pal_grey_2</item>
-
-		<item name="footerColor">@color/pal_grey_4</item>
-		<item name="footerLineHeight">1dp</item>
-		<item name="footerIndicatorStyle">underline</item>
-
-		<item name="selectedColor">@color/pal_grey_6</item>
-		<item name="selectedBold">true</item>
-	</style>
-
-	<style name="BaseApplication.ButtonFlat" parent="android:Widget.Holo.Button">
-		<item name="android:textColor">?android:attr/textColorHighlight</item>
-		<item name="android:textAllCaps">true</item>
-		<item name="android:textStyle">bold</item>
-		<item name="android:paddingLeft">@dimen/content_margins</item>
-		<item name="android:paddingTop">2dp</item>
-		<item name="android:paddingBottom">2dp</item>
-		<item name="android:background">@drawable/button</item>
-	</style>
-
-	<style name="BaseApplication.ActionMode" parent="Base.Widget.AppCompat.ActionMode">
-		<item name="android:background">?attr/colorPrimary</item>
-		<item name="android:height">?attr/actionBarSize</item>
-
-		<item name="android:textColorPrimary">@color/pal_grey_1</item>
-		<item name="android:textColorSecondary">@color/pal_grey_1</item>
-		<item name="actionMenuTextColor">@color/pal_grey_1</item>
-
-		<item name="android:titleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse</item>
-		<item name="android:subtitleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle.Inverse</item>
-		<item name="closeItemLayout">@layout/abc_action_mode_close_item_material</item>
+    <style name="BaseApplication.ButtonFlat.Borderless" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">@dimen/spacing_double</item>
+    </style>
 
 
-	</style>
+    <!-- Text Styling -->
+    <style name="BaseApplication.TextStyle.List.Caption" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?android:attr/textColorHighlight</item>
+        <item name="android:layout_marginTop">-2dp</item>
+        <item name="android:textSize">@dimen/text_size_med</item>
+    </style>
 
-	<style name="BaseApplication.TextStyle.List.Caption" parent="TextAppearance.AppCompat">
-		<item name="android:textColor">?android:attr/textColorHighlight</item>
-		<item name="android:layout_marginTop">-2dp</item>
-		<item name="android:textSize">@dimen/text_size_med</item>
-	</style>
-
-	<style name="BaseApplication.TextStyle.List.Title" parent="TextAppearance.AppCompat">
-		<item name="android:textStyle">bold</item>
-		<item name="android:textSize">@dimen/text_size_lrg</item>
-	</style>
+    <style name="BaseApplication.TextStyle.List.Title" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_lrg</item>
+    </style>
 
 </resources>
