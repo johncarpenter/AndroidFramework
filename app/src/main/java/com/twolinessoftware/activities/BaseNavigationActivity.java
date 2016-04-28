@@ -32,6 +32,7 @@ import com.joanzapata.iconify.Icon;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 import com.twolinessoftware.R;
+import com.twolinessoftware.utils.ThemeUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -169,7 +170,12 @@ public abstract class BaseNavigationActivity extends BaseActivity {
         MenuItem item = menu.findItem(menuResourceId);
         Timber.v("setup menu item icon: " + item + ", checked: " + checked);
         item.setChecked(checked);
-        item.setIcon(new IconDrawable(BaseNavigationActivity.this, iconName).colorRes(checked ? R.color.pal_grey_4 : R.color.pal_white));
+
+        int primaryColor = ThemeUtil.getPrimaryColor(this);
+        int accentColor = ThemeUtil.getAccentColor(this);
+
+
+        item.setIcon(new IconDrawable(BaseNavigationActivity.this, iconName).color(checked ? primaryColor : accentColor));
     }
 
     public void collapseToolbar() {

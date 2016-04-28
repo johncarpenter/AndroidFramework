@@ -16,7 +16,11 @@
 
 package com.twolinessoftware.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.gson.annotations.SerializedName;
+import com.twolinessoftware.utils.JacksonUtil;
 
 import org.joda.time.DateTime;
 
@@ -28,13 +32,19 @@ import java.util.UUID;
 public abstract class DataModel {
 
     @SerializedName("uid")
+    @JsonProperty("uid")
     private String mUid;
 
-
     @SerializedName("mCreated")
+    @JsonProperty("created")
+    @JsonDeserialize(using = JacksonUtil.DateTimeDeserializer.class)
+    @JsonSerialize(using = JacksonUtil.DateTimeSerializer.class)
     private DateTime mCreated;
 
     @SerializedName("mUpdated")
+    @JsonProperty("updated")
+    @JsonDeserialize(using = JacksonUtil.DateTimeDeserializer.class)
+    @JsonSerialize(using = JacksonUtil.DateTimeSerializer.class)
     private DateTime mUpdated;
 
 

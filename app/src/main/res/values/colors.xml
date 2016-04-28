@@ -35,9 +35,14 @@
 
 
     <!-- Color Theme -->
+    <!-- Primary Dark -->
     <color name="pal_5">@color/green_900</color>
+
+    <!-- Primary -->
     <color name="pal_4">@color/green_700</color>
     <color name="pal_3">@color/green_500</color>
+
+    <!-- Accent -->
     <color name="pal_2">@color/green_300</color>
     <color name="pal_1">@color/green_100</color>
     <color name="pal_0">@color/green_50</color>

@@ -16,6 +16,7 @@
 
 package com.twolinessoftware.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -24,6 +25,7 @@ import com.google.gson.annotations.SerializedName;
 public class User extends DataModel {
 
     @SerializedName("email")
+    @JsonProperty("email")
     private String mEmail;
 
 

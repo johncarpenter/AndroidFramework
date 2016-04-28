@@ -70,6 +70,7 @@ public class FirebaseUserManager implements UserManager {
 
             @Override
             public void call(Subscriber<? super User> subscriber) {
+
                 // Create User Profile since it doesn't exist
                 User user = mPreferencesHelper.getUserProfile();
                 Timber.v("Thawing User Profile:" + user.toString());
@@ -77,6 +78,7 @@ public class FirebaseUserManager implements UserManager {
                 mPreferencesHelper.storeUserProfile(user);
                 subscriber.onNext(user);
                 subscriber.onCompleted();
+
             }
         });
 
