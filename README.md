@@ -46,7 +46,7 @@ The following code analysis tools are set up on this project:
 ./gradlew findbugs
 ```
 
-* [Checkstyle](http://checkstyle.sourceforge.net/): It ensures that the code style follows [our Android code guidelines](https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md#2-code-guidelines). See our [checkstyle config file](config/quality/checkstyle/checkstyle-config.xml).
+* [Checkstyle](http://checkstyle.sourceforge.net/): It ensures that the code style follows [Ribot Android code guidelines](https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md#2-code-guidelines). See Ribot [checkstyle config file](config/quality/checkstyle/checkstyle-config.xml).
 
 ```
 ./gradlew checkstyle
