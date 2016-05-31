@@ -140,10 +140,13 @@ public class FirebaseUserManager implements UserManager {
                     @Override
                     public void onAuthenticationError(FirebaseError firebaseError) {
 
+                        Timber.v("Login Error:"+firebaseError.getCode()+":"+firebaseError.getDetails());
+
                         switch (firebaseError.getCode()) {
                             case FirebaseError.INVALID_CREDENTIALS:
                             case FirebaseError.INVALID_EMAIL:
                             case FirebaseError.INVALID_PASSWORD:
+                            case FirebaseError.USER_DOES_NOT_EXIST:
                                 subscriber.onError(new ErrorException(ErrorException.Code.INVALID_CREDENTIALS));
                                 return;
                             default:

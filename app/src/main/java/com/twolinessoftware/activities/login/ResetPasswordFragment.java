@@ -178,4 +178,9 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
             }
         }
     }
+
+    @Override
+    public void setButtonsEnabled(boolean busy) {
+
+    }
 }

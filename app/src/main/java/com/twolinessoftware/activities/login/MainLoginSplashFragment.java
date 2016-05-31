@@ -37,6 +37,7 @@ public class MainLoginSplashFragment extends BaseFragment {
 
     @Inject
     MainLoginSplashPresenter mMainLoginSplashPresenter;
+
     private LoginViewCallback mCallback;
 
     public static MainLoginSplashFragment newInstance() {
@@ -46,11 +47,12 @@ public class MainLoginSplashFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        Timber.v("Attaching main login");
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
         if ( context instanceof LoginViewCallback ) {
             mCallback = (LoginViewCallback) context;
+
             mMainLoginSplashPresenter.attachView(mCallback);
         } else {
             Timber.e("Fragment called outside of Login Context");
@@ -61,23 +63,25 @@ public class MainLoginSplashFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Timber.v("Detaching Presenter");
         mMainLoginSplashPresenter.detachView();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Timber.v("Restoring view state");
+
+        setToolbarVisibility(false);
+        enableBack(false);
     }
+
 
     @Override
     protected int setContentView() {
         return R.layout.fragment_main_login;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @OnClick(R.id.button_register)
     public void onButtonRegister() {
@@ -89,4 +93,9 @@ public class MainLoginSplashFragment extends BaseFragment {
         mMainLoginSplashPresenter.navigateToSignIn();
     }
 
+
+    @Override
+    public void setButtonsEnabled(boolean busy) {
+
+    }
 }

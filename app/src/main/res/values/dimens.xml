@@ -22,6 +22,9 @@
     <dimen name="spacing_double">16dp</dimen>
     <dimen name="spacing_huge">72dp</dimen>
 
+    <!-- Minimum button sizes -->
+    <dimen name="button_min_size">48dp</dimen>
+
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">320dp</dimen>

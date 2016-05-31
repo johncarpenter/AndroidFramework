@@ -75,6 +75,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
         mAuthenticationManager = BaseApplication.get(this).getComponent().authenticationManager();
 
+        if ( savedInstanceState != null ) {
+            BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().getFragment(
+                    savedInstanceState, BaseFragment.class.getName());
+            setFragment(baseFragment, false);
+        }
+
     }
 
     public int getContentView() {
@@ -87,6 +93,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if ( getCurrentFragment() != null ) {
+            getSupportFragmentManager()
+                    .putFragment(outState, BaseFragment.class.getName(), getCurrentFragment());
+        }
+    }
+
 
     public Toolbar getToolbar() {
         return mToolbar;
@@ -96,14 +111,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         setFragment(fragment, true);
     }
 
-    public void setFragmentAtTop(Fragment fragment) {
-        clearBackStack();
-        setFragment(fragment, false);
-    }
-
-
-    public Fragment getCurrentFragment() {
-        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+    public BaseFragment getCurrentFragment() {
+        return (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
     public void setFragment(Fragment fragment, boolean addToBackstack) {
@@ -135,7 +144,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
         FragmentManager fm = getSupportFragmentManager();
         if ( fm.getBackStackEntryCount() > 0 ) {
-            fm.popBackStack();
+
+            boolean consume = false;
+            if ( getCurrentFragment() != null ) {
+                consume = getCurrentFragment().onBackPressed();
+            }
+
+            if ( !consume ) {
+                fm.popBackStack();
+            }
         } else {
             super.onBackPressed();
         }
@@ -179,6 +196,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         if ( !mAuthenticationManager.isLoggedIn() ) {
             Timber.e("This activity requires a login context");
             startActivityForResult(new Intent(BaseActivity.this, LoginActivity.class), REQUEST_LOGIN);
+            finish();
             return false;
         }
         return true;
@@ -201,15 +219,11 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         return true;
     }
 
-    public void setToolbarVisible(boolean visible) {
-        if ( getSupportActionBar() != null ) {
-            if ( visible ) {
-                getSupportActionBar().show();
-            } else {
-                getSupportActionBar().hide();
-            }
-        }
+
+    public void setTitle(String title){
+        mToolbar.setTitle(title);
     }
+
 
 
     @SuppressLint("CommitPrefEdits")
@@ -241,8 +255,5 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         mAuthenticationManager.logout(this);
     }
 
-    @Override
-    public void setToolbarVisibility(boolean visible) {
-        setToolbarVisible(visible);
-    }
+
 }

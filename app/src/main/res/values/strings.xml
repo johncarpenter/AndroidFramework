@@ -44,16 +44,16 @@
 
     <!-- Login Fragment -->
     <string name="login_fragment_email">Email Address</string>
-    <string name="login_fragment_title">Login</string>
+    <string name="login_fragment_title">Sign In</string>
     <string name="login_fragment_password">Password</string>
     <string name="login_fragment_button">Login</string>
     <string name="login_password_forgot">Forgot Password</string>
 
     <!-- Register Fragment -->
-    <string name="register_fragment_title">Register</string>
+    <string name="register_fragment_title">Sign Up</string>
     <string name="register_fragment_email">Email Address</string>
     <string name="register_fragment_password">Password</string>
-    <string name="register_fragment_button">Register</string>
+    <string name="register_fragment_button">Sign Up</string>
 
     <!-- Reset Password Fragment -->
     <string name="reset_password_title">Forgot Password</string>
@@ -66,7 +66,7 @@
     <string name="main_login_fragment_welcome">Welcome</string>
     <string name="main_login_fragment_welcome_caption">Stuff About</string>
     <string name="main_login_fragment_create_account">Sign Up</string>
-    <string name="main_login_fragment_login">Sign In</string>
+    <string name="main_login_fragment_login">Already a User? Sign In</string>
 
     <!-- Menu Titles -->
     <string name="menu_register">Register</string>

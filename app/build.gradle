@@ -133,12 +133,8 @@ dependencies {
     // Icons
     compile 'com.joanzapata.iconify:android-iconify-material:2.2.2'
 
-    // Page indicators
-    compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
-
     // Offline storage of data
     compile 'nl.qbusict:cupboard:2.1.4'
-
 
     compile 'com.firebase:firebase-client-android:2.5.0'
 
@@ -147,6 +143,13 @@ dependencies {
 
     // Permissions Utility
     compile 'com.karumi:dexter:2.2.2'
+
+    // Progress Bar View
+    compile 'com.github.castorflex.smoothprogressbar:library:1.1.0'
+
+    // Icepick and processor
+    compile 'frankiesardo:icepick:3.2.0'
+    provided 'frankiesardo:icepick-processor:3.2.0'
 
     /**
      * Testing Dependencies from here on
@@ -187,4 +190,5 @@ dependencies {
 
     androidTestCompile 'com.squareup.okhttp:mockwebserver:2.5.0'
 
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
 }

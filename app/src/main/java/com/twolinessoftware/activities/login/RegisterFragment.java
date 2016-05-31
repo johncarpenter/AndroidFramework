@@ -122,8 +122,13 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
 
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        getToolbar().setTitle(getString(R.string.register_fragment_title));
+        enableBack(true);
+        setToolbarVisibility(true);
+
 
         prepopulateAccount();
 
@@ -190,5 +195,10 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
                 Timber.v("Unknown validation error:");
             }
         }
+    }
+
+    @Override
+    public void setButtonsEnabled(boolean busy) {
+
     }
 }

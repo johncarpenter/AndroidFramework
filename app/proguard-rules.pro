@@ -152,6 +152,11 @@
 -keep class com.mobsandgeeks.saripaar.** {*;}
 -keep @com.mobsandgeeks.saripaar.annotation.ValidateUsing class * {*;}
 
-
-# https://github.com/JakeWharton/ViewPagerIndicator/issues/366
--dontwarn com.viewpagerindicator.**
+# Icepick
+-dontwarn icepick.**
+-keep class icepick.** { *; }
+-keep class **$$Icepick { *; }
+-keepclasseswithmembernames class * {
+    @icepick.* <fields>;
+}
+-keepnames class * { @icepick.State *;}

@@ -28,23 +28,29 @@
 
         <item name="colorAccent">@color/pal_2</item>
 
-        <item name="android:textColor">@color/pal_grey_6</item>
-        <item name="android:textColorPrimary">@color/pal_grey_6</item>
-        <item name="android:textColorPrimaryInverse">@color/pal_grey_6</item>
-        <item name="android:textColorSecondary">@color/pal_grey_6</item>
-        <item name="android:textColorHighlight">@color/pal_white</item>
 
-        <item name="android:windowBackground">@color/pal_grey_1</item>
+        <!--  Control Text (i.e. Search View) -->
+        <item name="colorControlNormal">@color/pal_2</item>
+        <item name="colorControlActivated">@color/pal_5</item>
+        <item name="colorControlHighlight">@color/pal_2</item>
+
+        <item name="android:textColor">@color/pal_primary_dark</item>
+        <item name="android:textColorPrimary">@color/pal_primary_dark</item>
+        <item name="android:textColorPrimaryInverse">@color/pal_primary_light</item>
+        <item name="android:textColorSecondary">@color/pal_secondary_dark</item>
+        <item name="android:textColorHighlight">@color/pal_primary_light</item>
+
+
+        <item name="android:windowBackground">@color/pal_primary_light</item>
 
         <!-- Window Setup -->
         <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
         <item name="android:windowActionModeOverlay">true</item>
         <item name="windowActionModeOverlay">true</item>
 
         <!-- Widget Styles -->
-        <item name="vpiTitlePageIndicatorStyle">@style/BaseApplication.TitlePageIndicator</item>
-        <item name="android:buttonStyle">@style/BaseApplication.ButtonFlat</item>
+        <item name="android:buttonStyle">@style/BaseApplication.Button</item>
 
     </style>
 

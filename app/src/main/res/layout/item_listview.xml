@@ -90,7 +90,7 @@
         <View
             android:layout_width="1px"
             android:layout_height="match_parent"
-            android:background="@color/pal_grey_5"/>
+            android:background="@color/pal_divider_dark"/>
 
 
     </LinearLayout>
@@ -98,5 +98,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/pal_grey_5"/>
+        android:background="@color/pal_divider_dark"/>
 </LinearLayout>

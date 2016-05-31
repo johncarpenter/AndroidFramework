@@ -19,6 +19,8 @@ package com.twolinessoftware.utils;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 
 import java.util.HashSet;
@@ -45,5 +47,21 @@ public class ViewUtils {
         }
         String[] emailArray = emailSet.toArray(new String[emailSet.size()]);
         return new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, emailArray);
+    }
+
+
+    public static void clearFocusAndHideKeyboard(View view) {
+        view.clearFocus();
+
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+    }
+
+    public static void requestFocusAndShowKeyboard(View view) {
+        view.requestFocus();
+
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
     }
 }

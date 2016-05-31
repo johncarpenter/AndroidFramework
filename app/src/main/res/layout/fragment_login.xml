@@ -23,16 +23,9 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/spacing_double"
         android:layout_weight="1"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?android:attr/textAppearanceLarge"
-            android:layout_marginLeft="@dimen/spacing_double"
-            android:text="@string/login_fragment_title"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -52,7 +45,7 @@
                 android:drawablePadding="@dimen/spacing_normal"
                 android:nextFocusDown="@+id/edit_password"
                 android:nextFocusForward="@+id/edit_password"
-                android:imeOptions="actionNext"/>
+                android:imeOptions="actionNext|flagNoExtractUi"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -72,7 +65,7 @@
                 android:drawablePadding="@dimen/spacing_normal"
                 android:hint="@string/login_fragment_password"
                 android:inputType="textPassword"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionDone|flagNoExtractUi"
                 />
 
         </android.support.design.widget.TextInputLayout>
@@ -85,7 +78,6 @@
             android:layout_marginTop="@dimen/spacing_normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/pal_button"
             android:text="@string/login_fragment_button"/>
 
         <TextView
@@ -93,7 +85,9 @@
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            style="?android:textAppearanceMedium"
+            android:gravity="center"
+            android:minHeight="@dimen/button_min_size"
+            style="@style/TextAppearance.AppCompat.Body2"
             android:bufferType="spannable"
             android:text="@string/login_password_forgot"
             android:layout_margin="@dimen/spacing_normal"/>

@@ -64,7 +64,9 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
             finish();
         }
 
-        setFragment(MainLoginSplashFragment.newInstance(), false);
+        if(savedInstanceState == null) {
+            setFragment(MainLoginSplashFragment.newInstance(), false);
+        }
 
         m_accountAuthenticatorResponse =
                 getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
@@ -72,8 +74,6 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
         if ( m_accountAuthenticatorResponse != null ) {
             m_accountAuthenticatorResponse.onRequestContinued();
         }
-
-        setToolbarVisible(false);
 
     }
 
@@ -117,6 +117,7 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
 
     @Override
     public void onFinishLogin(Intent intent) {
+        getCurrentFragment().setButtonsEnabled(true);
         Timber.v("Finishing Login");
         setAccountAuthenticatorResult(intent.getExtras());
         setResult(RESULT_OK, intent);
@@ -132,6 +133,9 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
     @Override
     public void onError(ErrorException.Code code) {
         Timber.v("Handling error:" + code.name());
+
+        getCurrentFragment().setButtonsEnabled(true);
+
         // Show Error to User
         switch (code) {
             case INVALID_CREDENTIALS:
@@ -140,11 +144,14 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
             case EMAIL_TAKEN:
                 showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_register_email_taken)), "dialog");
                 break;
+
             default:
                 showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_communication_generic)), "dialog");
                 break;
         }
     }
+
+
 
 
 }

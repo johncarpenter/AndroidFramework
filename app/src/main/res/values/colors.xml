@@ -19,12 +19,17 @@
     <color name="pal_black">@color/black</color>
     <color name="pal_white">@color/white</color>
 
-    <color name="pal_grey_6">@color/grey_900</color><!--Darkest-->
-    <color name="pal_grey_5">@color/grey_700</color>
-    <color name="pal_grey_4">@color/grey_500</color>
-    <color name="pal_grey_3">@color/grey_300</color>
-    <color name="pal_grey_2">@color/grey_100</color>
-    <color name="pal_grey_1">@color/grey_50</color><!--Lightest-->
+
+    <!-- https://www.google.com/design/spec/style/color.html#color-text-background-colors -->
+    <color name="pal_primary_light">#FFFFFFFF</color>
+    <color name="pal_secondary_light">#B3FFFFFF</color>
+    <color name="pal_disabled_light">#80FFFFFF</color>
+    <color name="pal_divider_light">#23FFFFFF</color>
+
+    <color name="pal_primary_dark">#E3000000</color>
+    <color name="pal_secondary_dark">#8B000000</color>
+    <color name="pal_disabled_dark">#64000000</color>
+    <color name="pal_divider_dark">#1C000000</color>
 
 
     <color name="pal_grey_5_trans">#88000000</color>
@@ -48,7 +53,14 @@
     <color name="pal_0">@color/green_50</color>
     <!--Lightest-->
 
-    <color name="pal_button">@color/green_900</color>
+    <!-- Progress Bar Colors -->
+    <integer-array name="progressbar_colors">
+        <item>@color/green_500</item>
+        <item>@color/yellow_500</item>
+        <item>@color/blue_500</item>
+        <item>@color/red_500</item>
+    </integer-array>
+
 
     <!-- Material Design Colors -->
     <!-- Material Design - Color Palette -->

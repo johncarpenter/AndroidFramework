@@ -19,18 +19,12 @@
               android:layout_height="fill_parent"
               android:orientation="vertical">
 
-    <LinearLayout
+     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/spacing_double"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?android:attr/textAppearanceLarge"
-            android:layout_marginLeft="@dimen/spacing_double"
-            android:text="@string/register_fragment_title"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -44,10 +38,11 @@
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:drawablePadding="@dimen/spacing_normal"
                 android:inputType="textEmailAddress"
-                android:hint="@string/register_fragment_email"/>
+                android:hint="@string/register_fragment_email"
+                android:nextFocusDown="@id/edit_password"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -63,9 +58,10 @@
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:hint="@string/register_fragment_password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                android:imeOptions="actionGo"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -77,7 +73,6 @@
             android:layout_marginTop="@dimen/spacing_normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/pal_button"
             android:text="@string/register_fragment_button"/>
 
 

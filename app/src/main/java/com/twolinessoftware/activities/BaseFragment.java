@@ -20,18 +20,39 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
+import icepick.Icepick;
 import rx.subscriptions.CompositeSubscription;
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements UICallback{
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     protected abstract int setContentView();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Icepick.restoreInstanceState(this,savedInstanceState);
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
 
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,16 +88,32 @@ public abstract class BaseFragment extends Fragment {
         this.activity = (BaseActivity) context;
     }
 
-
     public BaseActivity getBaseActivity() {
         return activity;
     }
 
-    public void setTitle(String title) {
-        getBaseActivity().getToolbar().setTitle(title);
+    public Toolbar getToolbar(){ return activity.getToolbar();}
+
+    public void enableBack(boolean back){
+        activity.enableBack(back);
     }
 
-    public void enableBack(boolean enable) {
-        getBaseActivity().enableBack(enable);
+    public void setToolbarVisibility(boolean visible){
+        if(getBaseActivity().getSupportActionBar() != null){
+            if(visible){
+                getBaseActivity().getSupportActionBar().show();
+            }else{
+                getBaseActivity().getSupportActionBar().hide();
+            }
+        }
     }
+
+    /**
+     *
+     * Called from #OnBackPressed in BaseActivity
+     *
+     * @return true if the action is consumed.
+     */
+    public boolean onBackPressed(){ return false;}
+
 }

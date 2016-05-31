@@ -24,6 +24,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.joanzapata.iconify.IconDrawable;
@@ -35,6 +36,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.R;
 import com.twolinessoftware.activities.BaseFragment;
+import com.twolinessoftware.activities.ButtonsEnabledTextWatcher;
 import com.twolinessoftware.utils.ThemeUtil;
 import com.twolinessoftware.utils.ValidationUtil;
 import com.twolinessoftware.utils.ViewUtils;
@@ -45,6 +47,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import icepick.State;
 import timber.log.Timber;
 
 /**
@@ -52,14 +55,19 @@ import timber.log.Timber;
  */
 public class LoginFragment extends BaseFragment implements Validator.ValidationListener {
 
+    @State
     @Email(messageResId = R.string.error_invalid_email)
     @NotEmpty(messageResId = R.string.error_field_required)
     @Bind(R.id.edit_email)
     AutoCompleteTextView mEditEmail;
 
+    @State
     @NotEmpty(messageResId = R.string.error_field_required)
     @Bind(R.id.edit_password)
     EditText mEditPassword;
+
+    @Bind(R.id.button_login)
+    Button mButtonLogin;
 
     @Inject
     LoginPresenter mLoginPresenter;
@@ -72,10 +80,12 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
     private Validator mValidator;
 
 
+    private ButtonsEnabledTextWatcher mEnableTextWatcher = new ButtonsEnabledTextWatcher(this);
+
+
     public static LoginFragment newInstance() {
         return new LoginFragment();
     }
-
 
     @Override
     protected int setContentView() {
@@ -85,21 +95,15 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setHasOptionsMenu(true);
-
-        getBaseActivity().setTitle(R.string.login_fragment_title);
-
         mValidator = new Validator(this);
         mValidator.setValidationListener(this);
-
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        Timber.v("Attaching login");
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
         if ( context instanceof LoginViewCallback ) {
@@ -109,6 +113,7 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
             Timber.e("Fragment called outside of Login Context");
             throw new IllegalArgumentException("Fragment Called Outside of LoginActivity Context");
         }
+
 
     }
 
@@ -120,22 +125,31 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
 
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        getToolbar().setTitle(getString(R.string.login_fragment_title));
+        enableBack(true);
+        setToolbarVisibility(true);
 
         prepopulateAccount();
+
         mEditEmail.setAdapter(ViewUtils.getEmailAddressAdapter(getBaseActivity()));
         mEditEmail.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_email).color(ThemeUtil.getPrimaryColor(getBaseActivity())).actionBarSize(), null, null, null);
+
+        /**
+         * If they click on the email address field after prepopulating it. Erase all of it.
+         */
         mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
             if ( hasfocus ) {
                 mEditEmail.setText("");
             }
             mEditEmail.setOnFocusChangeListener(null);
         });
-
+        mEditEmail.addTextChangedListener(mEnableTextWatcher);
 
         mEditPassword.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_lock_open).color(ThemeUtil.getPrimaryColor(getBaseActivity())).actionBarSize(), null, null, null);
-        mEditPassword.requestFocus();
+        ViewUtils.requestFocusAndShowKeyboard(mEditPassword);
 
         mEditPassword.setOnEditorActionListener((v, actionId, event) -> {
             if ( actionId == EditorInfo.IME_ACTION_DONE ) {
@@ -144,9 +158,14 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
             }
             return false;
         });
+        mEditPassword.addTextChangedListener(mEnableTextWatcher);
 
+        setButtonsEnabled(false);
+
+        mEnableTextWatcher.check();
 
     }
+
 
     private void prepopulateAccount() {
         Account[] accounts = mAccountManager.getAccounts();
@@ -168,8 +187,13 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
         mCallback.onNavigateToForgotPassword();
     }
 
+
     @Override
     public void onValidationSucceeded() {
+        setButtonsEnabled(false);
+
+        ViewUtils.clearFocusAndHideKeyboard(mEditPassword);
+
         String email = mEditEmail.getText().toString().trim();
         String password = mEditPassword.getText().toString().trim();
         mLoginPresenter.login(email, password);
@@ -185,7 +209,6 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
             if ( view instanceof EditText ) {
                 EditText editText = ((EditText) view);
                 editText.setError(message);
-                editText.requestFocus();
                 break;
             } else {
                 Timber.v("Unknown validation error:");
@@ -193,4 +216,8 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
         }
     }
 
+    @Override
+    public void setButtonsEnabled(boolean enabled) {
+        mButtonLogin.setEnabled(enabled);
+    }
 }

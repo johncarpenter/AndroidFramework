@@ -16,40 +16,42 @@
 
 <resources>
 
-    <!-- UI Element Styles -->
-    <style name="BaseApplication.TitlePageIndicator">
-        <item name="android:textColor">?android:attr/textColorHighlight</item>
-        <item name="android:layout_marginTop">-2dp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:paddingLeft">@dimen/spacing_double</item>
-        <item name="android:paddingTop">2dp</item>
-        <item name="android:paddingBottom">2dp</item>
-        <item name="android:background">@color/pal_grey_2</item>
+    <!-- Toolbar -->
+    <style name="BaseApplication.Toolbar" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:textColorPrimary">@color/pal_white</item>
+        <item name="android:textColorSecondary">@color/pal_white</item>
+        <item name="titleTextColor">@color/pal_primary_light</item>
+        <item name="subtitleTextColor">@color/pal_secondary_light</item>
+        <item name="colorControlNormal">@color/pal_primary_light</item>
 
-        <item name="footerColor">@color/pal_grey_4</item>
-        <item name="footerLineHeight">1dp</item>
-        <item name="footerIndicatorStyle">underline</item>
+        <item name="android:popupBackground">@color/pal_white</item>
+        <item name="android:colorBackground">@color/pal_white</item>
 
-        <item name="selectedColor">@color/pal_grey_6</item>
-        <item name="selectedBold">true</item>
     </style>
 
-    <style name="BaseApplication.ButtonFlat" parent="Widget.AppCompat.Button">
-        <item name="android:textColor">?android:attr/textColorHighlight</item>
+
+    <!-- UI Element Styles -->
+    <style name="BaseApplication.Button" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/button_text</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingLeft">@dimen/spacing_double</item>
         <item name="android:paddingTop">2dp</item>
         <item name="android:paddingBottom">2dp</item>
         <item name="android:background">@drawable/button</item>
+        <item name="android:minHeight">@dimen/button_min_size</item>
+        <item name="android:minWidth">@dimen/button_min_size</item>
     </style>
 
-    <style name="BaseApplication.ButtonFlat.Borderless" parent="Widget.AppCompat.Button.Borderless">
+    <style name="BaseApplication.Button.Borderless" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
         <item name="android:padding">@dimen/spacing_double</item>
+        <item name="android:minHeight">@dimen/button_min_size</item>
+        <item name="android:minWidth">@dimen/button_min_size</item>
     </style>
 
 

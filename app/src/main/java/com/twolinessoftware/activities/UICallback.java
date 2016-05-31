@@ -16,14 +16,8 @@
 
 package com.twolinessoftware.activities;
 
-import com.twolinessoftware.ErrorException;
+public interface UICallback {
 
-public interface BaseViewCallback {
-
-    void showProgress(boolean show);
-
-    void onError(ErrorException.Code code);
-
-    void onLogout();
+    void setButtonsEnabled(boolean busy);
 
 }
