@@ -75,12 +75,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
         mAuthenticationManager = BaseApplication.get(this).getComponent().authenticationManager();
 
-        if ( savedInstanceState != null ) {
-            BaseFragment baseFragment = (BaseFragment) getSupportFragmentManager().getFragment(
-                    savedInstanceState, BaseFragment.class.getName());
-            setFragment(baseFragment, false);
-        }
-
     }
 
     public int getContentView() {
@@ -92,16 +86,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if ( getCurrentFragment() != null ) {
-            getSupportFragmentManager()
-                    .putFragment(outState, BaseFragment.class.getName(), getCurrentFragment());
-        }
-    }
-
 
     public Toolbar getToolbar() {
         return mToolbar;
@@ -119,7 +103,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         if ( fragment == null ) return;
 
         fragment.setRetainInstance(true);
-
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if ( addToBackstack ) {

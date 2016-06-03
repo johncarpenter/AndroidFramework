@@ -22,17 +22,22 @@ import android.text.TextWatcher;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class ButtonsEnabledTextWatcher implements TextWatcher, Validator.ValidationListener{
 
-        private final Validator mInternalValidator;
-        private final BaseFragment mBaseFragment;
+        private Validator mInternalValidator;
+        private WeakReference<BaseFragment> mBaseFragment;
 
         public ButtonsEnabledTextWatcher(BaseFragment baseFragment){
+            Timber.v("Created Button Watcher");
             this.mInternalValidator = new Validator(baseFragment);
             this.mInternalValidator.setValidationListener(this);
-            this.mBaseFragment = baseFragment;
+            this.mInternalValidator.setValidationMode(Validator.Mode.IMMEDIATE);
+            this.mBaseFragment = new WeakReference<BaseFragment>(baseFragment);
         }
 
 
@@ -53,12 +58,18 @@ public class ButtonsEnabledTextWatcher implements TextWatcher, Validator.Validat
 
         @Override
         public void onValidationSucceeded() {
-            mBaseFragment.setButtonsEnabled(true);
+            Timber.v("Internal Validation Passed");
+            if(mBaseFragment.get() != null) {
+                mBaseFragment.get().setButtonsEnabled(true);
+            }
         }
 
         @Override
         public void onValidationFailed(List<ValidationError> errors) {
-            mBaseFragment.setButtonsEnabled(false);
+            Timber.v("Internal Validation Failed");
+            if(mBaseFragment.get() != null) {
+                mBaseFragment.get().setButtonsEnabled(false);
+            }
         }
 
 

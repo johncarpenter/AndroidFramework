@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.design.widget.TextInputEditText
+            <com.twolinessoftware.views.PasswordEditText
                 android:id="@+id/edit_password"
                 android:layout_marginLeft="@dimen/spacing_double"
                 android:layout_marginRight="@dimen/spacing_double"

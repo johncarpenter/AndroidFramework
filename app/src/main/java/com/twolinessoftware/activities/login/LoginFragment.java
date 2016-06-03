@@ -21,6 +21,7 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
@@ -33,6 +34,7 @@ import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Order;
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.R;
 import com.twolinessoftware.activities.BaseFragment;
@@ -50,19 +52,18 @@ import butterknife.OnClick;
 import icepick.State;
 import timber.log.Timber;
 
-/**
- * Created by John on 2015-04-02.
- */
 public class LoginFragment extends BaseFragment implements Validator.ValidationListener {
 
     @State
     @Email(messageResId = R.string.error_invalid_email)
     @NotEmpty(messageResId = R.string.error_field_required)
+    @Order(1)
     @Bind(R.id.edit_email)
     AutoCompleteTextView mEditEmail;
 
     @State
     @NotEmpty(messageResId = R.string.error_field_required)
+    @Order(2)
     @Bind(R.id.edit_password)
     EditText mEditPassword;
 
@@ -79,9 +80,7 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
 
     private Validator mValidator;
 
-
-    private ButtonsEnabledTextWatcher mEnableTextWatcher = new ButtonsEnabledTextWatcher(this);
-
+    private ButtonsEnabledTextWatcher mButtonsEnabledTextWatcher;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -95,16 +94,18 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setRetainInstance(true);
+
         mValidator = new Validator(this);
         mValidator.setValidationListener(this);
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Timber.v("Attaching login");
-        BaseApplication.get(getBaseActivity()).getComponent().inject(this);
+
+        BaseApplication.get(context).getComponent().inject(this);
 
         if ( context instanceof LoginViewCallback ) {
             mCallback = (LoginViewCallback) context;
@@ -114,42 +115,52 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
             throw new IllegalArgumentException("Fragment Called Outside of LoginActivity Context");
         }
 
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Timber.v("onDestroy");
         mLoginPresenter.detachView();
     }
 
-
     @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
+    public void onResume() {
+        super.onResume();
         getToolbar().setTitle(getString(R.string.login_fragment_title));
         enableBack(true);
         setToolbarVisibility(true);
 
+        setButtonsEnabled(false);
+        mButtonsEnabledTextWatcher.check();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mEditEmail.removeTextChangedListener(mButtonsEnabledTextWatcher);
+        mEditPassword.removeTextChangedListener(mButtonsEnabledTextWatcher);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView();
+    }
+
+    private void initView(){
+
+        Timber.v("Initializing Views");
+
+        ViewUtils.requestFocusAndShowKeyboard(mEditPassword);
+
         prepopulateAccount();
+
+        mButtonsEnabledTextWatcher = new ButtonsEnabledTextWatcher(this);
 
         mEditEmail.setAdapter(ViewUtils.getEmailAddressAdapter(getBaseActivity()));
         mEditEmail.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_email).color(ThemeUtil.getPrimaryColor(getBaseActivity())).actionBarSize(), null, null, null);
-
-        /**
-         * If they click on the email address field after prepopulating it. Erase all of it.
-         */
-        mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
-            if ( hasfocus ) {
-                mEditEmail.setText("");
-            }
-            mEditEmail.setOnFocusChangeListener(null);
-        });
-        mEditEmail.addTextChangedListener(mEnableTextWatcher);
-
-        mEditPassword.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_lock_open).color(ThemeUtil.getPrimaryColor(getBaseActivity())).actionBarSize(), null, null, null);
-        ViewUtils.requestFocusAndShowKeyboard(mEditPassword);
+        mEditEmail.addTextChangedListener(mButtonsEnabledTextWatcher);
 
         mEditPassword.setOnEditorActionListener((v, actionId, event) -> {
             if ( actionId == EditorInfo.IME_ACTION_DONE ) {
@@ -158,21 +169,19 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
             }
             return false;
         });
-        mEditPassword.addTextChangedListener(mEnableTextWatcher);
-
-        setButtonsEnabled(false);
-
-        mEnableTextWatcher.check();
+        mEditPassword.addTextChangedListener(mButtonsEnabledTextWatcher);
 
     }
 
 
     private void prepopulateAccount() {
-        Account[] accounts = mAccountManager.getAccounts();
-        for ( Account account : accounts ) {
-            if ( ValidationUtil.isValidEmail(account.name) ) {
-                mEditEmail.setText(account.name);
-                break;
+        if( TextUtils.isEmpty(mEditEmail.getText())){
+            Account[] accounts = mAccountManager.getAccounts();
+            for ( Account account : accounts ) {
+                if ( ValidationUtil.isValidEmail(account.name) ) {
+                    mEditEmail.setText(account.name);
+                    break;
+                }
             }
         }
     }

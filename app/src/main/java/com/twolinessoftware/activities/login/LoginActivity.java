@@ -64,7 +64,7 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
             finish();
         }
 
-        if(savedInstanceState == null) {
+        if(getCurrentFragment() == null){
             setFragment(MainLoginSplashFragment.newInstance(), false);
         }
 

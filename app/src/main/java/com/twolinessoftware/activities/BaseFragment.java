@@ -38,7 +38,6 @@ public abstract class BaseFragment extends Fragment implements UICallback{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     @Override
@@ -71,9 +70,7 @@ public abstract class BaseFragment extends Fragment implements UICallback{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if ( mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed() ) {
-            mCompositeSubscription.unsubscribe();
-        }
+        mCompositeSubscription.clear();
     }
 
     public CompositeSubscription getCompositeSubscription() {
