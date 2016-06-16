@@ -84,7 +84,7 @@ public class PasswordEditText extends TextInputEditText {
         return super.onTouchEvent(event);
     }
 
-  
+
 
     private void setPasswordVisibilityIndicators(Drawable left, Drawable top, Drawable right, Drawable bottom){
         if(mIsShowingPassword){
