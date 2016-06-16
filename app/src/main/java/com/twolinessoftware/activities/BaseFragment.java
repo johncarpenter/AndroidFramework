@@ -25,6 +25,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.twolinessoftware.ErrorException;
+
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import rx.subscriptions.CompositeSubscription;
@@ -113,4 +115,5 @@ public abstract class BaseFragment extends Fragment implements UICallback{
      */
     public boolean onBackPressed(){ return false;}
 
+    public void handleError(ErrorException.Code code){}
 }

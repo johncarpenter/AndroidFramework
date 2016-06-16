@@ -16,8 +16,12 @@
 
 package com.twolinessoftware.activities;
 
+import com.twolinessoftware.ErrorException;
+
 public interface UICallback {
 
     void setButtonsEnabled(boolean busy);
+
+    void handleError(ErrorException.Code code);
 
 }

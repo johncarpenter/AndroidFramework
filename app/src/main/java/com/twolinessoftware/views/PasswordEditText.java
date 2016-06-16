@@ -18,6 +18,7 @@ package com.twolinessoftware.views;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -83,15 +84,25 @@ public class PasswordEditText extends TextInputEditText {
         return super.onTouchEvent(event);
     }
 
-    private void setPasswordVisibilityIndicators(){
 
+
+    private void setPasswordVisibilityIndicators(Drawable left, Drawable top, Drawable right, Drawable bottom){
         if(mIsShowingPassword){
             mDrawableRight = new IconDrawable(getContext(), MaterialIcons.md_visibility_off).color(ContextCompat.getColor(getContext(), R.color.pal_disabled_dark)).actionBarSize();
         }else{
             mDrawableRight = new IconDrawable(getContext(), MaterialIcons.md_visibility).color(ContextCompat.getColor(getContext(),R.color.pal_disabled_dark)).actionBarSize();
         }
 
-        setCompoundDrawables(mDrawableLeft, null, mDrawableRight, null);
+        super.setCompoundDrawables(mDrawableLeft, null, mDrawableRight, null);
+
+    }
+
+    private void setPasswordVisibilityIndicators(){
+
+        Drawable[] drawables = getCompoundDrawables();
+
+        setPasswordVisibilityIndicators(drawables[0], drawables[1], drawables[2], drawables[3]);
+
 
     }
 
@@ -109,6 +120,11 @@ public class PasswordEditText extends TextInputEditText {
         TypedValue typedValue = new TypedValue();
         getContext().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         return typedValue.data;
+    }
+
+    @Override
+    public void setCompoundDrawables(Drawable left, Drawable top, Drawable right, Drawable bottom) {
+        setPasswordVisibilityIndicators(left,top,right,bottom);
     }
 
 }

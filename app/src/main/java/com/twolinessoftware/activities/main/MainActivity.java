@@ -35,6 +35,7 @@ public class MainActivity extends BaseNavigationActivity implements MainActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Check for login
         requiresLogin();
     }
@@ -44,6 +45,5 @@ public class MainActivity extends BaseNavigationActivity implements MainActivity
     public void onError(ErrorException.Code code) {
 
     }
-
 
 }

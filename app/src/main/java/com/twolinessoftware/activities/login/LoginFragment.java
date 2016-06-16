@@ -36,6 +36,7 @@ import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Order;
 import com.twolinessoftware.BaseApplication;
+import com.twolinessoftware.ErrorException;
 import com.twolinessoftware.R;
 import com.twolinessoftware.activities.BaseFragment;
 import com.twolinessoftware.activities.ButtonsEnabledTextWatcher;
@@ -107,7 +108,7 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
 
         BaseApplication.get(context).getComponent().inject(this);
 
-        if ( context instanceof LoginViewCallback ) {
+        if (context instanceof LoginViewCallback) {
             mCallback = (LoginViewCallback) context;
             mLoginPresenter.attachView(mCallback);
         } else {
@@ -148,7 +149,7 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
         initView();
     }
 
-    private void initView(){
+    private void initView() {
 
         Timber.v("Initializing Views");
 
@@ -163,7 +164,7 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
         mEditEmail.addTextChangedListener(mButtonsEnabledTextWatcher);
 
         mEditPassword.setOnEditorActionListener((v, actionId, event) -> {
-            if ( actionId == EditorInfo.IME_ACTION_DONE ) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 mValidator.validate();
                 return true;
             }
@@ -175,14 +176,25 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
 
 
     private void prepopulateAccount() {
-        if( TextUtils.isEmpty(mEditEmail.getText())){
+        if (TextUtils.isEmpty(mEditEmail.getText())) {
             Account[] accounts = mAccountManager.getAccounts();
-            for ( Account account : accounts ) {
-                if ( ValidationUtil.isValidEmail(account.name) ) {
-                    mEditEmail.setText(account.name);
+            for (Account account : accounts) {
+                if (ValidationUtil.isValidEmail(account.name)) {
+                    mEditEmail.setText("android@2linessoftware.com");
                     break;
                 }
             }
+
+            /**
+             * If a user selects the email on the first time, erase the whole thing,
+             * our prepopulated guess is probably not partially wrong.!
+             */
+            mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
+                if (hasfocus) {
+                    mEditEmail.setText("");
+                }
+                mEditEmail.setOnFocusChangeListener(null);
+            });
         }
     }
 
@@ -210,12 +222,12 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
 
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
-        for ( ValidationError error : errors ) {
+        for (ValidationError error : errors) {
             View view = error.getView();
             String message = error.getCollatedErrorMessage(getContext());
 
             // Display error messages ;)
-            if ( view instanceof EditText ) {
+            if (view instanceof EditText) {
                 EditText editText = ((EditText) view);
                 editText.setError(message);
                 break;
@@ -223,6 +235,12 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
                 Timber.v("Unknown validation error:");
             }
         }
+    }
+
+    @Override
+    public void handleError(ErrorException.Code code) {
+        super.handleError(code);
+        ViewUtils.requestFocusAndShowKeyboard(mEditPassword);
     }
 
     @Override

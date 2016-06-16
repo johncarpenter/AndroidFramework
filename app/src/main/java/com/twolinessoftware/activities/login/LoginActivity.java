@@ -15,6 +15,7 @@
  */
 package com.twolinessoftware.activities.login;
 
+import android.Manifest;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.content.Context;
@@ -22,6 +23,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.ErrorException;
 import com.twolinessoftware.R;
@@ -36,7 +43,7 @@ import timber.log.Timber;
 /**
  * Created by John on 2015-04-02.
  */
-public class LoginActivity extends BaseActivity implements LoginViewCallback {
+public class LoginActivity extends BaseActivity implements LoginViewCallback, PermissionListener {
 
     @Inject
     AuthenticationManager mAuthenticationManager;
@@ -58,6 +65,8 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
         super.onCreate(savedInstanceState);
 
         BaseApplication.get(this).getComponent().inject(this);
+
+        Dexter.checkPermission(this, Manifest.permission.GET_ACCOUNTS);
 
         if ( mAuthenticationManager.isLoggedIn() ) {
             Timber.e("Account is already logged in. Finishing activity");
@@ -136,7 +145,7 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
 
         getCurrentFragment().setButtonsEnabled(true);
 
-        // Show Error to User
+        // Show Simple Error to User
         switch (code) {
             case INVALID_CREDENTIALS:
                 showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_invalid_credentials)), "dialog");
@@ -149,9 +158,25 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback {
                 showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_communication_generic)), "dialog");
                 break;
         }
+
+        getCurrentFragment().handleError(code);
     }
 
 
 
 
+    @Override
+    public void onPermissionGranted(PermissionGrantedResponse response) {
+        Timber.v("Permission Granted for Contacts");
+    }
+
+    @Override
+    public void onPermissionDenied(PermissionDeniedResponse response) {
+        Timber.v("Denied Permission to Contacts, won't preload email");
+    }
+
+    @Override
+    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+        Timber.v("Show Rationale");
+    }
 }
