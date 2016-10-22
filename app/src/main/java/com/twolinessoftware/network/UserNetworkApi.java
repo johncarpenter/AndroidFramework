@@ -34,7 +34,7 @@ import timber.log.Timber;
 /**
  *
  */
-public class NetworkManager {
+public class UserNetworkApi {
 
     private AuthenticationManager mAuthenticationManager;
     private UserManager mUserManager;
@@ -42,7 +42,7 @@ public class NetworkManager {
 
 
     @Inject
-    public NetworkManager(UserManager userManager, PreferencesHelper preferencesHelper, AuthenticationManager authenticationManager) {
+    public UserNetworkApi(UserManager userManager, PreferencesHelper preferencesHelper, AuthenticationManager authenticationManager) {
         mUserManager = userManager;
         mPreferenceHelper = preferencesHelper;
         mAuthenticationManager = authenticationManager;

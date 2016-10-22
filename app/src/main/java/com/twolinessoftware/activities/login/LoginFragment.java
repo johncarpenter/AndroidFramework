@@ -16,11 +16,14 @@
 
 package com.twolinessoftware.activities.login;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -50,19 +53,17 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import icepick.State;
 import timber.log.Timber;
 
 public class LoginFragment extends BaseFragment implements Validator.ValidationListener {
 
-    @State
+
     @Email(messageResId = R.string.error_invalid_email)
     @NotEmpty(messageResId = R.string.error_field_required)
     @Order(1)
     @Bind(R.id.edit_email)
     AutoCompleteTextView mEditEmail;
 
-    @State
     @NotEmpty(messageResId = R.string.error_field_required)
     @Order(2)
     @Bind(R.id.edit_password)
@@ -103,8 +104,8 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onAttachToContext(Context context) {
+        super.onAttachToContext(context);
 
         BaseApplication.get(context).getComponent().inject(this);
 
@@ -174,27 +175,31 @@ public class LoginFragment extends BaseFragment implements Validator.ValidationL
 
     }
 
-
     private void prepopulateAccount() {
-        if (TextUtils.isEmpty(mEditEmail.getText())) {
-            Account[] accounts = mAccountManager.getAccounts();
-            for (Account account : accounts) {
-                if (ValidationUtil.isValidEmail(account.name)) {
-                    mEditEmail.setText("android@2linessoftware.com");
-                    break;
-                }
-            }
+        if (ActivityCompat.checkSelfPermission(getBaseActivity(), Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED) {
 
-            /**
-             * If a user selects the email on the first time, erase the whole thing,
-             * our prepopulated guess is probably not partially wrong.!
-             */
-            mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
-                if (hasfocus) {
-                    mEditEmail.setText("");
+            if (TextUtils.isEmpty(mEditEmail.getText())) {
+
+                Account[] accounts = mAccountManager.getAccounts();
+                for (Account account : accounts) {
+                    if (ValidationUtil.isValidEmail(account.name)) {
+                        // prepopulate with the email account
+                        mEditEmail.setText(account.name);
+                        break;
+                    }
                 }
-                mEditEmail.setOnFocusChangeListener(null);
-            });
+
+                /**
+                 * If a user selects the email on the first time, erase the whole thing,
+                 * our prepopulated guess is probably not partially wrong.!
+                 */
+                mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
+                    if (hasfocus) {
+                        mEditEmail.setText("");
+                    }
+                    mEditEmail.setOnFocusChangeListener(null);
+                });
+            }
         }
     }
 

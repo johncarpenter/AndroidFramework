@@ -23,7 +23,7 @@ public class ErrorException extends Exception {
 
     public enum Code {
         INVALID_CREDENTIALS,
-        EMAIL_TAKEN, NO_DATA_AVAILABLE, FIREBASE_ERROR_GENERIC, GENERIC_ERROR
+        EMAIL_TAKEN, NO_DATA_AVAILABLE, FIREBASE_ERROR_GENERIC, EMAIL_MALFORMED, WEAK_PASSWORD, NO_EMAIL, GENERIC_ERROR
     }
 
     private final Code mCode;

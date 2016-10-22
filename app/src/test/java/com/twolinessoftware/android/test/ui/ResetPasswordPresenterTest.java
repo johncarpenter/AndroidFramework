@@ -21,7 +21,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import com.twolinessoftware.ErrorException;
 import com.twolinessoftware.activities.login.LoginViewCallback;
 import com.twolinessoftware.activities.login.ResetPasswordPresenter;
-import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.network.UserNetworkApi;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,14 +43,14 @@ public class ResetPasswordPresenterTest {
     LoginViewCallback mLoginViewCallback;
 
     @Mock
-    NetworkManager mNetworkManager;
+    UserNetworkApi mUserNetworkApi;
 
     private ResetPasswordPresenter mResetPasswordPresenter;
 
     @Before
     public void before() {
         initMocks(this);
-        mResetPasswordPresenter = new ResetPasswordPresenter(mNetworkManager, Schedulers.immediate());
+        mResetPasswordPresenter = new ResetPasswordPresenter(mUserNetworkApi, Schedulers.immediate());
         mResetPasswordPresenter.attachView(mLoginViewCallback);
     }
 
@@ -58,12 +58,12 @@ public class ResetPasswordPresenterTest {
     public void resetPasswordPresenter_EnsureResetCalled() {
 
 
-        when(mNetworkManager.forgotPassword(any())).thenReturn(Observable.just(true));
+        when(mUserNetworkApi.forgotPassword(any())).thenReturn(Observable.just(true));
 
         mResetPasswordPresenter.resetPassword("email");
 
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).forgotPassword("email");
+        verify(mUserNetworkApi).forgotPassword("email");
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onPasswordReset();
@@ -73,12 +73,12 @@ public class ResetPasswordPresenterTest {
     @Test
     public void resetPasswordPresenter_ShowErrorOnResetError() {
 
-        when(mNetworkManager.forgotPassword(any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.GENERIC_ERROR)));
+        when(mUserNetworkApi.forgotPassword(any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.GENERIC_ERROR)));
 
         mResetPasswordPresenter.resetPassword("email");
 
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).forgotPassword("email");
+        verify(mUserNetworkApi).forgotPassword("email");
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback, never()).onPasswordReset();

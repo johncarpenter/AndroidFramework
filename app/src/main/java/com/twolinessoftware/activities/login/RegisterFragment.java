@@ -94,8 +94,8 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onAttachToContext(Context context) {
+        super.onAttachToContext(context);
 
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 

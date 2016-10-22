@@ -24,7 +24,7 @@ import com.twolinessoftware.PreferencesHelper;
 import com.twolinessoftware.authentication.AuthenticationManager;
 import com.twolinessoftware.authentication.Token;
 import com.twolinessoftware.authentication.UserManager;
-import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.network.UserNetworkApi;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @SmallTest
-public class NetworkManagerTest {
+public class UserNetworkApiTest {
 
     @Mock
     UserManager mUserManager;
@@ -51,13 +51,13 @@ public class NetworkManagerTest {
     @Mock
     AuthenticationManager mAuthenticationManager;
 
-    private NetworkManager mNetworkManager;
+    private UserNetworkApi mUserNetworkApi;
 
     @Before
     public void before() {
         initMocks(this);
 
-        mNetworkManager = new NetworkManager(mUserManager, mPreferencesHelper, mAuthenticationManager);
+        mUserNetworkApi = new UserNetworkApi(mUserManager, mPreferencesHelper, mAuthenticationManager);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class NetworkManagerTest {
 
         TestSubscriber<Token> testSubscriber = new TestSubscriber();
 
-        mNetworkManager.authenticate("email", "pass")
+        mUserNetworkApi.authenticate("email", "pass")
                 .subscribe(testSubscriber);
 
         testSubscriber.assertNoErrors();
@@ -90,7 +90,7 @@ public class NetworkManagerTest {
 
         TestSubscriber<Token> testSubscriber = new TestSubscriber();
 
-        mNetworkManager.authenticate("email", "pass")
+        mUserNetworkApi.authenticate("email", "pass")
                 .subscribe(testSubscriber);
 
         testSubscriber.assertError(errorException);
@@ -110,7 +110,7 @@ public class NetworkManagerTest {
 
         TestSubscriber<Token> testSubscriber = new TestSubscriber();
 
-        mNetworkManager.register("email", "pass")
+        mUserNetworkApi.register("email", "pass")
                 .subscribe(testSubscriber);
 
         testSubscriber.assertNoErrors();
@@ -131,7 +131,7 @@ public class NetworkManagerTest {
 
         TestSubscriber<Token> testSubscriber = new TestSubscriber();
 
-        mNetworkManager.authenticate("email", "pass")
+        mUserNetworkApi.authenticate("email", "pass")
                 .subscribe(testSubscriber);
 
         testSubscriber.assertError(errorException);

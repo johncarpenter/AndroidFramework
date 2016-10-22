@@ -177,9 +177,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     public boolean requiresLogin() {
         if ( !mAuthenticationManager.isLoggedIn() ) {
-            Timber.e("This activity requires a login context");
+            Timber.w("This activity requires a login context");
             startActivityForResult(new Intent(BaseActivity.this, LoginActivity.class), REQUEST_LOGIN);
-            finish();
             return false;
         }
         return true;

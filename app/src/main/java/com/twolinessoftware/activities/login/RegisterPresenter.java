@@ -23,24 +23,25 @@ import com.twolinessoftware.PreferencesHelper;
 import com.twolinessoftware.activities.BasePresenter;
 import com.twolinessoftware.authentication.AuthenticationManager;
 import com.twolinessoftware.authentication.Token;
-import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.network.UserNetworkApi;
 
 import javax.inject.Inject;
 
 import rx.Scheduler;
+import timber.log.Timber;
 
 public class RegisterPresenter implements BasePresenter<LoginViewCallback> {
 
     private PreferencesHelper mPreferencesHelper;
     private Scheduler mScheduler;
     private AuthenticationManager mAuthenticationManager;
-    private NetworkManager mNetworkManager;
+    private UserNetworkApi mUserNetworkApi;
 
     private Token mToken;
 
     @Inject
-    public RegisterPresenter(NetworkManager networkManager, AuthenticationManager authenticationManager, Scheduler scheduler, PreferencesHelper preferencesHelper) {
-        mNetworkManager = networkManager;
+    public RegisterPresenter(UserNetworkApi userNetworkApi, AuthenticationManager authenticationManager, Scheduler scheduler, PreferencesHelper preferencesHelper) {
+        mUserNetworkApi = userNetworkApi;
         mAuthenticationManager = authenticationManager;
         mScheduler = scheduler;
         mPreferencesHelper = preferencesHelper;
@@ -51,12 +52,14 @@ public class RegisterPresenter implements BasePresenter<LoginViewCallback> {
 
     @Override
     public void attachView(LoginViewCallback baseView) {
+        Timber.v("Attaching Callback");
         mLoginViewCallback = baseView;
     }
 
     @Override
     public void detachView() {
         mLoginViewCallback = null;
+        Timber.v("Detaching Callback");
     }
 
     public void register(final String email, final String password) {
@@ -65,13 +68,13 @@ public class RegisterPresenter implements BasePresenter<LoginViewCallback> {
             mLoginViewCallback.showProgress(true);
         }
 
-        mNetworkManager.register(email, password)
+        mUserNetworkApi.register(email, password)
                 .subscribeOn(mScheduler)
                 .flatMap(token -> {
                     mToken = token;
                     String uid = mPreferencesHelper.getUserUid();
 
-                    return mNetworkManager.createUser(uid, email);
+                    return mUserNetworkApi.createUser(uid, email);
                 })
                 .subscribe(user -> {
                     if ( mLoginViewCallback != null ) {

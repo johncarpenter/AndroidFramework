@@ -4,10 +4,12 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.2.2'
 
         // Annotation Processor for Dagger 2
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+
+        classpath 'com.google.gms:google-services:3.0.0'
 
         // Java  8 - lambdas
         classpath 'me.tatarka:gradle-retrolambda:2.5.0'

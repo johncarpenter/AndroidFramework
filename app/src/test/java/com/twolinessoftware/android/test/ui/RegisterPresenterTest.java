@@ -26,7 +26,7 @@ import com.twolinessoftware.activities.login.RegisterPresenter;
 import com.twolinessoftware.authentication.AuthenticationManager;
 import com.twolinessoftware.authentication.Token;
 import com.twolinessoftware.model.User;
-import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.network.UserNetworkApi;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class RegisterPresenterTest {
     LoginViewCallback mLoginViewCallback;
 
     @Mock
-    NetworkManager mNetworkManager;
+    UserNetworkApi mUserNetworkApi;
 
     @Mock
     AuthenticationManager mAuthenticationManager;
@@ -68,16 +68,16 @@ public class RegisterPresenterTest {
     public void before() {
         initMocks(this);
 
-        mRegisterPresenter = new RegisterPresenter(mNetworkManager, mAuthenticationManager, Schedulers.immediate(), mPreferencesHelper);
+        mRegisterPresenter = new RegisterPresenter(mUserNetworkApi, mAuthenticationManager, Schedulers.immediate(), mPreferencesHelper);
         mRegisterPresenter.attachView(mLoginViewCallback);
     }
 
     @Test
     public void registerPresenter_EnsureLoginIsCalled() {
 
-        when(mNetworkManager.register(any(), any())).thenReturn(Observable.just(new Token("test", 10)));
+        when(mUserNetworkApi.register(any(), any())).thenReturn(Observable.just(new Token("test", 10)));
 
-        when(mNetworkManager.createUser(any(), any())).thenReturn(Observable.just(new User("email")));
+        when(mUserNetworkApi.createUser(any(), any())).thenReturn(Observable.just(new User("email")));
 
         when(mPreferencesHelper.getUserUid()).thenReturn("uid");
 
@@ -85,8 +85,8 @@ public class RegisterPresenterTest {
 
 
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).register("email", "password");
-        verify(mNetworkManager).createUser("uid", "email");
+        verify(mUserNetworkApi).register("email", "password");
+        verify(mUserNetworkApi).createUser("uid", "email");
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onFinishLogin(any());
@@ -96,12 +96,12 @@ public class RegisterPresenterTest {
     @Test
     public void registerPresenter_ShowErrorOnInvalidPassword() {
 
-        when(mNetworkManager.register(any(), any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.EMAIL_TAKEN)));
+        when(mUserNetworkApi.register(any(), any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.EMAIL_TAKEN)));
 
         mRegisterPresenter.register("email", "password");
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).register("email", "password");
-        verify(mNetworkManager, never()).createUser(any(), any());
+        verify(mUserNetworkApi).register("email", "password");
+        verify(mUserNetworkApi, never()).createUser(any(), any());
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onError(ErrorException.Code.EMAIL_TAKEN);

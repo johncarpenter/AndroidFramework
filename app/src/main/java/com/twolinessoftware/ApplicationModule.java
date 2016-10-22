@@ -26,7 +26,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.twolinessoftware.authentication.AuthenticationManager;
 import com.twolinessoftware.authentication.UserManager;
 import com.twolinessoftware.data.DataManager;
-import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.network.UserNetworkApi;
 
 import javax.inject.Singleton;
 
@@ -51,8 +51,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    NetworkManager provideNetworkManager(UserManager userManager, PreferencesHelper preferencesHelper, AuthenticationManager authenticationManager) {
-        return new NetworkManager(userManager, preferencesHelper, authenticationManager);
+    UserNetworkApi provideNetworkManager(UserManager userManager, PreferencesHelper preferencesHelper, AuthenticationManager authenticationManager) {
+        return new UserNetworkApi(userManager, preferencesHelper, authenticationManager);
     }
 
     @Provides

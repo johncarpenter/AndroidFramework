@@ -16,7 +16,10 @@
 
 package com.twolinessoftware.activities;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -81,12 +84,6 @@ public abstract class BaseFragment extends Fragment implements UICallback{
 
     private BaseActivity activity;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.activity = (BaseActivity) context;
-    }
-
     public BaseActivity getBaseActivity() {
         return activity;
     }
@@ -116,4 +113,37 @@ public abstract class BaseFragment extends Fragment implements UICallback{
     public boolean onBackPressed(){ return false;}
 
     public void handleError(ErrorException.Code code){}
+    /*
+     * onAttach(Context) is not called on pre API 23 versions of Android and onAttach(Activity) is deprecated
+     * Use onAttachToContext instead
+     */
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        this.activity = (BaseActivity) context;
+        onAttachToContext(context);
+
+    }
+
+    /*
+     * Deprecated on API 23
+     * Use onAttachToContext instead
+     */
+    @SuppressWarnings("deprecation")
+    @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = (BaseActivity) activity;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachToContext(activity);
+        }
+    }
+
+    /*
+     * Called when the fragment attaches to the context
+     */
+    protected void onAttachToContext(Context context) {
+    }
+
 }
