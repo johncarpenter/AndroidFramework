@@ -18,11 +18,12 @@ package com.twolinessoftware.activities.login;
 
 import com.twolinessoftware.ErrorException;
 import com.twolinessoftware.activities.BasePresenter;
-import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.network.UserNetworkApi;
 
 import javax.inject.Inject;
 
 import rx.Scheduler;
+import timber.log.Timber;
 
 /**
  * Created by johncarpenter on 2016-04-18.
@@ -30,11 +31,12 @@ import rx.Scheduler;
 public class ResetPasswordPresenter implements BasePresenter<LoginViewCallback> {
 
     private Scheduler mScheduler;
-    private NetworkManager mNetworkManager;
+    private UserNetworkApi mUserNetworkApi;
 
     @Inject
-    public ResetPasswordPresenter(NetworkManager networkManager, Scheduler scheduler) {
-        mNetworkManager = networkManager;
+    public ResetPasswordPresenter(UserNetworkApi userNetworkApi, Scheduler scheduler) {
+        Timber.v("Creating Presenter");
+        mUserNetworkApi = userNetworkApi;
         mScheduler = scheduler;
     }
 
@@ -42,25 +44,27 @@ public class ResetPasswordPresenter implements BasePresenter<LoginViewCallback> 
 
     @Override
     public void attachView(LoginViewCallback baseView) {
+        Timber.v("Attaching Callback");
         mLoginViewCallback = baseView;
     }
 
     @Override
     public void detachView() {
+        Timber.v("Detaching View");
         mLoginViewCallback = null;
     }
 
     public void resetPassword(final String email) {
         mLoginViewCallback.showProgress(true);
 
-        mNetworkManager.forgotPassword(email)
+        mUserNetworkApi.forgotPassword(email)
                 .subscribeOn(mScheduler)
                 .subscribe(reset -> {
                     mLoginViewCallback.showProgress(false);
                     mLoginViewCallback.onPasswordReset();
                 }, error -> {
                     mLoginViewCallback.showProgress(false);
-                    if ( error instanceof ErrorException ) {
+                    if (error instanceof ErrorException) {
                         ErrorException errorException = (ErrorException) error;
                         mLoginViewCallback.onError(errorException.getCode());
                     } else {

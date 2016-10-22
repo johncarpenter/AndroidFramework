@@ -14,34 +14,28 @@
  *
  */
 
-package com.twolinessoftware.network;
+package com.twolinessoftware;
+
 
 /**
  *
  */
-public class CommException extends Throwable {
+public class Config {
 
-    public static final CommException TIMEOUT = new CommException(-1);
-    public static final CommException NO_CONNECTION = new CommException(-2);
-    public static final CommException UNKNOWN = new CommException(999);
+    // Shared Preferences FIle
+    public static final String SHARED_PREFERENCES_FILE = "com.twolinessoftware.SHARED_PREFERENCES";
 
+    /**
+     * GPS Location Settings
+     */
+    public static final float GPS_SMALLEST_DISPLACEMENT_IN_M = 15;
+    public static final long GPS_UPDATE_INTERVAL_IN_SEC = 2;
+    public static final float GPS_MIN_ACCURACY_IN_M = 150;
 
-    private int code;
+    /**
+     * Account Names
+     */
+    public static final String BASE_ACCOUNT_TYPE = "com.twolinessoftware";
+    public static final String BASE_TOKEN_TYPE = "api";
 
-    private CommException(int code) {
-        this.code = code;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    @Override
-    public String getMessage() {
-        return "ApiException:" + code;
-    }
 }

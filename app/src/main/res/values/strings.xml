@@ -23,7 +23,7 @@
     <string name="error_validation_fields">Email and Password can\'t be empty</string>
     <string name="error_password_length">Passwords must be at least 6 characters</string>
     <string name="error_invalid_email">Invalid Email address</string>
-    <string name="error_register_email_taken">That email is in use already</string>
+    <string name="error_register_email_taken">That email is in use already or not valid</string>
     <string name="error_register_invalid_email">Not a valid email</string>
     <string name="error_communication_generic">Something went wrong..Try again</string>
     <string name="error_requires_login">You need to be logged in to access this</string>
@@ -78,6 +78,8 @@
     <!-- Generic Dialog Messages -->
     <string name="dialog_ok">OK</string>
     <string name="dialog_error">Error</string>
+    <string name="error_register_weak_password">Passwords must be at least 6 characters</string>
+    <string name="error_reset_email">No account exists with that email address</string>
 
 
 </resources>

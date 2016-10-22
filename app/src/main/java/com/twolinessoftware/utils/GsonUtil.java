@@ -54,7 +54,7 @@ public class GsonUtil {
         @Override
         public DateTime deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 
-            if ( jsonElement.getAsString() == null || jsonElement.getAsString().isEmpty() ) {
+            if (jsonElement.getAsString() == null || jsonElement.getAsString().isEmpty()) {
                 return null;
             }
 

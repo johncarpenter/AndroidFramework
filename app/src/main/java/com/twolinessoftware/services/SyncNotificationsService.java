@@ -93,9 +93,9 @@ public class SyncNotificationsService extends GcmTaskService {
         boolean isReschedule = false;
 
 
-        if ( isComplete && !isReschedule ) {
+        if (isComplete && !isReschedule) {
             return GcmNetworkManager.RESULT_SUCCESS;
-        } else if ( isComplete ) {
+        } else if (isComplete) {
             return GcmNetworkManager.RESULT_RESCHEDULE;
         } else {
             return GcmNetworkManager.RESULT_FAILURE;

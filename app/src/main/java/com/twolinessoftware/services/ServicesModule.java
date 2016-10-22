@@ -37,8 +37,13 @@ public class ServicesModule {
     }
 
     @Provides
-    GCMService providesGcmService(PreferencesHelper preferencesHelper, EventBus eventBus) {
-        return new GCMService(mContext, preferencesHelper, eventBus);
+    SpatialService providesSpatialService(PreferencesHelper preferencesHelper, EventBus eventBus) {
+        return new SpatialService(mContext, preferencesHelper, eventBus);
+    }
+
+    @Provides
+    AnalyticsService providesAnalyticsService() {
+        return new AnalyticsService(mContext);
     }
 
 }

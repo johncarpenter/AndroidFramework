@@ -19,7 +19,7 @@ package com.twolinessoftware.data;
 /**
  * Created by johncarpenter on 2016-01-26.
  */
-public class FirebaseChange<T> {
+public class DataChange<T> {
 
 
     public enum State {
@@ -29,7 +29,7 @@ public class FirebaseChange<T> {
     private State mState;
     private T mValue;
 
-    public FirebaseChange(State state, T value) {
+    public DataChange(State state, T value) {
         mState = state;
         mValue = value;
     }

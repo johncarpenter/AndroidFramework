@@ -110,27 +110,27 @@ public abstract class BaseNavigationActivity extends BaseActivity {
 
             switch (menuItemId) {
                 case R.id.menu_main:
-                    if ( differentMenuSelection ) {
+                    if (differentMenuSelection) {
                         //
                     }
                     mDrawerLayout.closeDrawers();
                     expandToolbar();
                     return true;
                 case R.id.menu_about:
-                    if ( differentMenuSelection ) {
+                    if (differentMenuSelection) {
                         //
                     }
                     mDrawerLayout.closeDrawers();
                     expandToolbar();
                     return true;
                 case R.id.menu_settings:
-                    if ( differentMenuSelection ) {
+                    if (differentMenuSelection) {
                         //
                     }
                     mDrawerLayout.closeDrawers();
                     return true;
                 case R.id.menu_logout:
-                    if ( differentMenuSelection ) {
+                    if (differentMenuSelection) {
                         onLogout();
                     }
                     mDrawerLayout.closeDrawers();

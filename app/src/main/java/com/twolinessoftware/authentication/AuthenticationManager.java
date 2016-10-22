@@ -16,6 +16,7 @@
 
 package com.twolinessoftware.authentication;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
@@ -23,8 +24,10 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.twolinessoftware.BaseApplication;
@@ -173,7 +176,7 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
         mAccountManager.getAuthToken(getAccount(), Config.BASE_ACCOUNT_TYPE, null, false, future -> {
             try {
                 Bundle accountDetails = future.getResult();
-                if ( accountDetails.containsKey(AccountManager.KEY_INTENT) ) {
+                if (accountDetails.containsKey(AccountManager.KEY_INTENT)) {
                     // Credentials failed
                     Timber.v("Unable to login to get token");
                     backgroundLogout();
@@ -186,7 +189,7 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
 
     public String getAuthToken() {
         Account account = getAccount();
-        if ( account == null ) {
+        if (account == null) {
             throw new AccountNotFoundException();
         }
 
@@ -198,6 +201,11 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
     }
 
     public Account getAccount() {
+
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            Timber.e("No access to account permissions. Cancelling");
+            return null;
+        }
         Account[] accounts = mAccountManager.getAccountsByType(Config.BASE_ACCOUNT_TYPE);
         return accounts.length > 0 ? accounts[0] : null;
     }
@@ -212,7 +220,7 @@ public class AuthenticationManager implements OnAccountsUpdateListener, AuthChan
                 mAccountManager.invalidateAuthToken(Config.BASE_ACCOUNT_TYPE, getAuthToken());
                 mAccountManager.removeAccount(account, future -> {
                     try {
-                        if ( future.getResult() ) {
+                        if (future.getResult()) {
                             subscriber.onNext(true);
                             subscriber.onCompleted();
                         }

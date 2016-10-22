@@ -23,9 +23,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.network.BaseApiService;
-import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.network.UserNetworkApi;
 import com.twolinessoftware.services.AnalyticsService;
-import com.twolinessoftware.services.GCMService;
 import com.twolinessoftware.services.SpatialService;
 import com.twolinessoftware.storage.DataStore;
 
@@ -52,8 +51,8 @@ public class MockApplicationModule {
 
     @Provides
     @Singleton
-    NetworkManager provideNetworkManager(BaseApiService baseApiService, Scheduler scheduler, EventBus eventBus, GoogleServicesManager googleServicesManager, DataManager dataManager) {
-        return new NetworkManager(mApplication, baseApiService, scheduler, eventBus, googleServicesManager, dataManager);
+    UserNetworkApi provideNetworkManager(BaseApiService baseApiService, Scheduler scheduler, EventBus eventBus, GoogleServicesManager googleServicesManager, DataManager dataManager) {
+        return new UserNetworkApi(mApplication, baseApiService, scheduler, eventBus, googleServicesManager, dataManager);
     }
 
 

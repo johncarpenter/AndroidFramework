@@ -16,11 +16,14 @@
 
 package com.twolinessoftware.activities.login;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
@@ -33,7 +36,6 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.twolinessoftware.BaseApplication;
 import com.twolinessoftware.R;
 import com.twolinessoftware.activities.BaseFragment;
-import com.twolinessoftware.network.NetworkManager;
 import com.twolinessoftware.utils.ValidationUtil;
 import com.twolinessoftware.utils.ViewUtils;
 
@@ -43,7 +45,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 /**
@@ -57,20 +58,12 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
     AutoCompleteTextView mEditEmail;
 
     @Inject
-    EventBus mEventBus;
-
-    @Inject
     AccountManager mAccountManager;
-
-    @Inject
-    NetworkManager mNetworkManager;
 
     @Inject
     ResetPasswordPresenter mResetPasswordPresenter;
 
-
     private Validator mValidator;
-
 
     public static ResetPasswordFragment newInstance() {
         return new ResetPasswordFragment();
@@ -87,25 +80,27 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
 
         setHasOptionsMenu(true);
         getBaseActivity().setTitle(R.string.forgot_fragment_title);
-        BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
         mValidator = new Validator(this);
         mValidator.setValidationListener(this);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
 
+    @Override
+    public void onAttachToContext(Context context) {
+        super.onAttachToContext(context);
+
+        Timber.v("Attaching Context");
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
-        if ( context instanceof LoginViewCallback ) {
+        if (context instanceof LoginViewCallback) {
             LoginViewCallback callback = (LoginViewCallback) context;
             mResetPasswordPresenter.attachView(callback);
         } else {
             Timber.e("Fragment called outside of Login Context");
             throw new IllegalArgumentException("Fragment Called Outside of LoginActivity Context");
         }
+
 
     }
 
@@ -122,14 +117,14 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
 
         mEditEmail.setAdapter(ViewUtils.getEmailAddressAdapter(getBaseActivity()));
         mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
-            if ( hasfocus ) {
+            if (hasfocus) {
                 mEditEmail.setText("");
             }
             mEditEmail.setOnFocusChangeListener(null);
         });
 
         mEditEmail.setOnEditorActionListener((v, actionId, event) -> {
-            if ( actionId == EditorInfo.IME_ACTION_DONE ) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 mValidator.validate();
                 return true;
             }
@@ -138,12 +133,13 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
     }
 
     private void prepopulateAccount() {
-
-        Account[] accounts = mAccountManager.getAccounts();
-        for ( Account account : accounts ) {
-            if ( ValidationUtil.isValidEmail(account.name) ) {
-                mEditEmail.setText(account.name);
-                break;
+        if (ActivityCompat.checkSelfPermission(getBaseActivity(), Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED) {
+            Account[] accounts = mAccountManager.getAccounts();
+            for (Account account : accounts) {
+                if (ValidationUtil.isValidEmail(account.name)) {
+                    mEditEmail.setText(account.name);
+                    break;
+                }
             }
         }
     }
@@ -163,12 +159,12 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
 
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
-        for ( ValidationError error : errors ) {
+        for (ValidationError error : errors) {
             View view = error.getView();
             String message = error.getCollatedErrorMessage(getContext());
 
             // Display error messages ;)
-            if ( view instanceof EditText ) {
+            if (view instanceof EditText) {
                 EditText editText = ((EditText) view);
                 editText.setError(message);
                 editText.requestFocus();

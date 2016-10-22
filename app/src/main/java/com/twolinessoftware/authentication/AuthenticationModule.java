@@ -19,8 +19,6 @@ package com.twolinessoftware.authentication;
 import android.accounts.AccountManager;
 import android.content.Context;
 
-import com.firebase.client.Firebase;
-import com.twolinessoftware.Config;
 import com.twolinessoftware.PreferencesHelper;
 
 import javax.inject.Singleton;
@@ -47,14 +45,8 @@ public class AuthenticationModule {
 
     @Provides
     @Singleton
-    UserManager provideUserManager(Firebase firebase, PreferencesHelper preferencesHelper) {
-        return new FirebaseUserManager(firebase, preferencesHelper);
+    UserManager provideUserManager(PreferencesHelper preferencesHelper) {
+        return new FirebaseUserManager(preferencesHelper);
     }
-
-    @Provides
-    Firebase provideFirebase() {
-        return new Firebase(Config.FIREBASE_URL);
-    }
-
 
 }

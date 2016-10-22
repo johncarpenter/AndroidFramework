@@ -39,7 +39,7 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.twolinessoftware.activities.WelcomeActivity;
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.data.DataManagerModule;
-import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.network.UserNetworkApi;
 import com.twolinessoftware.storage.DataStore;
 
 import org.hamcrest.Description;
@@ -136,7 +136,7 @@ public abstract class BaseTest {
         return mComponent.googleServicesManager();
     }
 
-    public NetworkManager getNetworkManager() {
+    public UserNetworkApi getNetworkManager() {
         return mComponent.networkManager();
     }
 

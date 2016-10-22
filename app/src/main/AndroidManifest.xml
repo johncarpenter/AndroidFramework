@@ -61,40 +61,6 @@
             android:windowSoftInputMode="adjustPan">
         </activity>
 
-
-        <!-- Push Notification Receivers
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <category android:name="com.appreciado"/>
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name="com.twolinessoftware.services.RefreshIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
-            </intent-filter>
-        </service>
-        <service
-            android:name=".notifications.GcmReceiverService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-            </intent-filter>
-        </service>-->
-
-        <!-- Notification Broadcast Receivers
-        <receiver android:name="com.twolinessoftware.notifications.PushNotificationBroadcastReceiver">
-            <intent-filter android:priority="1">
-                <action android:name="com.example.PUSH_MESSAGE"/>
-            </intent-filter>
-        </receiver>-->
-
         <!-- Background Update Sync Service
         <service
             android:name="com.twolinessoftware.services.SyncNotificationsService"
@@ -117,19 +83,6 @@
                 android:resource="@xml/authenticator"/>
         </service>
 
-        <!-- Optionally, register AnalyticsReceiver and AnalyticsService to support background
-             dispatching on non-Google Play devices -->
-        <receiver
-            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH"/>
-            </intent-filter>
-        </receiver>
-        <service
-            android:name="com.google.android.gms.analytics.AnalyticsService"
-            android:enabled="true"
-            android:exported="false"/>
 
 
     </application>

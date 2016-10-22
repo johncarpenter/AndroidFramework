@@ -77,7 +77,7 @@ public class PreferencesHelper {
     }
 
     public User getUserProfile() {
-        if ( !mSharedPreferences.contains(KEYS.PREFERENCE_USER) ) {
+        if (!mSharedPreferences.contains(KEYS.PREFERENCE_USER)) {
             return null;
         }
         return GsonUtil.buildGsonAdapter().fromJson(mSharedPreferences.getString(KEYS.PREFERENCE_USER, null), User.class);
@@ -86,7 +86,7 @@ public class PreferencesHelper {
     @Nullable
     public String getUserUid() {
         User user = getUserProfile();
-        if ( user != null ) {
+        if (user != null) {
             return user.getUid();
         }
         return null;

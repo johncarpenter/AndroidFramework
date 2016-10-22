@@ -20,7 +20,6 @@ import android.content.Context;
 
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.twolinessoftware.network.BaseApiService;
-import com.twolinessoftware.network.BaseRetrofitHelper;
 
 import java.io.IOException;
 

@@ -16,11 +16,19 @@
 
 package com.twolinessoftware.authentication;
 
-import android.util.Log;
+import android.support.annotation.NonNull;
 
-import com.firebase.client.AuthData;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.twolinessoftware.ErrorException;
 import com.twolinessoftware.PreferencesHelper;
 import com.twolinessoftware.data.FirebaseMonitor;
@@ -38,29 +46,30 @@ import rx.observables.BlockingObservable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-/**
- * Created by johncarpenter on 2016-04-19.
- */
 public class FirebaseUserManager implements UserManager {
+
+
+    private DatabaseReference mFirebaseDatabase;
 
     private PreferencesHelper mPreferencesHelper;
 
-    private Firebase mFirebase;
+    private FirebaseAuth mFirebaseAuth;
 
     private FirebaseAuthListener mFirebaseAuthListener;
 
     private WeakReference<AuthChangedListener> mAuthChangedListener;
 
     @Inject
-    public FirebaseUserManager(Firebase firebase, PreferencesHelper preferencesHelper) {
-        this.mFirebase = firebase;
+    public FirebaseUserManager(PreferencesHelper preferencesHelper) {
+        this.mFirebaseAuth = FirebaseAuth.getInstance();
+        this.mFirebaseDatabase = FirebaseDatabase.getInstance().getReference("users");
         this.mPreferencesHelper = preferencesHelper;
         monitorFirebaseAuthChanges();
     }
 
     public Observable<User> createUser(String uid, User user) {
 
-        if ( uid == null ) {
+        if (uid == null) {
             return Observable.error(new AccountNotLoggedInException());
         }
 
@@ -92,7 +101,7 @@ public class FirebaseUserManager implements UserManager {
 
         Timber.v("Getting User Profile:" + userId);
 
-        if ( userId == null ) {
+        if (userId == null) {
             return Observable.error(new AccountNotLoggedInException());
         }
 
@@ -100,7 +109,7 @@ public class FirebaseUserManager implements UserManager {
                 .once(getFirebaseForUser(userId))
                 .subscribeOn(Schedulers.io())
                 .flatMap(userFirebaseChange -> {
-                    if ( userFirebaseChange.getValue() != null ) {
+                    if (userFirebaseChange.getValue() != null) {
                         Timber.v("Updated user information: " + userFirebaseChange.getValue().toString());
                         mPreferencesHelper.storeUserProfile(userFirebaseChange.getValue());
                         return Observable.just(userFirebaseChange.getValue());
@@ -123,38 +132,40 @@ public class FirebaseUserManager implements UserManager {
         return Observable.create(new Observable.OnSubscribe<Token>() {
             @Override
             public void call(Subscriber<? super Token> subscriber) {
-                mFirebase.authWithPassword(email, password, new Firebase.AuthResultHandler() {
+                mFirebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onAuthenticated(AuthData authData) {
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        User user = new User(email);
-                        user.setUid(authData.getUid());
-                        user.setCreated(DateTime.now());
-                        mPreferencesHelper.storeUserProfile(user);
+                        if (task.isSuccessful()) {
 
-                        final Token token = new Token(authData.getToken(), authData.getExpires());
-                        subscriber.onNext(token);
-                        subscriber.onCompleted();
-                    }
+                            FirebaseUser fb = task.getResult().getUser();
 
-                    @Override
-                    public void onAuthenticationError(FirebaseError firebaseError) {
+                            User user = new User(email);
+                            user.setUid(fb.getUid());
+                            user.setCreated(DateTime.now());
+                            mPreferencesHelper.storeUserProfile(user);
 
-                        Timber.v("Login Error:"+firebaseError.getCode()+":"+firebaseError.getDetails());
+                            final Token token = new Token(String.valueOf(System.currentTimeMillis()), 0);
+                            subscriber.onNext(token);
+                            subscriber.onCompleted();
+                        } else {
 
-                        switch (firebaseError.getCode()) {
-                            case FirebaseError.INVALID_CREDENTIALS:
-                            case FirebaseError.INVALID_EMAIL:
-                            case FirebaseError.INVALID_PASSWORD:
-                            case FirebaseError.USER_DOES_NOT_EXIST:
+                            if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                                // Invalid Email
                                 subscriber.onError(new ErrorException(ErrorException.Code.INVALID_CREDENTIALS));
-                                return;
-                            default:
+                            } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                // Invalid password
+                                subscriber.onError(new ErrorException(ErrorException.Code.INVALID_CREDENTIALS));
+                            } else {
+                                //?
                                 subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
-                                return;
+                            }
                         }
+
                     }
                 });
+
+
             }
         });
     }
@@ -171,23 +182,27 @@ public class FirebaseUserManager implements UserManager {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                mFirebase.createUser(email, password, new Firebase.ResultHandler() {
+                mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onSuccess() {
-                        Timber.v("New User Created");
-                        subscriber.onNext(true);
-                        subscriber.onCompleted();
-                    }
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                    @Override
-                    public void onError(FirebaseError firebaseError) {
-                        Timber.e("Error creating user: " + Log.getStackTraceString(firebaseError.toException()));
-                        switch (firebaseError.getCode()) {
-                            case FirebaseError.EMAIL_TAKEN:
+                        if (task.isSuccessful()) {
+                            Timber.v("New User Created");
+                            subscriber.onNext(true);
+                            subscriber.onCompleted();
+                        } else {
+                            if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
+                                // thrown if the password is not strong enough
+                                subscriber.onError(new ErrorException(ErrorException.Code.WEAK_PASSWORD));
+                            } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                //thrown if the email address is malformed
+                                subscriber.onError(new ErrorException(ErrorException.Code.EMAIL_MALFORMED));
+                            } else if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                // thrown if account exists
                                 subscriber.onError(new ErrorException(ErrorException.Code.EMAIL_TAKEN));
-                                break;
-                            default:
+                            } else {
                                 subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
+                            }
                         }
                     }
                 });
@@ -201,17 +216,21 @@ public class FirebaseUserManager implements UserManager {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(final Subscriber<? super Boolean> subscriber) {
-                mFirebase.resetPassword(email, new Firebase.ResultHandler() {
+                mFirebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onSuccess() {
-                        subscriber.onNext(true);
-                        subscriber.onCompleted();
-                    }
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            subscriber.onNext(true);
+                            subscriber.onCompleted();
+                        } else {
+                            Timber.e("Unable to reset password:" + task.getException().getMessage());
+                            if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                                subscriber.onError(new ErrorException(ErrorException.Code.NO_EMAIL));
 
-                    @Override
-                    public void onError(FirebaseError firebaseError) {
-                        Timber.e("Unable to reset password:" + firebaseError.getMessage());
-                        subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
+                            } else {
+                                subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
+                            }
+                        }
                     }
                 });
             }
@@ -234,39 +253,44 @@ public class FirebaseUserManager implements UserManager {
 
     @Override
     public void unregisterAuthListener(AuthChangedListener listener) {
-        mAuthChangedListener.clear();
-        mAuthChangedListener = null;
+        if (mAuthChangedListener != null) {
+            mAuthChangedListener.clear();
+            mAuthChangedListener = null;
+        }
         disableFirebaseAuthStateChangeMonitor();
     }
 
 
     public void monitorFirebaseAuthChanges() {
         Timber.v("Starting Firebase Auth Monitor");
-        if ( mFirebaseAuthListener == null ) {
+        if (mFirebaseAuthListener == null) {
             mFirebaseAuthListener = new FirebaseAuthListener();
-            mFirebase.addAuthStateListener(mFirebaseAuthListener);
+            mFirebaseAuth.addAuthStateListener(mFirebaseAuthListener);
         }
     }
 
     public void disableFirebaseAuthStateChangeMonitor() {
-        if ( mFirebaseAuthListener != null ) {
+        if (mFirebaseAuthListener != null) {
             Timber.v("Stopping Firebase Auth Monitor");
-            mFirebase.removeAuthStateListener(mFirebaseAuthListener);
+            mFirebaseAuth.removeAuthStateListener(mFirebaseAuthListener);
             mFirebaseAuthListener = null;
         }
     }
 
-    private Firebase getFirebaseForUser(String uid) {
-        return mFirebase.child("users").child((uid == null) ? mPreferencesHelper.getUserProfile().getUid() : uid);
+    private DatabaseReference getFirebaseForUser(String uid) {
+        return mFirebaseDatabase.child((uid == null) ? mPreferencesHelper.getUserProfile().getUid() : uid);
     }
 
-    private class FirebaseAuthListener implements Firebase.AuthStateListener {
+    private class FirebaseAuthListener implements FirebaseAuth.AuthStateListener {
+
         @Override
-        public void onAuthStateChanged(AuthData authData) {
-            Timber.v("Firebase Auth Status Change:" + authData);
-            if ( authData == null && mAuthChangedListener != null ) {
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            Timber.v("Firebase Auth Status Change:" + firebaseAuth);
+            if (mAuthChangedListener != null && firebaseAuth.getCurrentUser() == null) {
                 mAuthChangedListener.get().onLoggedOut();
             }
         }
     }
+
+
 }

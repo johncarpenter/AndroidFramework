@@ -27,50 +27,50 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class ButtonsEnabledTextWatcher implements TextWatcher, Validator.ValidationListener{
+public class ButtonsEnabledTextWatcher implements TextWatcher, Validator.ValidationListener {
 
-        private Validator mInternalValidator;
-        private WeakReference<BaseFragment> mBaseFragment;
+    private Validator mInternalValidator;
+    private WeakReference<BaseFragment> mBaseFragment;
 
-        public ButtonsEnabledTextWatcher(BaseFragment baseFragment){
-            Timber.v("Created Button Watcher");
-            this.mInternalValidator = new Validator(baseFragment);
-            this.mInternalValidator.setValidationListener(this);
-            this.mInternalValidator.setValidationMode(Validator.Mode.IMMEDIATE);
-            this.mBaseFragment = new WeakReference<BaseFragment>(baseFragment);
+    public ButtonsEnabledTextWatcher(BaseFragment baseFragment) {
+        Timber.v("Created Button Watcher");
+        this.mInternalValidator = new Validator(baseFragment);
+        this.mInternalValidator.setValidationListener(this);
+        this.mInternalValidator.setValidationMode(Validator.Mode.IMMEDIATE);
+        this.mBaseFragment = new WeakReference<BaseFragment>(baseFragment);
+    }
+
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        mInternalValidator.validate();
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+        Timber.v("Internal Validation Passed");
+        if (mBaseFragment.get() != null) {
+            mBaseFragment.get().setButtonsEnabled(true);
         }
+    }
 
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        Timber.v("Internal Validation Failed");
+        if (mBaseFragment.get() != null) {
+            mBaseFragment.get().setButtonsEnabled(false);
         }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mInternalValidator.validate();
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-
-        @Override
-        public void onValidationSucceeded() {
-            Timber.v("Internal Validation Passed");
-            if(mBaseFragment.get() != null) {
-                mBaseFragment.get().setButtonsEnabled(true);
-            }
-        }
-
-        @Override
-        public void onValidationFailed(List<ValidationError> errors) {
-            Timber.v("Internal Validation Failed");
-            if(mBaseFragment.get() != null) {
-                mBaseFragment.get().setButtonsEnabled(false);
-            }
-        }
+    }
 
 
     public void check() {

@@ -45,12 +45,12 @@ public class MainLoginSplashFragment extends BaseFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onAttachToContext(Context context) {
+        super.onAttachToContext(context);
         Timber.v("Attaching main login");
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
-        if ( context instanceof LoginViewCallback ) {
+        if (context instanceof LoginViewCallback) {
             mCallback = (LoginViewCallback) context;
 
             mMainLoginSplashPresenter.attachView(mCallback);

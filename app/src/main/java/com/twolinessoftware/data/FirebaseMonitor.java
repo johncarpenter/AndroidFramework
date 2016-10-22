@@ -16,12 +16,19 @@
 
 package com.twolinessoftware.data;
 
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.twolinessoftware.ErrorException;
+import com.twolinessoftware.utils.GsonUtil;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -38,26 +45,26 @@ public class FirebaseMonitor<T> {
         this.mTypeParameterClass = typeParameterClass;
     }
 
-    public Observable<FirebaseChange<T>> monitorChanges(Firebase firebaseRef) {
-        return Observable.create(new Observable.OnSubscribe<FirebaseChange<T>>() {
+    public Observable<DataChange<T>> monitorChanges(DatabaseReference firebaseRef) {
+        return Observable.create(new Observable.OnSubscribe<DataChange<T>>() {
             @Override
-            public void call(Subscriber<? super FirebaseChange<T>> subscriber) {
+            public void call(Subscriber<? super DataChange<T>> subscriber) {
 
 
                 ChildEventListener eventListener = firebaseRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        subscriber.onNext(new FirebaseChange<>(FirebaseChange.State.Added, dataSnapshot.getValue(mTypeParameterClass)));
+                        subscriber.onNext(new DataChange<>(DataChange.State.Added, buildFromSnapshot(dataSnapshot)));
                     }
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        subscriber.onNext(new FirebaseChange<>(FirebaseChange.State.Changed, dataSnapshot.getValue(mTypeParameterClass)));
+                        subscriber.onNext(new DataChange<>(DataChange.State.Changed, buildFromSnapshot(dataSnapshot)));
                     }
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
-                        subscriber.onNext(new FirebaseChange<>(FirebaseChange.State.Removed, dataSnapshot.getValue(mTypeParameterClass)));
+                        subscriber.onNext(new DataChange<>(DataChange.State.Removed, buildFromSnapshot(dataSnapshot)));
                     }
 
                     @Override
@@ -66,7 +73,7 @@ public class FirebaseMonitor<T> {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
                         subscriber.onError(firebaseError.toException());
                     }
                 });
@@ -78,29 +85,27 @@ public class FirebaseMonitor<T> {
     }
 
 
-    public Observable<FirebaseChange<T>> once(Firebase firebaseRef) {
-        return Observable.create(new Observable.OnSubscribe<FirebaseChange<T>>() {
+    public Observable<DataChange<T>> once(DatabaseReference firebaseRef) {
+        return Observable.create(new Observable.OnSubscribe<DataChange<T>>() {
             @Override
-            public void call(Subscriber<? super FirebaseChange<T>> subscriber) {
+            public void call(Subscriber<? super DataChange<T>> subscriber) {
 
                 ValueEventListener listener = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if ( dataSnapshot == null || !dataSnapshot.exists() ) {
-                            subscriber.onNext(new FirebaseChange<T>(FirebaseChange.State.Empty, null));
+                        if (dataSnapshot == null || !dataSnapshot.exists()) {
+                            subscriber.onNext(new DataChange<T>(DataChange.State.Empty, null));
                             return;
                         }
 
-                        for ( DataSnapshot snapshot : dataSnapshot.getChildren() ) {
-                            subscriber.onNext(new FirebaseChange<>(FirebaseChange.State.Data, snapshot.getValue(mTypeParameterClass)));
-                        }
+                        subscriber.onNext(new DataChange<>(DataChange.State.Data, buildFromSnapshot(dataSnapshot)));
 
                         subscriber.onCompleted();
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                    public void onCancelled(DatabaseError firebaseError) {
                         subscriber.onError(new ErrorException(ErrorException.Code.FIREBASE_ERROR_GENERIC));
                     }
                 };
@@ -111,6 +116,15 @@ public class FirebaseMonitor<T> {
             }
 
         });
+    }
+
+    private T buildFromSnapshot(DataSnapshot dataSnapshot) {
+
+        HashMap<String, JSONObject> dataSnapshotValue = (HashMap<String, JSONObject>) dataSnapshot.getValue();
+        String jsonString = new Gson().toJson(dataSnapshotValue);
+
+        return GsonUtil.buildGsonAdapter().fromJson(jsonString, mTypeParameterClass);
+
     }
 
 }

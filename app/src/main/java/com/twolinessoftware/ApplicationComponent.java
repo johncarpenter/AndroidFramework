@@ -28,9 +28,8 @@ import com.twolinessoftware.authentication.AuthenticationManager;
 import com.twolinessoftware.authentication.AuthenticationModule;
 import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.data.DataManagerModule;
-import com.twolinessoftware.network.NetworkManager;
 import com.twolinessoftware.network.NetworkModule;
-import com.twolinessoftware.services.RefreshIDListenerService;
+import com.twolinessoftware.network.UserNetworkApi;
 import com.twolinessoftware.services.ServicesModule;
 import com.twolinessoftware.services.SyncNotificationsService;
 
@@ -59,7 +58,7 @@ public interface ApplicationComponent {
     // Adapters
 
     // Managers
-    void inject(NetworkManager networkManager);
+    void inject(UserNetworkApi userNetworkApi);
 
 
     // Services
@@ -67,11 +66,10 @@ public interface ApplicationComponent {
 
     void inject(AccountAuthenticatorService accountAuthenticatorService);
 
-    void inject(RefreshIDListenerService refreshIDListenerService);
 
     Application application();
 
-    NetworkManager networkManager();
+    UserNetworkApi networkManager();
 
     DataManager dataManager();
 

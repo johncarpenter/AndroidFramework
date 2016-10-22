@@ -19,7 +19,8 @@ package com.twolinessoftware;
 import android.app.Application;
 import android.content.Context;
 
-import com.firebase.client.Firebase;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.MaterialModule;
 import com.karumi.dexter.Dexter;
@@ -85,7 +86,8 @@ public class BaseApplication extends Application {
                 //  .registerFieldConverter(ComplexClass.class, new GsonFieldConverter<>(GsonUtil.buildGsonAdapter(), ComplexClass.class))
                 .build());
 
-        Firebase.setAndroidContext(this);
+        FirebaseApp.initializeApp(this);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
     private void initializeFonts() {
@@ -100,7 +102,7 @@ public class BaseApplication extends Application {
 
     private void initializeLogging() {
 
-        if ( BuildConfig.DEBUG ) {
+        if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
             Timber.plant(new ErrorReportingTree());

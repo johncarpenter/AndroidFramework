@@ -24,7 +24,7 @@ import com.twolinessoftware.activities.login.LoginViewCallback;
 import com.twolinessoftware.authentication.AuthenticationManager;
 import com.twolinessoftware.authentication.Token;
 import com.twolinessoftware.model.User;
-import com.twolinessoftware.network.NetworkManager;
+import com.twolinessoftware.network.UserNetworkApi;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class LoginPresenterTest {
     LoginViewCallback mLoginViewCallback;
 
     @Mock
-    NetworkManager mNetworkManager;
+    UserNetworkApi mUserNetworkApi;
 
     @Mock
     AuthenticationManager mAuthenticationManager;
@@ -56,7 +56,7 @@ public class LoginPresenterTest {
     @Before
     public void before() {
         initMocks(this);
-        mLoginPresenter = new LoginPresenter(mNetworkManager, mAuthenticationManager, Schedulers.immediate());
+        mLoginPresenter = new LoginPresenter(mUserNetworkApi, mAuthenticationManager, Schedulers.immediate());
         mLoginPresenter.attachView(mLoginViewCallback);
     }
 
@@ -64,16 +64,16 @@ public class LoginPresenterTest {
     public void login_EnsureLoginIsCalled() {
 
 
-        when(mNetworkManager.authenticate(any(), any())).thenReturn(Observable.just(new Token("test", 10)));
+        when(mUserNetworkApi.authenticate(any(), any())).thenReturn(Observable.just(new Token("test", 10)));
 
-        when(mNetworkManager.getMe()).thenReturn(Observable.just(new User("email")));
+        when(mUserNetworkApi.getMe()).thenReturn(Observable.just(new User("email")));
 
         mLoginPresenter.login("email", "password");
 
 
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).authenticate("email", "password");
-        verify(mNetworkManager).getMe();
+        verify(mUserNetworkApi).authenticate("email", "password");
+        verify(mUserNetworkApi).getMe();
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onFinishLogin(any());
@@ -83,12 +83,12 @@ public class LoginPresenterTest {
     @Test
     public void login_ShowErrorOnInvalidPassword() {
 
-        when(mNetworkManager.authenticate(any(), any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.INVALID_CREDENTIALS)));
+        when(mUserNetworkApi.authenticate(any(), any())).thenReturn(Observable.error(new ErrorException(ErrorException.Code.INVALID_CREDENTIALS)));
 
         mLoginPresenter.login("email", "password");
         verify(mLoginViewCallback).showProgress(true);
-        verify(mNetworkManager).authenticate("email", "password");
-        verify(mNetworkManager, never()).getMe();
+        verify(mUserNetworkApi).authenticate("email", "password");
+        verify(mUserNetworkApi, never()).getMe();
 
         verify(mLoginViewCallback).showProgress(false);
         verify(mLoginViewCallback).onError(ErrorException.Code.INVALID_CREDENTIALS);

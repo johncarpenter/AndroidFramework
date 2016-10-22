@@ -54,7 +54,7 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback, Pe
 
     public static Intent getStartIntent(Context context, boolean clearPreviousActivities) {
         Intent intent = new Intent(context, LoginActivity.class);
-        if ( clearPreviousActivities ) {
+        if (clearPreviousActivities) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         }
         return intent;
@@ -68,19 +68,19 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback, Pe
 
         Dexter.checkPermission(this, Manifest.permission.GET_ACCOUNTS);
 
-        if ( mAuthenticationManager.isLoggedIn() ) {
+        if (mAuthenticationManager.isLoggedIn()) {
             Timber.e("Account is already logged in. Finishing activity");
             finish();
         }
 
-        if(getCurrentFragment() == null){
+        if (getCurrentFragment() == null) {
             setFragment(MainLoginSplashFragment.newInstance(), false);
         }
 
         m_accountAuthenticatorResponse =
                 getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
 
-        if ( m_accountAuthenticatorResponse != null ) {
+        if (m_accountAuthenticatorResponse != null) {
             m_accountAuthenticatorResponse.onRequestContinued();
         }
 
@@ -95,9 +95,9 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback, Pe
 
     @Override
     public void finish() {
-        if ( m_accountAuthenticatorResponse != null ) {
+        if (m_accountAuthenticatorResponse != null) {
             // send the result bundle back if set, otherwise send an error.
-            if ( m_resultBundle != null ) {
+            if (m_resultBundle != null) {
                 m_accountAuthenticatorResponse.onResult(m_resultBundle);
             } else {
                 m_accountAuthenticatorResponse.onError(AccountManager.ERROR_CODE_CANCELED,
@@ -135,6 +135,7 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback, Pe
 
     @Override
     public void onPasswordReset() {
+        onNavigateToLogin();
         makeSnackbar(getString(R.string.notification_email_sent), Snackbar.LENGTH_LONG).show();
     }
 
@@ -142,27 +143,36 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback, Pe
     @Override
     public void onError(ErrorException.Code code) {
         Timber.v("Handling error:" + code.name());
+        runOnUiThread(() -> {
+            getCurrentFragment().setButtonsEnabled(true);
 
-        getCurrentFragment().setButtonsEnabled(true);
+            // Show Simple Error to User
+            switch (code) {
+                case INVALID_CREDENTIALS:
+                    showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_invalid_credentials)), "dialog");
+                    break;
+                case EMAIL_TAKEN:
+                    showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_register_email_taken)), "dialog");
+                    break;
+                case NO_EMAIL:
+                    showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_reset_email)), "dialog");
+                    break;
+                case EMAIL_MALFORMED:
+                    showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_register_email_taken)), "dialog");
+                    break;
 
-        // Show Simple Error to User
-        switch (code) {
-            case INVALID_CREDENTIALS:
-                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_invalid_credentials)), "dialog");
-                break;
-            case EMAIL_TAKEN:
-                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_register_email_taken)), "dialog");
-                break;
+                case WEAK_PASSWORD:
+                    showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_register_weak_password)), "dialog");
+                    break;
+                default:
+                    showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_communication_generic)), "dialog");
+                    break;
+            }
 
-            default:
-                showDialog(AlertDialogFragment.newInstance(getString(R.string.error_dialog_title), getString(R.string.error_communication_generic)), "dialog");
-                break;
-        }
+            getCurrentFragment().handleError(code);
+        });
 
-        getCurrentFragment().handleError(code);
     }
-
-
 
 
     @Override

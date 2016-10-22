@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "558161287895",
+    "firebase_url": "https://radiant-torch-1344.firebaseio.com",
+    "project_id": "radiant-torch-1344",
+    "storage_bucket": "radiant-torch-1344.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558161287895:android:94366c3113595c77",
+        "android_client_info": {
+          "package_name": "com.twolinessoftware"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558161287895-pl6cu22j9r4cv4n8knubbtv1s2jvfek4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXtZPu2x36KyJM1a8YlhNziLpU94HxutM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -18,10 +18,16 @@ package com.twolinessoftware.network;
 
 import android.content.Context;
 
-import com.twolinessoftware.Config;
+import com.google.gson.Gson;
+import com.twolinessoftware.BuildConfig;
+import com.twolinessoftware.utils.GsonUtil;
+
+import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.CacheControl;
+import okhttp3.logging.HttpLoggingInterceptor;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
 
@@ -42,14 +48,27 @@ public class NetworkModule {
      *
      * @return
      */
-    @Provides
-    BaseApiService provideBaseApiService() {
-        return new BaseRetrofitHelper().newBaseApiService(Config.URL_ENDPOINT);
-    }
 
     @Provides
     Scheduler provideSubscribeScheduler() {
         return Schedulers.io();
+    }
+
+    @Provides
+    CacheControl provideCache() {
+        return new CacheControl.Builder().maxAge(4, TimeUnit.HOURS).build();
+    }
+
+    @Provides
+    HttpLoggingInterceptor provideLoggingInterceptor() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+        return interceptor;
+    }
+
+    @Provides
+    Gson providesGson() {
+        return GsonUtil.buildGsonAdapter();
     }
 
 }
