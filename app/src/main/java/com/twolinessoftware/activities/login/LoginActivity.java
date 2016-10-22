@@ -54,7 +54,7 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback, Pe
 
     public static Intent getStartIntent(Context context, boolean clearPreviousActivities) {
         Intent intent = new Intent(context, LoginActivity.class);
-        if ( clearPreviousActivities ) {
+        if (clearPreviousActivities) {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         }
         return intent;
@@ -68,19 +68,19 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback, Pe
 
         Dexter.checkPermission(this, Manifest.permission.GET_ACCOUNTS);
 
-        if ( mAuthenticationManager.isLoggedIn() ) {
+        if (mAuthenticationManager.isLoggedIn()) {
             Timber.e("Account is already logged in. Finishing activity");
             finish();
         }
 
-        if(getCurrentFragment() == null){
+        if (getCurrentFragment() == null) {
             setFragment(MainLoginSplashFragment.newInstance(), false);
         }
 
         m_accountAuthenticatorResponse =
                 getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
 
-        if ( m_accountAuthenticatorResponse != null ) {
+        if (m_accountAuthenticatorResponse != null) {
             m_accountAuthenticatorResponse.onRequestContinued();
         }
 
@@ -95,9 +95,9 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback, Pe
 
     @Override
     public void finish() {
-        if ( m_accountAuthenticatorResponse != null ) {
+        if (m_accountAuthenticatorResponse != null) {
             // send the result bundle back if set, otherwise send an error.
-            if ( m_resultBundle != null ) {
+            if (m_resultBundle != null) {
                 m_accountAuthenticatorResponse.onResult(m_resultBundle);
             } else {
                 m_accountAuthenticatorResponse.onError(AccountManager.ERROR_CODE_CANCELED,
@@ -173,8 +173,6 @@ public class LoginActivity extends BaseActivity implements LoginViewCallback, Pe
         });
 
     }
-
-
 
 
     @Override

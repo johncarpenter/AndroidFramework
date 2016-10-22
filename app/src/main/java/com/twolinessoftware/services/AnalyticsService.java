@@ -43,10 +43,10 @@ public class AnalyticsService {
     private Tracker m_tracker;
 
     synchronized public Tracker getDefaultTracker() {
-        if ( m_tracker == null ) {
+        if (m_tracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(mContext);
 
-            if ( BuildConfig.DEBUG ) {
+            if (BuildConfig.DEBUG) {
                 analytics.setLocalDispatchPeriod(15);
             }
 

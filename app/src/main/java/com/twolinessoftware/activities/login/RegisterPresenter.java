@@ -64,7 +64,7 @@ public class RegisterPresenter implements BasePresenter<LoginViewCallback> {
 
     public void register(final String email, final String password) {
 
-        if ( mLoginViewCallback != null ) {
+        if (mLoginViewCallback != null) {
             mLoginViewCallback.showProgress(true);
         }
 
@@ -77,23 +77,23 @@ public class RegisterPresenter implements BasePresenter<LoginViewCallback> {
                     return mUserNetworkApi.createUser(uid, email);
                 })
                 .subscribe(user -> {
-                    if ( mLoginViewCallback != null ) {
+                    if (mLoginViewCallback != null) {
                         mLoginViewCallback.showProgress(false);
                         mLoginViewCallback.onFinishLogin(mAuthenticationManager.generateAuthIntent(mToken, email, password));
                     }
                 }, error -> {
 
-                    if ( mLoginViewCallback != null ) {
+                    if (mLoginViewCallback != null) {
                         mLoginViewCallback.showProgress(false);
                     }
 
-                    if ( error instanceof ErrorException ) {
+                    if (error instanceof ErrorException) {
                         ErrorException errorException = (ErrorException) error;
-                        if ( mLoginViewCallback != null ) {
+                        if (mLoginViewCallback != null) {
                             mLoginViewCallback.onError(errorException.getCode());
                         }
                     } else {
-                        if ( mLoginViewCallback != null ) {
+                        if (mLoginViewCallback != null) {
                             mLoginViewCallback.onError(ErrorException.Code.GENERIC_ERROR);
                         }
                     }

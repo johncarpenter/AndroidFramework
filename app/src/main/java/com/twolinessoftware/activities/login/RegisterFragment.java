@@ -16,11 +16,14 @@
 
 package com.twolinessoftware.activities.login;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
@@ -99,7 +102,7 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
 
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
-        if ( context instanceof LoginViewCallback ) {
+        if (context instanceof LoginViewCallback) {
             mCallback = (LoginViewCallback) context;
             mRegisterPresenter.attachView(mCallback);
         } else {
@@ -135,7 +138,7 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
         mEditEmail.setAdapter(ViewUtils.getEmailAddressAdapter(getBaseActivity()));
         mEditEmail.setCompoundDrawables(new IconDrawable(getBaseActivity(), MaterialIcons.md_email).color(ThemeUtil.getPrimaryColor(getBaseActivity())).actionBarSize(), null, null, null);
         mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
-            if ( hasfocus ) {
+            if (hasfocus) {
                 mEditEmail.setText("");
             }
             mEditEmail.setOnFocusChangeListener(null);
@@ -146,7 +149,7 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
         mEditPassword.requestFocus();
 
         mEditPassword.setOnEditorActionListener((v, actionId, event) -> {
-            if ( actionId == EditorInfo.IME_ACTION_DONE ) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 mValidator.validate();
                 return true;
             }
@@ -155,12 +158,15 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
     }
 
     private void prepopulateAccount() {
+        if (ActivityCompat.checkSelfPermission(getBaseActivity(), Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED) {
 
-        Account[] accounts = mAccountManager.getAccounts();
-        for ( Account account : accounts ) {
-            if ( ValidationUtil.isValidEmail(account.name) ) {
-                mEditEmail.setText(account.name);
-                break;
+
+            Account[] accounts = mAccountManager.getAccounts();
+            for (Account account : accounts) {
+                if (ValidationUtil.isValidEmail(account.name)) {
+                    mEditEmail.setText(account.name);
+                    break;
+                }
             }
         }
     }
@@ -181,12 +187,12 @@ public class RegisterFragment extends BaseFragment implements Validator.Validati
 
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
-        for ( ValidationError error : errors ) {
+        for (ValidationError error : errors) {
             View view = error.getView();
             String message = error.getCollatedErrorMessage(getContext());
 
             // Display error messages ;)
-            if ( view instanceof EditText ) {
+            if (view instanceof EditText) {
                 EditText editText = ((EditText) view);
                 editText.setError(message);
                 editText.requestFocus();

@@ -145,7 +145,7 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
 
     public void setQuery(Observable<List<T>> query) {
 
-        if ( m_listChangesSubscriber != null && !m_listChangesSubscriber.isUnsubscribed() ) {
+        if (m_listChangesSubscriber != null && !m_listChangesSubscriber.isUnsubscribed()) {
             this.m_query = query;
             m_listChangesSubscriber.unsubscribe();
             m_listChangesSubscriber = new ListChangesSubscriber();
@@ -158,7 +158,7 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
     public void setFilter(String filter) {
         Timber.v("Filtering on " + filter);
 
-        if ( filter == null || filter.isEmpty() ) {
+        if (filter == null || filter.isEmpty()) {
             m_filteredItems.clear();
             refresh();
         } else {
@@ -187,7 +187,7 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
 
     private void registerObservers() {
 
-        if ( m_listChangesSubscriber != null ) {
+        if (m_listChangesSubscriber != null) {
             m_listChangesSubscriber.unsubscribe();
         }
         m_listChangesSubscriber = new ListChangesSubscriber();
@@ -211,9 +211,9 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
     }
 
     public void setSelected(int pos, boolean selected) {
-        if ( selected ) {
+        if (selected) {
             m_selectedItems.put(pos, true);
-        } else if ( m_selectedItems.get(pos, false) ) {
+        } else if (m_selectedItems.get(pos, false)) {
             m_selectedItems.delete(pos);
         }
 
@@ -223,11 +223,11 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
 
         int originalPos = pos;
 
-        if ( isFiltered() ) {
+        if (isFiltered()) {
             pos = m_filteredItems.keyAt(pos);
         }
 
-        if ( m_selectedItems.get(pos, false) ) {
+        if (m_selectedItems.get(pos, false)) {
             m_selectedItems.delete(pos);
         } else {
             m_selectedItems.put(pos, true);
@@ -247,7 +247,7 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
     public List<T> getSelectedItems() {
         List<T> items =
                 new ArrayList<T>(m_selectedItems.size());
-        for ( int i = 0; i < m_selectedItems.size(); i++ ) {
+        for (int i = 0; i < m_selectedItems.size(); i++) {
             items.add(m_entries.get(m_selectedItems.keyAt(i)));
         }
         return items;
@@ -259,7 +259,7 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
 
 
     public boolean isSelected(int position) {
-        if ( isFiltered() ) {
+        if (isFiltered()) {
             return m_selectedItems.get(m_filteredItems.keyAt(position));
         } else {
             return m_selectedItems.get(position);
@@ -268,8 +268,8 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
 
     public int getPositionForItem(T holder) {
 
-        for ( int i = 0; i < m_entries.size(); i++ ) {
-            if ( m_entries.get(i) == holder )
+        for (int i = 0; i < m_entries.size(); i++) {
+            if (m_entries.get(i) == holder)
                 return i;
         }
         return -1;
@@ -289,7 +289,7 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
         holder.icon.setActivated(m_selectedItems.get(position, false));
 
         T item;
-        if ( isFiltered() ) {
+        if (isFiltered()) {
             item = m_entries.get(m_filteredItems.keyAt(position));
         } else {
             item = m_entries.get(position);
@@ -312,7 +312,7 @@ public abstract class MultiSelectGenericListAdapter<T> extends RecyclerView.Adap
     abstract void onBindViewHolder(T item, GenericListViewHolder holder, int position);
 
     public void onDataLoaded(List<T> data) {
-        if ( m_onDataLoadedListener != null ) {
+        if (m_onDataLoadedListener != null) {
             m_onDataLoadedListener.dataLoaded();
         }
     }

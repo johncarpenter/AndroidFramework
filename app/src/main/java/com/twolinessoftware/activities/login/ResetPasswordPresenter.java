@@ -64,7 +64,7 @@ public class ResetPasswordPresenter implements BasePresenter<LoginViewCallback> 
                     mLoginViewCallback.onPasswordReset();
                 }, error -> {
                     mLoginViewCallback.showProgress(false);
-                    if ( error instanceof ErrorException ) {
+                    if (error instanceof ErrorException) {
                         ErrorException errorException = (ErrorException) error;
                         mLoginViewCallback.onError(errorException.getCode());
                     } else {

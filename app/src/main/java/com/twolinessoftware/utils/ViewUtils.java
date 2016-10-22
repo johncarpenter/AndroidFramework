@@ -16,14 +16,18 @@
 
 package com.twolinessoftware.utils;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 
+import java.util.Collections;
 import java.util.HashSet;
 
 /**
@@ -38,11 +42,14 @@ public class ViewUtils {
      * @return
      */
     public static ArrayAdapter<String> getEmailAddressAdapter(Context context) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            return new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, Collections.emptyList());
+        }
         Account[] accounts = AccountManager.get(context).getAccounts();
 
         HashSet<String> emailSet = new HashSet<>();
-        for ( int i = 0; i < accounts.length; i++ ) {
-            if ( ValidationUtil.isValidEmail(accounts[i].name) ) {
+        for (int i = 0; i < accounts.length; i++) {
+            if (ValidationUtil.isValidEmail(accounts[i].name)) {
                 emailSet.add(accounts[i].name);
             }
         }

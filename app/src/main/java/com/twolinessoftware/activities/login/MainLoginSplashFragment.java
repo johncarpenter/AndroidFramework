@@ -50,7 +50,7 @@ public class MainLoginSplashFragment extends BaseFragment {
         Timber.v("Attaching main login");
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
-        if ( context instanceof LoginViewCallback ) {
+        if (context instanceof LoginViewCallback) {
             mCallback = (LoginViewCallback) context;
 
             mMainLoginSplashPresenter.attachView(mCallback);

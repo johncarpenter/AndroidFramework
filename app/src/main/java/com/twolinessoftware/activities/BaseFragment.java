@@ -34,7 +34,7 @@ import butterknife.ButterKnife;
 import icepick.Icepick;
 import rx.subscriptions.CompositeSubscription;
 
-public abstract class BaseFragment extends Fragment implements UICallback{
+public abstract class BaseFragment extends Fragment implements UICallback {
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
@@ -48,7 +48,7 @@ public abstract class BaseFragment extends Fragment implements UICallback{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Icepick.restoreInstanceState(this,savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
 
     }
 
@@ -67,7 +67,7 @@ public abstract class BaseFragment extends Fragment implements UICallback{
 
     // Finishes the fragment and passes control to the activity
     protected void finish(boolean removeFromStack) {
-        if ( removeFromStack ) {
+        if (removeFromStack) {
             getBaseActivity().onBackPressed();
         }
     }
@@ -88,31 +88,36 @@ public abstract class BaseFragment extends Fragment implements UICallback{
         return activity;
     }
 
-    public Toolbar getToolbar(){ return activity.getToolbar();}
+    public Toolbar getToolbar() {
+        return activity.getToolbar();
+    }
 
-    public void enableBack(boolean back){
+    public void enableBack(boolean back) {
         activity.enableBack(back);
     }
 
-    public void setToolbarVisibility(boolean visible){
-        if(getBaseActivity().getSupportActionBar() != null){
-            if(visible){
+    public void setToolbarVisibility(boolean visible) {
+        if (getBaseActivity().getSupportActionBar() != null) {
+            if (visible) {
                 getBaseActivity().getSupportActionBar().show();
-            }else{
+            } else {
                 getBaseActivity().getSupportActionBar().hide();
             }
         }
     }
 
     /**
-     *
      * Called from #OnBackPressed in BaseActivity
      *
      * @return true if the action is consumed.
      */
-    public boolean onBackPressed(){ return false;}
+    public boolean onBackPressed() {
+        return false;
+    }
 
-    public void handleError(ErrorException.Code code){}
+    public void handleError(ErrorException.Code code) {
+    }
+
     /*
      * onAttach(Context) is not called on pre API 23 versions of Android and onAttach(Activity) is deprecated
      * Use onAttachToContext instead

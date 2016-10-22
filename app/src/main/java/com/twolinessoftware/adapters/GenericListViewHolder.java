@@ -66,7 +66,7 @@ public class GenericListViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setCaption(String caption) {
-        if ( !TextUtils.isEmpty(caption) ) {
+        if (!TextUtils.isEmpty(caption)) {
             textCaption.setVisibility(View.VISIBLE);
             textCaption.setText(caption);
         } else {

@@ -18,11 +18,7 @@ package com.twolinessoftware.services;
 
 import android.content.Context;
 
-import com.twolinessoftware.PreferencesHelper;
-
 import dagger.Module;
-import dagger.Provides;
-import de.greenrobot.event.EventBus;
 
 /**
  *
@@ -36,9 +32,5 @@ public class ServicesModule {
         mContext = context;
     }
 
-    @Provides
-    GCMService providesGcmService(PreferencesHelper preferencesHelper, EventBus eventBus) {
-        return new GCMService(mContext, preferencesHelper, eventBus);
-    }
 
 }

@@ -100,12 +100,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     public void setFragment(Fragment fragment, boolean addToBackstack) {
-        if ( fragment == null ) return;
+        if (fragment == null) return;
 
         fragment.setRetainInstance(true);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        if ( addToBackstack ) {
+        if (addToBackstack) {
             ft.addToBackStack(null);
         }
         ft.replace(R.id.fragment_container, fragment)
@@ -116,7 +116,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     public void enableBack(boolean enable) {
         ActionBar actionBar = getSupportActionBar();
-        if ( actionBar != null ) {
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(enable);
             actionBar.setDisplayShowHomeEnabled(enable);
         }
@@ -126,14 +126,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     public void onBackPressed() {
 
         FragmentManager fm = getSupportFragmentManager();
-        if ( fm.getBackStackEntryCount() > 0 ) {
+        if (fm.getBackStackEntryCount() > 0) {
 
             boolean consume = false;
-            if ( getCurrentFragment() != null ) {
+            if (getCurrentFragment() != null) {
                 consume = getCurrentFragment().onBackPressed();
             }
 
-            if ( !consume ) {
+            if (!consume) {
                 fm.popBackStack();
             }
         } else {
@@ -144,7 +144,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     public void clearBackStack() {
         int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-        for ( int i = 0; i < backStackCount; i++ ) {
+        for (int i = 0; i < backStackCount; i++) {
             int backStackId = getSupportFragmentManager().getBackStackEntryAt(i).getId();
             getSupportFragmentManager().popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
@@ -161,7 +161,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
 
     public void showDialog(DialogFragment baseDialogFragment, String tag) {
-        if ( baseDialogFragment == null ) return;
+        if (baseDialogFragment == null) return;
         baseDialogFragment.show(getSupportFragmentManager(), tag);
     }
 
@@ -176,7 +176,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     public boolean requiresLogin() {
-        if ( !mAuthenticationManager.isLoggedIn() ) {
+        if (!mAuthenticationManager.isLoggedIn()) {
             Timber.w("This activity requires a login context");
             startActivityForResult(new Intent(BaseActivity.this, LoginActivity.class), REQUEST_LOGIN);
             return false;
@@ -189,8 +189,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         GoogleApiAvailability googleApi = GoogleApiAvailability.getInstance();
         int connectionCode = googleApi.isGooglePlayServicesAvailable(BaseActivity.this);
 
-        if ( connectionCode != ConnectionResult.SUCCESS ) {
-            if ( googleApi.isUserResolvableError(connectionCode) ) {
+        if (connectionCode != ConnectionResult.SUCCESS) {
+            if (googleApi.isUserResolvableError(connectionCode)) {
                 googleApi.getErrorDialog(this, connectionCode,
                         REQUEST_GOOGLE_PLAY_SERVICES).show();
             }
@@ -202,16 +202,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         mToolbar.setTitle(title);
     }
-
 
 
     @SuppressLint("CommitPrefEdits")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ( requestCode == REQUEST_LOGIN ) {
+        if (requestCode == REQUEST_LOGIN) {
             switch (resultCode) {
                 case RESULT_CANCELED:
                     finish();
@@ -220,8 +219,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
                     Timber.v("Returning from login");
                     break;
             }
-        } else if ( requestCode == REQUEST_GOOGLE_PLAY_SERVICES ) {
-            if ( resultCode != RESULT_OK ) {
+        } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
+            if (resultCode != RESULT_OK) {
                 Timber.e("Google play services are not available");
                 // todo: What happens when Google Play Services are not available?
                 finish();

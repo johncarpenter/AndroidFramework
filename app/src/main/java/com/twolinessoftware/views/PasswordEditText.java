@@ -61,7 +61,7 @@ public class PasswordEditText extends TextInputEditText {
         init();
     }
 
-    private void init(){
+    private void init() {
         // @todo should move this to an attr
         mDrawableLeft = new IconDrawable(getContext(), MaterialIcons.md_lock_open).color(getThemePrimaryColor()).actionBarSize();
         setPasswordVisibilityIndicators();
@@ -70,34 +70,33 @@ public class PasswordEditText extends TextInputEditText {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-            if (event.getAction() == MotionEvent.ACTION_UP && mDrawableRight != null) {
-                Rect bounds = mDrawableRight.getBounds();
-                final int x = (int) event.getX();
+        if (event.getAction() == MotionEvent.ACTION_UP && mDrawableRight != null) {
+            Rect bounds = mDrawableRight.getBounds();
+            final int x = (int) event.getX();
 
-                if (x >= (getRight() - (ViewUtils.dpToPx(getContext(),48)))){
-                    togglePasswordVisibility();
-                    event.setAction(MotionEvent.ACTION_CANCEL);
-                }
+            if (x >= (getRight() - (ViewUtils.dpToPx(getContext(), 48)))) {
+                togglePasswordVisibility();
+                event.setAction(MotionEvent.ACTION_CANCEL);
             }
+        }
 
 
         return super.onTouchEvent(event);
     }
 
 
-
-    private void setPasswordVisibilityIndicators(Drawable left, Drawable top, Drawable right, Drawable bottom){
-        if(mIsShowingPassword){
+    private void setPasswordVisibilityIndicators(Drawable left, Drawable top, Drawable right, Drawable bottom) {
+        if (mIsShowingPassword) {
             mDrawableRight = new IconDrawable(getContext(), MaterialIcons.md_visibility_off).color(ContextCompat.getColor(getContext(), R.color.pal_disabled_dark)).actionBarSize();
-        }else{
-            mDrawableRight = new IconDrawable(getContext(), MaterialIcons.md_visibility).color(ContextCompat.getColor(getContext(),R.color.pal_disabled_dark)).actionBarSize();
+        } else {
+            mDrawableRight = new IconDrawable(getContext(), MaterialIcons.md_visibility).color(ContextCompat.getColor(getContext(), R.color.pal_disabled_dark)).actionBarSize();
         }
 
         super.setCompoundDrawables(mDrawableLeft, null, mDrawableRight, null);
 
     }
 
-    private void setPasswordVisibilityIndicators(){
+    private void setPasswordVisibilityIndicators() {
 
         Drawable[] drawables = getCompoundDrawables();
 
@@ -116,7 +115,7 @@ public class PasswordEditText extends TextInputEditText {
         setPasswordVisibilityIndicators();
     }
 
-    private int getThemePrimaryColor(){
+    private int getThemePrimaryColor() {
         TypedValue typedValue = new TypedValue();
         getContext().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         return typedValue.data;
@@ -124,7 +123,7 @@ public class PasswordEditText extends TextInputEditText {
 
     @Override
     public void setCompoundDrawables(Drawable left, Drawable top, Drawable right, Drawable bottom) {
-        setPasswordVisibilityIndicators(left,top,right,bottom);
+        setPasswordVisibilityIndicators(left, top, right, bottom);
     }
 
 }

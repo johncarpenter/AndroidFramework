@@ -25,7 +25,6 @@ import com.twolinessoftware.data.DataManager;
 import com.twolinessoftware.network.BaseApiService;
 import com.twolinessoftware.network.UserNetworkApi;
 import com.twolinessoftware.services.AnalyticsService;
-import com.twolinessoftware.services.GCMService;
 import com.twolinessoftware.services.SpatialService;
 import com.twolinessoftware.storage.DataStore;
 

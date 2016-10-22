@@ -14,17 +14,28 @@
  *
  */
 
-package com.twolinessoftware.utils;
+package com.twolinessoftware;
+
 
 /**
- * Created by johncarpenter on 2015-12-08.
+ *
  */
-public class ValidationUtil {
+public class Config {
 
-    public final static boolean isValidEmail(CharSequence target) {
-        if (target == null)
-            return false;
+    // Shared Preferences FIle
+    public static final String SHARED_PREFERENCES_FILE = "com.twolinessoftware.SHARED_PREFERENCES";
 
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-    }
+    /**
+     * GPS Location Settings
+     */
+    public static final float GPS_SMALLEST_DISPLACEMENT_IN_M = 15;
+    public static final long GPS_UPDATE_INTERVAL_IN_SEC = 2;
+    public static final float GPS_MIN_ACCURACY_IN_M = 150;
+
+    /**
+     * Account Names
+     */
+    public static final String BASE_ACCOUNT_TYPE = "com.twolinessoftware";
+    public static final String BASE_TOKEN_TYPE = "api";
+
 }

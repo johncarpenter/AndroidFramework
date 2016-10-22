@@ -16,7 +16,6 @@
 
 package com.twolinessoftware.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 import org.joda.time.DateTime;
@@ -29,7 +28,6 @@ import java.util.UUID;
 public abstract class DataModel {
 
     @SerializedName("uid")
-    @JsonProperty("uid")
     private String mUid;
 
     @SerializedName("created")

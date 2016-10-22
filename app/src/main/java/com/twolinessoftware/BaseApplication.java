@@ -102,7 +102,7 @@ public class BaseApplication extends Application {
 
     private void initializeLogging() {
 
-        if ( BuildConfig.DEBUG ) {
+        if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
             Timber.plant(new ErrorReportingTree());

@@ -93,7 +93,7 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
         Timber.v("Attaching Context");
         BaseApplication.get(getBaseActivity()).getComponent().inject(this);
 
-        if ( context instanceof LoginViewCallback ) {
+        if (context instanceof LoginViewCallback) {
             LoginViewCallback callback = (LoginViewCallback) context;
             mResetPasswordPresenter.attachView(callback);
         } else {
@@ -117,14 +117,14 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
 
         mEditEmail.setAdapter(ViewUtils.getEmailAddressAdapter(getBaseActivity()));
         mEditEmail.setOnFocusChangeListener((v, hasfocus) -> {
-            if ( hasfocus ) {
+            if (hasfocus) {
                 mEditEmail.setText("");
             }
             mEditEmail.setOnFocusChangeListener(null);
         });
 
         mEditEmail.setOnEditorActionListener((v, actionId, event) -> {
-            if ( actionId == EditorInfo.IME_ACTION_DONE ) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 mValidator.validate();
                 return true;
             }
@@ -159,12 +159,12 @@ public class ResetPasswordFragment extends BaseFragment implements Validator.Val
 
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
-        for ( ValidationError error : errors ) {
+        for (ValidationError error : errors) {
             View view = error.getView();
             String message = error.getCollatedErrorMessage(getContext());
 
             // Display error messages ;)
-            if ( view instanceof EditText ) {
+            if (view instanceof EditText) {
                 EditText editText = ((EditText) view);
                 editText.setError(message);
                 editText.requestFocus();

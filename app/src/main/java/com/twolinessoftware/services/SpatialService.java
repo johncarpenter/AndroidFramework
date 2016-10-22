@@ -81,7 +81,7 @@ public class SpatialService {
         return mLocationProvider.checkLocationSettings(new LocationSettingsRequest.Builder().addLocationRequest(request).setAlwaysShow(true).build())
                 .map(locationSettingsResult -> {
                     Status status = locationSettingsResult.getStatus();
-                    if ( status.getStatusCode() != LocationSettingsStatusCodes.SUCCESS ) {
+                    if (status.getStatusCode() != LocationSettingsStatusCodes.SUCCESS) {
                         Timber.v("hasLocationServicesEnabled:false:" + status.getStatusMessage());
                         return false;
                     } else {
@@ -104,7 +104,7 @@ public class SpatialService {
         return mLocationProvider.checkLocationSettings(new LocationSettingsRequest.Builder().addLocationRequest(request).setAlwaysShow(true).build())
                 .doOnNext(locationSettingsResult -> {
                     Status status = locationSettingsResult.getStatus();
-                    if ( status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED || status.getStatusCode() == LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE ) {
+                    if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED || status.getStatusCode() == LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE) {
                         Timber.v("checkGoogleLocationServices:false:" + status.getStatusMessage());
                         mEventBus.post(new OnLocationServicesDisabledEvent(status));
                     }

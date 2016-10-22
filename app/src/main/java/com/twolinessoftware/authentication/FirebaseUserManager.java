@@ -69,7 +69,7 @@ public class FirebaseUserManager implements UserManager {
 
     public Observable<User> createUser(String uid, User user) {
 
-        if ( uid == null ) {
+        if (uid == null) {
             return Observable.error(new AccountNotLoggedInException());
         }
 
@@ -101,7 +101,7 @@ public class FirebaseUserManager implements UserManager {
 
         Timber.v("Getting User Profile:" + userId);
 
-        if ( userId == null ) {
+        if (userId == null) {
             return Observable.error(new AccountNotLoggedInException());
         }
 
@@ -109,7 +109,7 @@ public class FirebaseUserManager implements UserManager {
                 .once(getFirebaseForUser(userId))
                 .subscribeOn(Schedulers.io())
                 .flatMap(userFirebaseChange -> {
-                    if ( userFirebaseChange.getValue() != null ) {
+                    if (userFirebaseChange.getValue() != null) {
                         Timber.v("Updated user information: " + userFirebaseChange.getValue().toString());
                         mPreferencesHelper.storeUserProfile(userFirebaseChange.getValue());
                         return Observable.just(userFirebaseChange.getValue());
@@ -136,7 +136,7 @@ public class FirebaseUserManager implements UserManager {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
 
                             FirebaseUser fb = task.getResult().getUser();
 
@@ -148,15 +148,15 @@ public class FirebaseUserManager implements UserManager {
                             final Token token = new Token(String.valueOf(System.currentTimeMillis()), 0);
                             subscriber.onNext(token);
                             subscriber.onCompleted();
-                        }else{
+                        } else {
 
-                            if(task.getException() instanceof FirebaseAuthInvalidUserException){
+                            if (task.getException() instanceof FirebaseAuthInvalidUserException) {
                                 // Invalid Email
                                 subscriber.onError(new ErrorException(ErrorException.Code.INVALID_CREDENTIALS));
-                            }else if(task.getException() instanceof FirebaseAuthInvalidCredentialsException){
+                            } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 // Invalid password
                                 subscriber.onError(new ErrorException(ErrorException.Code.INVALID_CREDENTIALS));
-                            }else{
+                            } else {
                                 //?
                                 subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
                             }
@@ -186,21 +186,21 @@ public class FirebaseUserManager implements UserManager {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Timber.v("New User Created");
                             subscriber.onNext(true);
                             subscriber.onCompleted();
-                        }else{
-                            if(task.getException() instanceof FirebaseAuthWeakPasswordException) {
+                        } else {
+                            if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
                                 // thrown if the password is not strong enough
                                 subscriber.onError(new ErrorException(ErrorException.Code.WEAK_PASSWORD));
-                            }else if(task.getException() instanceof FirebaseAuthInvalidCredentialsException){
+                            } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 //thrown if the email address is malformed
                                 subscriber.onError(new ErrorException(ErrorException.Code.EMAIL_MALFORMED));
-                            }else if(task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            } else if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 // thrown if account exists
                                 subscriber.onError(new ErrorException(ErrorException.Code.EMAIL_TAKEN));
-                            }else{
+                            } else {
                                 subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
                             }
                         }
@@ -219,16 +219,16 @@ public class FirebaseUserManager implements UserManager {
                 mFirebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             subscriber.onNext(true);
                             subscriber.onCompleted();
-                        }else{
+                        } else {
                             Timber.e("Unable to reset password:" + task.getException().getMessage());
-                            if(task.getException() instanceof  FirebaseAuthInvalidUserException){
+                            if (task.getException() instanceof FirebaseAuthInvalidUserException) {
                                 subscriber.onError(new ErrorException(ErrorException.Code.NO_EMAIL));
 
-                            }else {
-                               subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
+                            } else {
+                                subscriber.onError(new ErrorException(ErrorException.Code.GENERIC_ERROR));
                             }
                         }
                     }
@@ -253,7 +253,7 @@ public class FirebaseUserManager implements UserManager {
 
     @Override
     public void unregisterAuthListener(AuthChangedListener listener) {
-        if(mAuthChangedListener != null) {
+        if (mAuthChangedListener != null) {
             mAuthChangedListener.clear();
             mAuthChangedListener = null;
         }
@@ -263,14 +263,14 @@ public class FirebaseUserManager implements UserManager {
 
     public void monitorFirebaseAuthChanges() {
         Timber.v("Starting Firebase Auth Monitor");
-        if ( mFirebaseAuthListener == null ) {
+        if (mFirebaseAuthListener == null) {
             mFirebaseAuthListener = new FirebaseAuthListener();
             mFirebaseAuth.addAuthStateListener(mFirebaseAuthListener);
         }
     }
 
     public void disableFirebaseAuthStateChangeMonitor() {
-        if ( mFirebaseAuthListener != null ) {
+        if (mFirebaseAuthListener != null) {
             Timber.v("Stopping Firebase Auth Monitor");
             mFirebaseAuth.removeAuthStateListener(mFirebaseAuthListener);
             mFirebaseAuthListener = null;
