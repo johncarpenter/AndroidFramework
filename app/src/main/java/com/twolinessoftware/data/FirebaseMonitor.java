@@ -45,26 +45,26 @@ public class FirebaseMonitor<T> {
         this.mTypeParameterClass = typeParameterClass;
     }
 
-    public Observable<FirebaseChange<T>> monitorChanges(DatabaseReference firebaseRef) {
-        return Observable.create(new Observable.OnSubscribe<FirebaseChange<T>>() {
+    public Observable<DataChange<T>> monitorChanges(DatabaseReference firebaseRef) {
+        return Observable.create(new Observable.OnSubscribe<DataChange<T>>() {
             @Override
-            public void call(Subscriber<? super FirebaseChange<T>> subscriber) {
+            public void call(Subscriber<? super DataChange<T>> subscriber) {
 
 
                 ChildEventListener eventListener = firebaseRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        subscriber.onNext(new FirebaseChange<>(FirebaseChange.State.Added, buildFromSnapshot(dataSnapshot)));
+                        subscriber.onNext(new DataChange<>(DataChange.State.Added, buildFromSnapshot(dataSnapshot)));
                     }
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        subscriber.onNext(new FirebaseChange<>(FirebaseChange.State.Changed, buildFromSnapshot(dataSnapshot)));
+                        subscriber.onNext(new DataChange<>(DataChange.State.Changed, buildFromSnapshot(dataSnapshot)));
                     }
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
-                        subscriber.onNext(new FirebaseChange<>(FirebaseChange.State.Removed, buildFromSnapshot(dataSnapshot)));
+                        subscriber.onNext(new DataChange<>(DataChange.State.Removed, buildFromSnapshot(dataSnapshot)));
                     }
 
                     @Override
@@ -85,21 +85,21 @@ public class FirebaseMonitor<T> {
     }
 
 
-    public Observable<FirebaseChange<T>> once(DatabaseReference firebaseRef) {
-        return Observable.create(new Observable.OnSubscribe<FirebaseChange<T>>() {
+    public Observable<DataChange<T>> once(DatabaseReference firebaseRef) {
+        return Observable.create(new Observable.OnSubscribe<DataChange<T>>() {
             @Override
-            public void call(Subscriber<? super FirebaseChange<T>> subscriber) {
+            public void call(Subscriber<? super DataChange<T>> subscriber) {
 
                 ValueEventListener listener = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot == null || !dataSnapshot.exists()) {
-                            subscriber.onNext(new FirebaseChange<T>(FirebaseChange.State.Empty, null));
+                            subscriber.onNext(new DataChange<T>(DataChange.State.Empty, null));
                             return;
                         }
 
-                        subscriber.onNext(new FirebaseChange<>(FirebaseChange.State.Data, buildFromSnapshot(dataSnapshot)));
+                        subscriber.onNext(new DataChange<>(DataChange.State.Data, buildFromSnapshot(dataSnapshot)));
 
                         subscriber.onCompleted();
                     }

@@ -18,12 +18,10 @@ package com.twolinessoftware.services;
 
 import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.twolinessoftware.Config;
 import com.twolinessoftware.PreferencesHelper;
@@ -55,67 +53,44 @@ public class SpatialService {
 
     }
 
+    public Observable<Location> getLastLocationOrThrow() {
+        return mLocationProvider.getLastKnownLocation().toSingle().toObservable();
+
+    }
+
+
     public Observable<Location> getLastLocation() {
-
-        return mLocationProvider.getLastKnownLocation();
+        return hasLocationServicesEnabled()
+                .flatMap(enabled -> mLocationProvider.getLastKnownLocation());
     }
 
-    public Observable<Location> startLocationUpdates() {
-        LocationRequest request = getDefaultLocationRequest();
-
-        return checkGoogleLocationServices(request)
-                .flatMap(locationSettingsResult -> mLocationProvider.getUpdatedLocation(request))
-                .doOnNext(location1 -> Timber.v("Raw Location:" + location1.toString() + " acc:" + location1.getAccuracy()))
-                .filter(location -> location.hasAccuracy() && location.getAccuracy() < Config.GPS_MIN_ACCURACY_IN_M)
-                .doOnError(throwable -> {
-                    Timber.e("Location services error:" + Log.getStackTraceString(throwable));
-                    mEventBus.post(new OnLocationServicesDisabledEvent(null));
-                });
-
-    }
-
-    public Observable<Boolean> hasLocationServicesEnabled() {
+    private Observable<Boolean> hasLocationServicesEnabled() {
 
         LocationRequest request = getDefaultLocationRequest();
 
         return mLocationProvider.checkLocationSettings(new LocationSettingsRequest.Builder().addLocationRequest(request).setAlwaysShow(true).build())
-                .map(locationSettingsResult -> {
+                .flatMap(locationSettingsResult -> {
                     Status status = locationSettingsResult.getStatus();
                     if (status.getStatusCode() != LocationSettingsStatusCodes.SUCCESS) {
                         Timber.v("hasLocationServicesEnabled:false:" + status.getStatusMessage());
-                        return false;
+                        return Observable.error(new LocationServicesDisabledException(status));
                     } else {
                         Timber.v("hasLocationServicesEnabled:true");
-                        return true;
+                        return Observable.just(true);
                     }
                 });
     }
 
     private LocationRequest getDefaultLocationRequest() {
         return LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setSmallestDisplacement(Config.GPS_SMALLEST_DISPLACEMENT_IN_M)
+                .setPriority(LocationRequest.PRIORITY_LOW_POWER)
                 .setInterval(Config.GPS_UPDATE_INTERVAL_IN_SEC);
     }
 
-
-    private Observable<LocationSettingsResult> checkGoogleLocationServices(LocationRequest request) {
-
-        return mLocationProvider.checkLocationSettings(new LocationSettingsRequest.Builder().addLocationRequest(request).setAlwaysShow(true).build())
-                .doOnNext(locationSettingsResult -> {
-                    Status status = locationSettingsResult.getStatus();
-                    if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED || status.getStatusCode() == LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE) {
-                        Timber.v("checkGoogleLocationServices:false:" + status.getStatusMessage());
-                        mEventBus.post(new OnLocationServicesDisabledEvent(status));
-                    }
-                })
-                .filter(locationSettingsResult1 -> locationSettingsResult1.getStatus().getStatusCode() != LocationSettingsStatusCodes.RESOLUTION_REQUIRED);
-    }
-
-    public static class OnLocationServicesDisabledEvent {
+    public static class LocationServicesDisabledException extends Throwable {
         private final Status mStatus;
 
-        public OnLocationServicesDisabledEvent(Status status) {
+        public LocationServicesDisabledException(Status status) {
             this.mStatus = status;
         }
 
@@ -123,4 +98,8 @@ public class SpatialService {
             return mStatus;
         }
     }
+
+    public static class ReverseGeocodeException extends Throwable {
+    }
+
 }

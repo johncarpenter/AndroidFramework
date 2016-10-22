@@ -17,12 +17,9 @@
 package com.twolinessoftware.services;
 
 import android.content.Context;
+import android.os.Bundle;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.twolinessoftware.BuildConfig;
-import com.twolinessoftware.R;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import javax.inject.Inject;
 
@@ -31,71 +28,21 @@ import javax.inject.Inject;
  */
 public class AnalyticsService {
 
-
+    private FirebaseAnalytics mTracker;
     private Context mContext;
 
     @Inject
     public AnalyticsService(Context context) {
         this.mContext = context;
-        getDefaultTracker();
+        mTracker = FirebaseAnalytics.getInstance(context);
     }
 
-    private Tracker m_tracker;
+    public void trackSample(String name) {
 
-    synchronized public Tracker getDefaultTracker() {
-        if (m_tracker == null) {
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(mContext);
+        Bundle bundle = new Bundle();
+        bundle.putString("EXTRA", name);
+        mTracker.logEvent("SAMPLE", bundle);
 
-            if (BuildConfig.DEBUG) {
-                analytics.setLocalDispatchPeriod(15);
-            }
-
-            m_tracker = analytics.newTracker(R.xml.analytics);
-
-        }
-        return m_tracker;
-    }
-
-
-    public void trackActivity(String screenName) {
-        Tracker tracker = getDefaultTracker();
-        tracker.setScreenName(screenName);
-        tracker.send(new HitBuilders.ScreenViewBuilder().build());
-    }
-
-    public void trackEvent(String category, String action) {
-        Tracker tracker = getDefaultTracker();
-        tracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .build());
-    }
-
-    public void trackError(String error, boolean fatal) {
-        Tracker tracker = getDefaultTracker();
-        tracker.send(new HitBuilders.ExceptionBuilder()
-                .setDescription(error)
-                .setFatal(fatal)
-                .build());
-    }
-
-    public void trackDefaultEvent(String category, String action, long value) {
-        Tracker tracker = getDefaultTracker();
-        tracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setValue(value)
-                .build());
-    }
-
-
-    public void trackDefaultEvent(String category, String action, String label) {
-        Tracker tracker = getDefaultTracker();
-        tracker.send(new HitBuilders.EventBuilder()
-                .setCategory(category)
-                .setAction(action)
-                .setLabel(label)
-                .build());
     }
 
 }

@@ -18,7 +18,11 @@ package com.twolinessoftware.services;
 
 import android.content.Context;
 
+import com.twolinessoftware.PreferencesHelper;
+
 import dagger.Module;
+import dagger.Provides;
+import de.greenrobot.event.EventBus;
 
 /**
  *
@@ -32,5 +36,14 @@ public class ServicesModule {
         mContext = context;
     }
 
+    @Provides
+    SpatialService providesSpatialService(PreferencesHelper preferencesHelper, EventBus eventBus) {
+        return new SpatialService(mContext, preferencesHelper, eventBus);
+    }
+
+    @Provides
+    AnalyticsService providesAnalyticsService() {
+        return new AnalyticsService(mContext);
+    }
 
 }
